@@ -7,6 +7,7 @@ use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -93,7 +94,7 @@ class ApplicationResource extends Resource
                                 'Minimum Viable Product (MVP)' => 'Minimum Viable Product (MVP)',
                                 'Market-ready'                 => 'Market-ready',
                             ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            Textarea::make('idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve. (Please limit your response to 200 words)')
+                            RichEditor::make('idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve. (Please limit your response to 200 words)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             Select::make('uses_ai')->label('Does your business idea or project utilize Artificial Intelligence (AI)?')->options([
                                 'Yes' => 'Yes',
@@ -114,11 +115,68 @@ class ApplicationResource extends Resource
                         ]),
                     Wizard\Step::make('Professional and Personal Skills')
                         ->schema([
-                            // ...
+                            RichEditor::make('creative_solution')
+                                ->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome? (Please limit your response to 150-200 words)')
+                                ->required(),
+                            RichEditor::make('random_objects_usage')
+                                ->label('You have a box of random objects (rubber bands, Pencils, Tape, Plastic spoons, Bottle caps). How many different uses can you come up with for these items? (Please limit your response to 150-200 words)')
+                                ->required(),
+                            RichEditor::make('problem_solving_scenario')
+                                ->label('Share a scenario where you faced a significant obstacle while working on a project. How did you identify the problem, and what steps did you take to overcome it? (Please limit your response to 150-200 words)')
+                                ->required(),
+                            RichEditor::make('motivation_participation')
+                                ->label('What motivates you to participate in these ideation workshops, and how do you envision applying your passion or interests to generating new ideas or solutions? (Please limit your response to 150-200 words)')
+                                ->required(),
+                            RichEditor::make('collaboration_experience')
+                                ->label('Can you share your experience with collaborating on creative projects or brainstorming sessions? Describe your role and contributions to the team\'s success. (Please limit your response to 150-200 words)')
+                                ->required(),
+                            RichEditor::make('participation_goals')
+                                ->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience? (Please limit your response to 150-200 words)')
+                                ->required(),
                         ]),
                     Wizard\Step::make('Generic Questions')
                         ->schema([
-                            // ...
+                            RichEditor::make('skills_expertise')
+                                ->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments. (Please limit your response to 150-200 words)')
+                                ->required(),
+                            Select::make('application_type')->label('Are you applying as an individual or as part of a team?')->options([
+                                'Individual' => 'Individual',
+                                'Team'       => 'Team',
+                                'Other'      => 'Other',
+                            ])->required()->reactive(),
+                            TextInput::make('application_type_other')->label('Please Specify')
+                                ->hidden(fn(callable $get) => $get('application_type') !== 'Other'),
+                            Textarea::make('team_members')->label('Please list the names and roles and phone number and email of your team members.')
+                                ->hidden(fn(callable $get) => $get('application_type') !== 'Team'),
+                            Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
+                                'Yes' => 'Yes',
+                                'No'  => 'No',
+                            ])->required()->reactive(),
+                            Textarea::make('experience_specification')->label('Please specify your experience:')
+                                ->hidden(fn(callable $get) => $get('startup_experience') !== 'Yes'),
+                            TextInput::make('new_skill')->label('If you are looking to acquire one new skill, what would it be?')->required(),
+                            Select::make('program_discovery')->label('How did you hear about the PIEC Programme?')->options([
+                                'Facebook'           => 'Flow Accelerator Facebook Page',
+                                'Instagram'          => 'Flow Accelerator Instagram Page',
+                                'LinkedIn'           => 'Flow Accelerator LinkedIn Page',
+                                'Other Social Media' => 'Other Social Media Channels',
+                                'Friend'             => 'Friend/Colleague',
+                                'Other'              => 'Other',
+                            ])->required()->reactive(),
+                            TextInput::make('program_discovery_other')->label('Please Specify')
+                                ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
+                            Select::make('commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the innovation challenge over two days?')->options([
+                                'Yes'   => 'Yes',
+                                'No'    => 'No',
+                                'Other' => 'Other',
+                            ])->required()->reactive(),
+                            TextInput::make('commitment_other')->label('Please Specify')
+                                ->hidden(fn(callable $get) => $get('commitment') !== 'Other'),
+                            Select::make('continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')->options([
+                                'Yes' => 'Yes',
+                                'No'  => 'No',
+                            ])->required(),
+                            RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
                         ]),
                 ])->columnSpan(2),
             ]);
