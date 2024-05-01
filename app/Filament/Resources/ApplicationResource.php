@@ -7,12 +7,14 @@ use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -28,16 +30,23 @@ class ApplicationResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    protected static ?string $navigationGroup = 'Programs';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Hidden::make('user_id')->default(auth()->id()),
                 Wizard::make([
-                    Wizard\Step::make('Personal Questions ')
+                    Wizard\Step::make('Personal Questions')
                         ->schema([
-                            TextInput::make('first_name')->label('First Name')->required(),
-                            TextInput::make('last_name')->label('Last Name')->required(),
-                            TextInput::make('email')->label('Email')->required(),
+                            TextInput::make('first_name')->label('First Name')->required()->reactive()
+                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('first_name',
+                                    ucwords($state))),
+                            TextInput::make('last_name')->label('Last Name')->required()->reactive()
+                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('last_name',
+                                    ucwords($state))),
+                            TextInput::make('email')->email()->label('Email')->required(),
                             DatePicker::make('dob')->label('Date of Birth')->native(false)->required(),
                             TextInput::make('phone')->label('Phone')->required(),
                             TextInput::make('whatsapp')->label('Whatsapp Number')->required(),
@@ -180,7 +189,7 @@ class ApplicationResource extends Resource
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
                         ]),
-                ])->columnSpan(2),
+                ])->columnSpan(2)->statePath('data'),
             ]);
     }
 
@@ -196,8 +205,16 @@ class ApplicationResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
+            ->recordUrl(function ($record) {
+                if ($record->trashed()) {
+                    return null;
+                }
+
+                return $record->status === 'draft' ? ApplicationResource::getUrl('edit', [$record]) : ApplicationResource::getUrl('view', [$record]);
+            })
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -217,6 +234,7 @@ class ApplicationResource extends Resource
         return [
             'index'  => Pages\ListApplications::route('/'),
             'create' => Pages\CreateApplication::route('/create'),
+            'view' => Pages\ViewApplication::route('/{record}'),
             'edit'   => Pages\EditApplication::route('/{record}/edit'),
         ];
     }

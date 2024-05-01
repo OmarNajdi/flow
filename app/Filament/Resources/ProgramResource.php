@@ -25,6 +25,8 @@ class ProgramResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    protected static ?string $navigationGroup = 'Programs';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -54,6 +56,7 @@ class ProgramResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->recordUrl(function ($record) {
@@ -61,7 +64,7 @@ class ProgramResource extends Resource
                     return null;
                 }
 
-                return 'https://google.com';
+                return ApplicationResource::getUrl('create');
             })
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -82,6 +85,7 @@ class ProgramResource extends Resource
         return [
             'index'  => Pages\ListPrograms::route('/'),
             'create' => Pages\CreateProgram::route('/create'),
+            'view'   => Pages\ViewProgram::route('/{record}'),
             'edit'   => Pages\EditProgram::route('/{record}/edit'),
         ];
     }

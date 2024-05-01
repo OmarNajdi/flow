@@ -12,6 +12,13 @@ class Application extends Model
 
     protected $fillable = [
         'program_id',
+        'user_id',
+        'status',
+        'data'
+    ];
+
+    protected $casts = [
+        'data' => 'json'
     ];
 
     public function user()
