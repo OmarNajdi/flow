@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Filament\Facades\Filament;
+use Filament\Navigation\NavigationItem;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Filament::serving(function () {
+            Filament::registerNavigationItems([
+                NavigationItem::make('Profile')
+                    ->url('/profile')
+                    ->icon('heroicon-o-user')
+                    ->group('User')
+                    ->sort(2),
+            ]);
+        });
+
+
     }
 }

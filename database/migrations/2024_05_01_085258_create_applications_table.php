@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('program_id')->nullable()->constrained();
             $table->string('status')->default('draft');
+            $table->json('data')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
