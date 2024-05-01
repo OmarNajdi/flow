@@ -6,19 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Program extends Model
+class Application extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name',
-        'level',
-        'open_date',
-        'close_date',
+        'program_id',
     ];
 
-    public function applications()
+    public function user()
     {
-        return $this->hasMany(Application::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
     }
 }

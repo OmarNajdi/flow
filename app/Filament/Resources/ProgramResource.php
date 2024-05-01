@@ -54,6 +54,13 @@ class ProgramResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+            ->recordUrl(function ($record) {
+                if ($record->trashed()) {
+                    return null;
+                }
+
+                return 'https://google.com';
+            })
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
