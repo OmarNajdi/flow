@@ -26,6 +26,8 @@ class ApplicationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -44,7 +46,7 @@ class ApplicationResource extends Resource
                                 'Female' => 'Female'
                             ])->required(),
                             Select::make('residence')->label('Governorate of Residence')->options([
-                                'Jenin'                 => 'Jenin / جنين',
+                                'Jenin'                 => 'Jenin',
                                 'Tubas'                 => 'Tubas',
                                 'Tulkarm'               => 'Tulkarm',
                                 'Nablus'                => 'Nablus',
