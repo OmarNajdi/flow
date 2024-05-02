@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProgramResource\Pages;
 use App\Filament\Resources\ProgramResource\RelationManagers;
 use App\Models\Program;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -14,8 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\Action;
 
 class ProgramResource extends Resource
 {
@@ -48,16 +46,19 @@ class ProgramResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('level'),
+                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                 TextColumn::make('open_date'),
                 TextColumn::make('close_date'),
+                TextColumn::make('applications_count')->label('Applications')->counts('applications'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Action::make('apply')->label('Apply')->button()->icon('heroicon-s-plus')
+                    ->url(fn(Program $record): string => ApplicationResource::getUrl('create', ['program' => $record])),
+                Tables\Actions\ViewAction::make()->button(),
+                Tables\Actions\EditAction::make()->button()->color('gray'),
             ])
             ->recordUrl(function ($record) {
                 if ($record->trashed()) {

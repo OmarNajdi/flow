@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
+use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
@@ -37,6 +38,7 @@ class ApplicationResource extends Resource
         return $form
             ->schema([
                 Hidden::make('user_id')->default(auth()->id()),
+                Hidden::make('program_id')->default(request('program')),
                 Wizard::make([
                     Wizard\Step::make('Personal Questions')
                         ->schema([
@@ -213,7 +215,8 @@ class ApplicationResource extends Resource
                     return null;
                 }
 
-                return $record->status === 'draft' ? ApplicationResource::getUrl('edit', [$record]) : ApplicationResource::getUrl('view', [$record]);
+                return $record->status === 'draft' ? ApplicationResource::getUrl('edit',
+                    [$record]) : ApplicationResource::getUrl('view', [$record]);
             })
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -234,7 +237,7 @@ class ApplicationResource extends Resource
         return [
             'index'  => Pages\ListApplications::route('/'),
             'create' => Pages\CreateApplication::route('/create'),
-            'view' => Pages\ViewApplication::route('/{record}'),
+            'view'   => Pages\ViewApplication::route('/{record}'),
             'edit'   => Pages\EditApplication::route('/{record}/edit'),
         ];
     }
