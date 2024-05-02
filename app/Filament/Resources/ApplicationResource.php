@@ -42,20 +42,20 @@ class ApplicationResource extends Resource
                 Wizard::make([
                     Wizard\Step::make('Personal Questions')
                         ->schema([
-                            TextInput::make('first_name')->label('First Name')->required()->reactive()
+                            TextInput::make('first_name')->label('First Name')->required()->reactive()->default(auth()->user()->first_name)
                                 ->afterStateUpdated(fn(Set $set, ?string $state) => $set('first_name',
                                     ucwords($state))),
-                            TextInput::make('last_name')->label('Last Name')->required()->reactive()
+                            TextInput::make('last_name')->label('Last Name')->required()->reactive()->default(auth()->user()->last_name)
                                 ->afterStateUpdated(fn(Set $set, ?string $state) => $set('last_name',
                                     ucwords($state))),
-                            TextInput::make('email')->email()->label('Email')->required(),
-                            DatePicker::make('dob')->label('Date of Birth')->native(false)->required(),
-                            TextInput::make('phone')->label('Phone')->required(),
-                            TextInput::make('whatsapp')->label('Whatsapp Number')->required(),
+                            TextInput::make('email')->email()->label('Email')->required()->default(auth()->user()->email),
+                            DatePicker::make('dob')->label('Date of Birth')->native(false)->required()->default(auth()->user()->dob),
+                            TextInput::make('phone')->label('Phone')->required()->default(auth()->user()->phone),
+                            TextInput::make('whatsapp')->label('Whatsapp Number')->required()->default(auth()->user()->whatsapp),
                             Select::make('gender')->options([
                                 'Male'   => 'Male',
                                 'Female' => 'Female'
-                            ])->required(),
+                            ])->required()->default(auth()->user()->gender),
                             Select::make('residence')->label('Governorate of Residence')->options([
                                 'Jenin'                 => 'Jenin',
                                 'Tubas'                 => 'Tubas',
@@ -73,7 +73,7 @@ class ApplicationResource extends Resource
                                 'Deir al-Balah'         => 'Deir al-Balah',
                                 'Khan Yunis'            => 'Khan Yunis',
                                 'Rafah'                 => 'Rafah',
-                            ])->required(),
+                            ])->required()->default(auth()->user()->residence),
                             Select::make('educational_level')->label('Educational Level')->options([
                                 'High School'                 => 'High School',
                                 'Vocational/Technical School' => 'Vocational/Technical School',
@@ -81,19 +81,19 @@ class ApplicationResource extends Resource
                                 'Master'                      => 'Master\'s Degree',
                                 'PhD'                         => 'Doctorate/Ph.D.',
                                 'Other'                       => 'Other (Please Specify)',
-                            ])->required()->reactive(),
+                            ])->required()->reactive()->default(auth()->user()->educational_level),
                             TextInput::make('educational_level_other')->label('Other Educational Level')
-                                ->hidden(fn(callable $get) => $get('educational_level') !== 'Other'),
+                                ->hidden(fn(callable $get) => $get('educational_level') !== 'Other')->default(auth()->user()->educational_level_other),
                             Select::make('description')->label('Describe Yourself')->options([
                                 'Student'      => 'Student',
                                 'Professional' => 'Professional',
                                 'Entrepreneur' => 'Entrepreneur',
                                 'Other'        => 'Other',
-                            ])->required()->reactive(),
+                            ])->required()->reactive()->default(auth()->user()->description),
                             TextInput::make('description_other')->label('Describe Yourself')
-                                ->hidden(fn(callable $get) => $get('description') !== 'Other'),
-                            TextInput::make('ocuppation')->label('Occupation')->required()
-                                ->hidden(fn(callable $get) => $get('description') === 'Student'),
+                                ->hidden(fn(callable $get) => $get('description') !== 'Other')->default(auth()->user()->description_other),
+                            TextInput::make('occupation')->label('Occupation')->required()
+                                ->hidden(fn(callable $get) => $get('description') === 'Student')->default(auth()->user()->occupation),
                         ])->columns(2),
                     Wizard\Step::make('Idea & Challenges')
                         ->schema([
