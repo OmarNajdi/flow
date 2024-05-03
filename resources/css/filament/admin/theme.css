@@ -1,0 +1,10 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.fi-body {
+    background-image: url('/resources/images/bg.webp');
+    background-repeat: repeat-y;
+    background-size: cover;
+    background-position: 0 70px;
+}
