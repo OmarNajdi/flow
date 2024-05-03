@@ -6,14 +6,22 @@ use App\Filament\Resources\ProgramResource\Pages;
 use App\Filament\Resources\ProgramResource\RelationManagers;
 use App\Models\Program;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Split;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
+
 
 class ProgramResource extends Resource
 {
@@ -38,6 +46,7 @@ class ProgramResource extends Resource
                 ])->required(),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
+                RichEditor::make('description')->label('Description')->required()->columnSpan(2),
             ]);
     }
 
@@ -71,6 +80,26 @@ class ProgramResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Split::make([
+                    Section::make([
+                        TextEntry::make('description')->html()->hiddenLabel(),
+                    ]),
+
+                    Section::make([
+                        TextEntry::make('name')
+                            ->weight(FontWeight::Bold),
+                        TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
+                        TextEntry::make('open_date')->date(),
+                        TextEntry::make('close_date')->date(),
+                    ])->grow(false),
+                ])->from('md')->columnSpan(2)
             ]);
     }
 

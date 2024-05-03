@@ -16,6 +16,7 @@ class Program extends Model
         'level',
         'open_date',
         'close_date',
+        'description'
     ];
 
     public function applications(): HasMany

@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('level');
+            $table->string('level')->nullable();
             $table->date('open_date');
             $table->date('close_date');
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
