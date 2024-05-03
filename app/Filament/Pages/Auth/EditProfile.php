@@ -73,6 +73,15 @@ class EditProfile extends BaseEditProfile
                             ->hidden(fn(callable $get) => $get('description') !== 'Other'),
                         TextInput::make('occupation')->label('Occupation')->required()
                             ->hidden(fn(callable $get) => $get('description') === 'Student'),
+                    ])->columns(2),
+                Section::make('Social Profiles')
+                    ->schema([
+                        TextInput::make('social.linkedin')->label('LinkedIn Profile URL'),
+                        TextInput::make('social.facebook')->label('Facebook Profile URL'),
+                        TextInput::make('social.twitter')->label('Twitter Profile URL'),
+                        TextInput::make('social.instagram')->label('Instagram Profile URL'),
+                        TextInput::make('social.tiktok')->label('TikTok Profile URL'),
+                        TextInput::make('social.website')->label('Website URL'),
                     ])->columns(2)
             ]);
     }

@@ -34,6 +34,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         'description',
         'description_other',
         'occupation',
+        'social'
     ];
 
     /**
@@ -44,6 +45,10 @@ class User extends Authenticatable implements FilamentUser, HasName
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'social' => 'json',
     ];
 
     /**

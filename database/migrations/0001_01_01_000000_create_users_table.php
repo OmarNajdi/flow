@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('description_other')->nullable();
             $table->string('occupation')->nullable();
+            $table->json('social')->nullable();
             $table->timestamps();
         });
 

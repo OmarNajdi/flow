@@ -5,6 +5,6 @@
 .fi-body {
     background-image: url('/resources/images/bg.webp');
     background-repeat: repeat-y;
-    background-size: cover;
+    background-size: 100% auto;
     background-position: 0 70px;
 }

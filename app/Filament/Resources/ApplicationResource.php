@@ -159,7 +159,7 @@ class ApplicationResource extends Resource
                             ])->required()->reactive(),
                             TextInput::make('application_type_other')->label('Please Specify')
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Other'),
-                            Textarea::make('team_members')->label('Please list the names and roles and phone number and email of your team members.')
+                            Textarea::make('team_members')->label('Please list the names, roles, phone numbers, and emails of your team members.')
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Team'),
                             Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
                                 'Yes' => 'Yes',
@@ -191,7 +191,7 @@ class ApplicationResource extends Resource
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
                         ]),
-                ])->columnSpan(2)->statePath('data'),
+                ])->columnSpan(2)->statePath('data')->startOnStep(4),
             ]);
     }
 
