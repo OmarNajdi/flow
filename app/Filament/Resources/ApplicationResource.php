@@ -191,7 +191,7 @@ class ApplicationResource extends Resource
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
                         ]),
-                ])->columnSpan(2)->statePath('data')->startOnStep(4),
+                ])->columnSpan(2)->statePath('data'),
             ]);
     }
 
