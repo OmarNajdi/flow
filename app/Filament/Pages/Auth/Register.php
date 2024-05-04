@@ -33,7 +33,7 @@ class Register extends BaseRegister
                         $this->getPasswordConfirmationFormComponent(),
                         Checkbox::make('terms')->required()->label(fn(
                         ) => new HtmlString('I accept the <a href="https://flow.ps/website-terms-of-use/" class="underline" target="_blank">terms of use</a> and <a href="https://flow.ps/privacy-notice/" class="underline" target="_blank">privacy policy</a>')),
-                        Checkbox::make('newsletter')->label('Subscribe to our newsletter and promotions')->default(true),
+                        Checkbox::make('newsletter')->label('Subscribe to our newsletter and activities')->default(true),
                     ])
                     ->statePath('data'),
             ),

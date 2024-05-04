@@ -3,9 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Resources\ApplicationResource;
+use App\Filament\Resources\JobResource;
 use App\Filament\Resources\ProgramResource;
+use App\Models\Job;
 use App\Models\Program;
-use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -17,9 +18,14 @@ class StatsOverview extends BaseWidget
         return [
             Stat::make('Open Programs',
                 Program::query()->whereDate('open_date', '<=', now())->whereDate('close_date', '>=', now())->count())
-            ->url(ProgramResource::getUrl('index')),
-            Stat::make('Submitted Applications', Program::query()->whereHas('applications')->count())->url(ApplicationResource::getUrl('index')),
-            Stat::make('Registered Startups', User::all()->count()),
+                ->url(ProgramResource::getUrl('index'))
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
+            Stat::make('Submitted Applications', Program::query()->whereHas('applications')->count())
+                ->url(ApplicationResource::getUrl('index'))
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
+            Stat::make('Open Jobs', Job::all()->count())
+                ->url(JobResource::getUrl('index'))
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
         ];
     }
 
