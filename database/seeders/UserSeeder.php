@@ -22,6 +22,13 @@ class UserSeeder extends Seeder
             'educational_level' => 'Master',
             'description'       => 'Entrepreneur',
             'occupation'        => 'Software Engineer',
+            'social'            => [
+                'twitter'   => 'https://twitter.com/Omar_Najdi',
+                'linkedin'  => 'https://www.linkedin.com/in/omarnajdi',
+                'instagram' => 'https://www.instagram.com/OmarNajdi/',
+                'github'    => 'https://github.com/OmarNajdi',
+                'website'   => 'https://omarnajdi.com',
+            ]
         ]);
     }
 }
