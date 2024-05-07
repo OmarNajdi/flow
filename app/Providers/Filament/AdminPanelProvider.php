@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->emailVerification()
             ->profile(EditProfile::class, isSimple: false)
             ->colors([
-                'primary' => Color::Green,
+                'primary' => "#018578",
             ])
             ->brandLogo(asset('images/flow.svg'))
             ->brandLogoHeight('3rem')
