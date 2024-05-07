@@ -27,7 +27,7 @@ class ProgramResource extends Resource
 {
     protected static ?string $model = Program::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?int $navigationSort = 2;
 
@@ -91,13 +91,19 @@ class ProgramResource extends Resource
                     Section::make([
                         TextEntry::make('description')->html()->hiddenLabel(),
                     ]),
-
                     Section::make([
                         TextEntry::make('name')
                             ->weight(FontWeight::Bold),
                         TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                         TextEntry::make('open_date')->date(),
                         TextEntry::make('close_date')->date(),
+                        Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('apply')
+                                ->label('Apply')
+                                ->icon('heroicon-s-plus')
+                                ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
+                                    ['program' => $record])),
+                        ]),
                     ])->grow(false),
                 ])->from('md')->columnSpan(2)
             ]);

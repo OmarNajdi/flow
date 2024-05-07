@@ -8,6 +8,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -22,7 +23,7 @@ class EditProfile extends BaseEditProfile
             ->schema([
                 Tabs::make('Tabs')
                     ->tabs([
-                        Tabs\Tab::make('Personal Information')
+                        Tabs\Tab::make('Personal Information')->icon('heroicon-o-user')
                             ->schema([
                                 Section::make('User Details')
                                     ->schema([
@@ -94,7 +95,7 @@ class EditProfile extends BaseEditProfile
                                         TextInput::make('social.website')->label('Website URL'),
                                     ])->columns(2)
                             ]),
-                        Tabs\Tab::make('Professional Background')
+                        Tabs\Tab::make('Educational Background')->icon('heroicon-o-academic-cap')
                             ->schema([
                                 Section::make('Education')
                                     ->schema([
@@ -118,15 +119,41 @@ class EditProfile extends BaseEditProfile
                                                 ])->extraAttributes(['class' => 'h-full content-center']),
                                                 DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
                                                     ->hidden(fn(callable $get) => $get('current')),
-
+                                            ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
+                                    ])
+                            ]),
+                        Tabs\Tab::make('Professional Experience')->icon('heroicon-o-briefcase')
+                            ->schema([
+                                Section::make('Experience')
+                                    ->schema([
+                                        Repeater::make('experience')->addActionLabel('Add Position')
+                                            ->schema([
+                                                Select::make('type')
+                                                    ->options([
+                                                        'full-time'     => 'Full-time',
+                                                        'part-time'     => 'Part-time',
+                                                        'internship'    => 'Internship',
+                                                        'volunteer'     => 'Volunteer',
+                                                        'self-employed' => 'Self-employed',
+                                                        'freelance'     => 'Freelance',
+                                                    ])
+                                                    ->required(),
+                                                TextInput::make('company')->label('Company Name')->required(),
+                                                TextInput::make('title')->label('Title')->required(),
+                                                DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                                Group::make([
+                                                    Toggle::make('current')->label('Currently Working There')->reactive(),
+                                                ])->extraAttributes(['class' => 'h-full content-center']),
+                                                DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                                    ->hidden(fn(callable $get) => $get('current')),
                                             ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
                                     ]),
-                                Section::make('Soft Skills')
+                                Section::make('Skills')
                                     ->schema([
-                                        Repeater::make('skills')
-                                            ->schema([
-                                                TextInput::make('skill')->label('Skill')->required()
-                                            ])->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
+                                        TagsInput::make('soft_skills')->label('Soft Skills')
+                                            ->placeholder('Type and press Enter')->splitKeys(['Tab', ',']),
+                                        TagsInput::make('technical_skills')->label('Technical Skills')
+                                            ->placeholder('Type and press Enter')->splitKeys(['Tab', ','])
                                     ])
                             ])
                     ])->contained(false)

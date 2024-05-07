@@ -30,6 +30,10 @@ return new class extends Migration
             $table->string('description_other')->nullable();
             $table->string('occupation')->nullable();
             $table->json('social')->nullable();
+            $table->json('education')->nullable();
+            $table->json('experience')->nullable();
+            $table->json('soft_skills')->nullable();
+            $table->json('technical_skills')->nullable();
             $table->timestamps();
         });
 

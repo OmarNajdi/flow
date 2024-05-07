@@ -40,7 +40,7 @@ class ApplicationResource extends Resource
                 Hidden::make('user_id')->default(auth()->id()),
                 Hidden::make('program_id')->default(request('program')),
                 Wizard::make([
-                    Wizard\Step::make('Personal Questions')
+                    Wizard\Step::make('Personal Questions')->icon('heroicon-s-user')
                         ->schema([
                             TextInput::make('first_name')->label('First Name')->required()->reactive()->default(auth()->user()->first_name)
                                 ->afterStateUpdated(fn(Set $set, ?string $state) => $set('first_name',
@@ -95,7 +95,7 @@ class ApplicationResource extends Resource
                             TextInput::make('occupation')->label('Occupation')->required()
                                 ->hidden(fn(callable $get) => $get('description') === 'Student')->default(auth()->user()->occupation),
                         ])->columns(2),
-                    Wizard\Step::make('Idea & Challenges')
+                    Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([
                             Select::make('has_idea')->label('Do you currently have a business idea or project?')->options([
                                 'Yes' => 'Yes',
@@ -126,7 +126,7 @@ class ApplicationResource extends Resource
                                 ->required()->hidden(fn(callable $get
                                 ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
                         ]),
-                    Wizard\Step::make('Professional and Personal Skills')
+                    Wizard\Step::make('Professional and Personal Skills')->icon('heroicon-s-clipboard-document-list')
                         ->schema([
                             RichEditor::make('creative_solution')
                                 ->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome? (Please limit your response to 150-200 words)')
@@ -147,7 +147,7 @@ class ApplicationResource extends Resource
                                 ->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience? (Please limit your response to 150-200 words)')
                                 ->required(),
                         ]),
-                    Wizard\Step::make('Generic Questions')
+                    Wizard\Step::make('Generic Questions')->icon('heroicon-s-question-mark-circle')
                         ->schema([
                             RichEditor::make('skills_expertise')
                                 ->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments. (Please limit your response to 150-200 words)')

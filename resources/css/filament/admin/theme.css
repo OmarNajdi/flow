@@ -12,3 +12,7 @@
 .content-center {
     align-content: center;
 }
+
+.rowSpan-2 {
+    @apply row-[1_/_span_2];
+}

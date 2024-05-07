@@ -48,7 +48,11 @@ class User extends Authenticatable implements FilamentUser, HasName
     ];
 
     protected $casts = [
-        'social' => 'json',
+        'social'           => 'json',
+        'education'        => 'array',
+        'experience'       => 'array',
+        'soft_skills'      => 'array',
+        'technical_skills' => 'array',
     ];
 
     /**
