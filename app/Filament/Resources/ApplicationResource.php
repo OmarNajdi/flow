@@ -21,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ApplicationResource extends Resource
@@ -83,7 +84,8 @@ class ApplicationResource extends Resource
                                 'Other'                       => 'Other (Please Specify)',
                             ])->required()->reactive()->default(auth()->user()->educational_level),
                             TextInput::make('educational_level_other')->label('Other Educational Level')
-                                ->hidden(fn(callable $get) => $get('educational_level') !== 'Other')->default(auth()->user()->educational_level_other),
+                                ->hidden(fn(callable $get
+                                ) => $get('educational_level') !== 'Other')->default(auth()->user()->educational_level_other),
                             Select::make('description')->label('Describe Yourself')->options([
                                 'Student'      => 'Student',
                                 'Professional' => 'Professional',
@@ -91,9 +93,11 @@ class ApplicationResource extends Resource
                                 'Other'        => 'Other',
                             ])->required()->reactive()->default(auth()->user()->description),
                             TextInput::make('description_other')->label('Describe Yourself')
-                                ->hidden(fn(callable $get) => $get('description') !== 'Other')->default(auth()->user()->description_other),
+                                ->hidden(fn(callable $get
+                                ) => $get('description') !== 'Other')->default(auth()->user()->description_other),
                             TextInput::make('occupation')->label('Occupation')->required()
-                                ->hidden(fn(callable $get) => $get('description') === 'Student')->default(auth()->user()->occupation),
+                                ->hidden(fn(callable $get
+                                ) => $get('description') === 'Student')->default(auth()->user()->occupation),
                         ])->columns(2),
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([
@@ -201,7 +205,7 @@ class ApplicationResource extends Resource
             ->columns([
                 TextColumn::make('program.name')->label('Program'),
                 TextColumn::make('status')->label('Status'),
-                TextColumn::make('created_at')->label('Created At'),
+                TextColumn::make('created_at')->label('Submitted at'),
             ])
             ->filters([
                 //
@@ -217,12 +221,7 @@ class ApplicationResource extends Resource
 
                 return $record->status === 'draft' ? ApplicationResource::getUrl('edit',
                     [$record]) : ApplicationResource::getUrl('view', [$record]);
-            })
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            });
     }
 
     public static function getRelations(): array
@@ -242,4 +241,13 @@ class ApplicationResource extends Resource
         ];
     }
 
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return $record->user_id === auth()->id();
+    }
 }

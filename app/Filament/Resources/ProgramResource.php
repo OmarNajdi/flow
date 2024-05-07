@@ -21,6 +21,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Illuminate\Database\Eloquent\Model;
 
 
 class ProgramResource extends Resource
@@ -75,12 +76,7 @@ class ProgramResource extends Resource
                 }
 
                 return ApplicationResource::getUrl('create');
-            })
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            });
     }
 
     public static function infolist(Infolist $infolist): Infolist
@@ -124,5 +120,20 @@ class ProgramResource extends Resource
             'view'   => Pages\ViewProgram::route('/{record}'),
             'edit'   => Pages\EditProgram::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
+   public static function canEdit(Model $record): bool
+   {
+       return false;
+   }
+
+    public static function canDelete(Model $record): bool
+    {
+         return false;
     }
 }
