@@ -75,7 +75,7 @@ class ProgramResource extends Resource
                     return null;
                 }
 
-                return ApplicationResource::getUrl('create');
+                return ApplicationResource::getUrl('create', ['program' => $record]);
             });
     }
 
@@ -127,13 +127,13 @@ class ProgramResource extends Resource
         return false;
     }
 
-   public static function canEdit(Model $record): bool
-   {
-       return false;
-   }
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
 
     public static function canDelete(Model $record): bool
     {
-         return false;
+        return false;
     }
 }
