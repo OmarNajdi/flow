@@ -54,7 +54,7 @@ class ApplicationResource extends Resource
                             TextInput::make('last_name')->label('Last Name / اسم العائلة')->required()->reactive()->default(auth()->user()->last_name)
                                 ->afterStateUpdated(fn(Set $set, ?string $state) => $set('last_name',
                                     ucwords($state))),
-                            TextInput::make('email')->email()->label('Email / البريد الإلكتروني')->required()->default(auth()->user()->email),
+                            TextInput::make('email')->email()->label('Email / البريد الإلكتروني')->required()->default(auth()->user()->email)->email(),
                             DatePicker::make('dob')->label('Date of Birth / تاريخ الميلاد')->native(false)->required()->default(auth()->user()->dob),
                             TextInput::make('phone')->label('Phone / رقم الهاتف')->required()->default(auth()->user()->phone),
                             TextInput::make('whatsapp')->label('Whatsapp Number / رقم الواتساب')->required()->default(auth()->user()->whatsapp),
@@ -233,7 +233,7 @@ class ApplicationResource extends Resource
                                     TextInput::make('name')->label('Name / الاسم')->required(),
                                     TextInput::make('role')->label('Role / الدور')->required(),
                                     TextInput::make('phone')->label('Phone / الهاتف')->required(),
-                                    TextInput::make('email')->label('Email / البريد الإلكتروني')->required(),
+                                    TextInput::make('email')->label('Email / البريد الإلكتروني')->required()->email(),
                                 ])->columns(4)->reorderableWithButtons()->inlineLabel(false)
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Team'),
                             Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups? / هل لديك أي معرفة أو خبرة في ريادة الأعمال / الشركات الناشئة؟')->options([
