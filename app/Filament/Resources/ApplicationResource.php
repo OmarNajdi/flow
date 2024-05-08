@@ -108,37 +108,6 @@ class ApplicationResource extends Resource
                                 ->hidden(fn(callable $get) => in_array($get('description'), ['Student', 'Other']))
                                 ->default(auth()->user()->occupation),
                         ])->columns(2),
-                    Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
-                        ->schema([
-                            Select::make('has_idea')->label('Do you currently have a business idea or project? / هل لديك فكرة أو مشروع تجاري حاليًا؟')->options([
-                                'Yes' => 'Yes / نعم',
-                                'No'  => 'No / لا',
-                            ])->required()->reactive(),
-                            Select::make('idea_stage')->label('In which stage is your idea? / في أي مرحلة حالياً فكرتك؟')->options([
-                                'Idea Phase'                   => 'Idea Phase / مرحلة الفكرة',
-                                'Proof of Concept'             => 'Proof of Concept / إثبات المفهوم',
-                                'Minimum Viable Product (MVP)' => 'Minimum Viable Product (MVP) / الحد الأدنى من المنتج',
-                                'Market-ready'                 => 'Market-ready / جاهز للسوق',
-                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            RichEditor::make('idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve. (Please limit your response to 200 words) / إذا كانت الإجابة نعم، يرجى تقديم وصف موجز لفكرتك والمشكلة التي تهدف إلى حلها. (يُرجى تحديد إجابتك ب 200 كلمة)')
-                                ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            Select::make('uses_ai')->label('Does your business idea or project utilize Artificial Intelligence (AI)? / هل تستخدم فكرتك  أو مشروعك الذكاء الاصطناعي؟')->options([
-                                'Yes' => 'Yes / نعم',
-                                'No'  => 'No / لا',
-                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            Textarea::make('ai_role')->label('How do you envision Artificial Intelligence playing a role in your solution? / ما هو دور الذكاء الاصطناعي في حلك؟')->required()
-                                ->hidden(fn(callable $get) => $get('has_idea') !== 'Yes' || $get('uses_ai') !== 'Yes'),
-                            Textarea::make('ai_future_plan')->label('How do you plan to incorporate AI or technological innovation into your project in the future? / إذا لم تكن فكرتك متعلقة بالذكاء الاصطناعي، كيف تخطط لدمج الذكاء الاصطناعي أو الابتكار التكنولوجي في مشروعك في المستقبل؟')
-                                ->required()->hidden(fn(callable $get
-                                ) => $get('has_idea') !== 'Yes' || $get('uses_ai') !== 'No'),
-                            Select::make('has_challenge')->label('Do you have a specific challenge you would solve with Artificial Intelligence (AI)? / هل لديك تحدي محدد تود حله باستخدام الذكاء الاصطناعي؟')->options([
-                                'Yes' => 'Yes / نعم',
-                                'No'  => 'No / لا',
-                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'No'),
-                            Textarea::make('challenge_description')->label('What specific challenge would you like to solve, and how would you use Artificial Intelligence (AI) to address it / إذا كانت الإجابة نعم، ما هو التحدي المحدد الذي ترغب في حله، وكيف ستستخدم الذكاء الاصطناعي (AI) لمعالجته؟')
-                                ->required()->hidden(fn(callable $get
-                                ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
-                        ]),
                     Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
                         ->schema([
                             Section::make('Education / التعليم')
@@ -199,6 +168,37 @@ class ApplicationResource extends Resource
                                     TagsInput::make('technical_skills')->label('Technical Skills / المهارات التقنية')
                                         ->placeholder('Type and press Enter / اكتب واضغط على Enter')->splitKeys(['Tab', ','])
                                 ])
+                        ]),
+                    Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
+                        ->schema([
+                            Select::make('has_idea')->label('Do you currently have a business idea or project? / هل لديك فكرة أو مشروع تجاري حاليًا؟')->options([
+                                'Yes' => 'Yes / نعم',
+                                'No'  => 'No / لا',
+                            ])->required()->reactive(),
+                            Select::make('idea_stage')->label('In which stage is your idea? / في أي مرحلة حالياً فكرتك؟')->options([
+                                'Idea Phase'                   => 'Idea Phase / مرحلة الفكرة',
+                                'Proof of Concept'             => 'Proof of Concept / إثبات المفهوم',
+                                'Minimum Viable Product (MVP)' => 'Minimum Viable Product (MVP) / الحد الأدنى من المنتج',
+                                'Market-ready'                 => 'Market-ready / جاهز للسوق',
+                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
+                            RichEditor::make('idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve. (Please limit your response to 200 words) / إذا كانت الإجابة نعم، يرجى تقديم وصف موجز لفكرتك والمشكلة التي تهدف إلى حلها. (يُرجى تحديد إجابتك ب 200 كلمة)')
+                                ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
+                            Select::make('uses_ai')->label('Does your business idea or project utilize Artificial Intelligence (AI)? / هل تستخدم فكرتك  أو مشروعك الذكاء الاصطناعي؟')->options([
+                                'Yes' => 'Yes / نعم',
+                                'No'  => 'No / لا',
+                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
+                            Textarea::make('ai_role')->label('How do you envision Artificial Intelligence playing a role in your solution? / ما هو دور الذكاء الاصطناعي في حلك؟')->required()
+                                ->hidden(fn(callable $get) => $get('has_idea') !== 'Yes' || $get('uses_ai') !== 'Yes'),
+                            Textarea::make('ai_future_plan')->label('How do you plan to incorporate AI or technological innovation into your project in the future? / إذا لم تكن فكرتك متعلقة بالذكاء الاصطناعي، كيف تخطط لدمج الذكاء الاصطناعي أو الابتكار التكنولوجي في مشروعك في المستقبل؟')
+                                ->required()->hidden(fn(callable $get
+                                ) => $get('has_idea') !== 'Yes' || $get('uses_ai') !== 'No'),
+                            Select::make('has_challenge')->label('Do you have a specific challenge you would solve with Artificial Intelligence (AI)? / هل لديك تحدي محدد تود حله باستخدام الذكاء الاصطناعي؟')->options([
+                                'Yes' => 'Yes / نعم',
+                                'No'  => 'No / لا',
+                            ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'No'),
+                            Textarea::make('challenge_description')->label('What specific challenge would you like to solve, and how would you use Artificial Intelligence (AI) to address it / إذا كانت الإجابة نعم، ما هو التحدي المحدد الذي ترغب في حله، وكيف ستستخدم الذكاء الاصطناعي (AI) لمعالجته؟')
+                                ->required()->hidden(fn(callable $get
+                                ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
                         ]),
                     Wizard\Step::make('Entrepreneurial Skills')->icon('heroicon-s-clipboard-document-list')
                         ->schema([
