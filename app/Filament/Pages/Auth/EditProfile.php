@@ -63,6 +63,7 @@ class EditProfile extends BaseEditProfile
                                             'Deir al-Balah'         => 'Deir al-Balah',
                                             'Khan Yunis'            => 'Khan Yunis',
                                             'Rafah'                 => 'Rafah',
+                                            'Other'                 => 'Other',
                                         ])->required(),
                                         Select::make('educational_level')->label('Educational Level')->options([
                                             'High School'                 => 'High School',

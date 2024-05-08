@@ -74,6 +74,7 @@ class ApplicationResource extends Resource
                                 'Deir al-Balah'         => 'Deir al-Balah',
                                 'Khan Yunis'            => 'Khan Yunis',
                                 'Rafah'                 => 'Rafah',
+                                'Other'                 => 'Other',
                             ])->required()->default(auth()->user()->residence),
                             Select::make('educational_level')->label('Educational Level')->options([
                                 'High School'                 => 'High School',
