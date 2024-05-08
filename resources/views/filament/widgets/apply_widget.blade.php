@@ -7,7 +7,7 @@
                 </h2>
 
                 <div class="grid grid-cols-3">
-                    <a href="{{ url('/applications/create?program=1') }}">
+                    <a href="{{ url('/programs/1') }}">
                         <div class="bg-gray-100 rounded-2xl hover:scale-105 transition-all border">
                             <img src="{{ asset('images/PIEC.jpg') }}" alt="Apply Now" class="rounded-2xl"/>
                             <h3 class="font-bold text-2xl text-center py-6 color-primary">PIEC</h3>

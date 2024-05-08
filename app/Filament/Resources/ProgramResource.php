@@ -75,7 +75,7 @@ class ProgramResource extends Resource
                     return null;
                 }
 
-                return ApplicationResource::getUrl('create', ['program' => $record]);
+                return ProgramResource::getUrl('view', [$record]);
             });
     }
 
@@ -91,15 +91,16 @@ class ProgramResource extends Resource
                         TextEntry::make('name')
                             ->weight(FontWeight::Bold),
                         TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
-                        TextEntry::make('open_date')->date(),
-                        TextEntry::make('close_date')->date(),
+                        TextEntry::make('open_date')->date('l, M j, Y'),
+                        TextEntry::make('close_date')->date('l, M j, Y'),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('apply')
                                 ->label('Apply')
+                                ->size('xl')
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
                                     ['program' => $record])),
-                        ]),
+                        ])->fullWidth(),
                     ])->grow(false),
                 ])->from('md')->columnSpan(2)
             ]);
@@ -124,16 +125,16 @@ class ProgramResource extends Resource
 
     public static function canCreate(): bool
     {
-        return false;
+        return auth()->id() == 1;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return false;
+        return auth()->id() == 1;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return false;
+        return auth()->id() == 1;
     }
 }

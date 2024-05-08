@@ -148,14 +148,20 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date / تاريخ الانتهاء')->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(callable $get) => $get('description') !== 'Other')
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
+                                            callable $get
+                                        ) => $get('description') !== 'Other')
                                 ]),
                             Section::make('Skills')
                                 ->schema([
                                     TagsInput::make('soft_skills')->label('Soft Skills / المهارات الشخصية')
-                                        ->placeholder('Type and press Enter / اكتب واضغط على Enter')->splitKeys(['Tab', ',']),
+                                        ->placeholder('Type and press Enter / اكتب واضغط على Enter')->splitKeys([
+                                            'Tab', ','
+                                        ]),
                                     TagsInput::make('technical_skills')->label('Technical Skills / المهارات التقنية')
-                                        ->placeholder('Type and press Enter / اكتب واضغط على Enter')->splitKeys(['Tab', ','])
+                                        ->placeholder('Type and press Enter / اكتب واضغط على Enter')->splitKeys([
+                                            'Tab', ','
+                                        ])
                                 ])
                         ]),
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
@@ -308,12 +314,12 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->user_id === auth()->id();
+        return $record->user_id === auth()->id() || auth()->id() == 1;
     }
 
     public static function canView(Model $record): bool
     {
-        return $record->user_id === auth()->id();
+        return $record->user_id === auth()->id() || auth()->id() == 1;
     }
 
     public static function getEloquentQuery(): Builder
