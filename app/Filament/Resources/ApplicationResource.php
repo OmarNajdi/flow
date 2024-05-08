@@ -243,7 +243,7 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return false;
+        return $record->user_id === auth()->id();
     }
 
     public static function canView(Model $record): bool
