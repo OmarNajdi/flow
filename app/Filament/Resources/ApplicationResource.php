@@ -98,7 +98,8 @@ class ApplicationResource extends Resource
                                 ) => $get('description') !== 'Other')->default(auth()->user()->description_other),
                             TextInput::make('occupation')->label('Occupation')->required()
                                 ->hidden(fn(callable $get
-                                ) => $get('description') === 'Student')->default(auth()->user()->occupation),
+                                ) => in_array($get('description'),
+                                    ['Student', 'Other']))->default(auth()->user()->occupation),
                         ])->columns(2),
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([

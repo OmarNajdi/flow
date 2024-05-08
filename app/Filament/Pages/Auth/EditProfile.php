@@ -84,7 +84,8 @@ class EditProfile extends BaseEditProfile
                                         TextInput::make('description_other')->label('Describe Yourself')
                                             ->hidden(fn(callable $get) => $get('description') !== 'Other'),
                                         TextInput::make('occupation')->label('Occupation')->required()
-                                            ->hidden(fn(callable $get) => $get('description') === 'Student'),
+                                            ->hidden(fn(callable $get) => in_array($get('description'),
+                                                ['Student', 'Other'])),
                                     ])->columns(2),
                                 Section::make('Social Profiles')
                                     ->schema([
