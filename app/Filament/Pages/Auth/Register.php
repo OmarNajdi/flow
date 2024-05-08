@@ -31,12 +31,20 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
-                        Checkbox::make('terms')->required()->label(fn(
+                        Checkbox::make('terms')->required()->reactive()->label(fn(
                         ) => new HtmlString('I accept the <a href="https://flow.ps/website-terms-of-use/" class="underline" target="_blank">terms of use</a> and <a href="https://flow.ps/privacy-notice/" class="underline" target="_blank">privacy policy</a>')),
                         Checkbox::make('newsletter')->label('Subscribe to our newsletter and activities')->default(true),
                     ])
                     ->statePath('data'),
             ),
         ];
+    }
+
+    public function getRegisterFormAction(): \Filament\Actions\Action
+    {
+        return parent::getRegisterFormAction()
+            ->disabled(function (): bool {
+                return ! $this->data['first_name'] || ! $this->data['last_name'] || ! $this->data['email'] || ! $this->data['password'] || ! $this->data['passwordConfirmation'] || ! $this->data['terms'];
+            });
     }
 }
