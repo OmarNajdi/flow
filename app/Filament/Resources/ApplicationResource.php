@@ -86,7 +86,7 @@ class ApplicationResource extends Resource
                                 ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
                             Select::make('description')->label('Describe Yourself / صِف نفسك')->options([
                                 'Student'      => 'Student / طالب',
-                                'Professional' => 'Professional / محترف',
+                                'Professional' => 'Professional / موظف',
                                 'Entrepreneur' => 'Entrepreneur / رائد أعمال',
                                 'Other'        => 'Other / أخرى',
                             ])->required()->reactive()->default(auth()->user()->description),
@@ -148,7 +148,7 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date / تاريخ الانتهاء')->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(callable $get) => $get('description') !== 'Other')
                                 ]),
                             Section::make('Skills')
                                 ->schema([
