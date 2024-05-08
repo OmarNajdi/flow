@@ -9,4 +9,6 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewProgram extends ViewRecord
 {
     protected static string $resource = ProgramResource::class;
+
+    protected static ?string $title = 'Program Details';
 }

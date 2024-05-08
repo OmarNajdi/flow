@@ -15,7 +15,7 @@ class ProgramSeeder extends Seeder
     {
         Program::factory()->create([
             'name'        => 'PIEC',
-            'level'       => 'pre-incubation',
+            'level'       => 'ideation and innovation',
             'open_date'   => '2024-05-08',
             'close_date'  => '2024-05-22',
             'description' =>

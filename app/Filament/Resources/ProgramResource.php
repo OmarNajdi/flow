@@ -40,6 +40,7 @@ class ProgramResource extends Resource
             ->schema([
                 TextInput::make('name')->label('Name')->required(),
                 Select::make('level')->label('Level')->options([
+                    'ideation and innovation'   => 'Ideation and Innovation',
                     'pre-incubation'   => 'Pre-Incubation',
                     'incubation'       => 'Incubation',
                     'pre-acceleration' => 'Pre-Acceleration',
@@ -96,7 +97,7 @@ class ProgramResource extends Resource
                         ])->fullWidth(),
                     ]),
                     Section::make([
-                        TextEntry::make('name')
+                        TextEntry::make('name')->label('Program Name')
                             ->weight(FontWeight::Bold),
                         TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                         TextEntry::make('open_date')->date('l, M j, Y'),
