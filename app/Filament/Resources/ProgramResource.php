@@ -86,6 +86,14 @@ class ProgramResource extends Resource
                 Split::make([
                     Section::make([
                         TextEntry::make('description')->html()->hiddenLabel(),
+                        Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('apply')
+                                ->label('Apply')
+                                ->size('xl')
+                                ->icon('heroicon-s-plus')
+                                ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
+                                    ['program' => $record])),
+                        ])->fullWidth(),
                     ]),
                     Section::make([
                         TextEntry::make('name')

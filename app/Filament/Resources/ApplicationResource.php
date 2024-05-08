@@ -106,11 +106,11 @@ class ApplicationResource extends Resource
                                             Select::make('degree / الدرجة')
                                                 ->options([
                                                     'High School'                 => 'High School / الثانوية العامة',
-                                                    'Vocational/Technical School' => 'Vocational/Technical School / المدرسة المهنية/التقنية',
-                                                    'Bachelor'                    => 'Bachelor\'s Degree / درجة البكالوريوس',
-                                                    'Master'                      => 'Master\'s Degree / درجة الماجستير',
-                                                    'PhD'                         => 'Doctorate/Ph.D. / الدكتوراه/الفلسفة',
-                                                    'Certification'               => 'Certification / الشهادة',
+                                                    'Vocational/Technical School' => 'Vocational/Technical School / مدرسة مهنية',
+                                                    'Bachelor'                    => 'Bachelor\'s Degree /  بكالوريوس',
+                                                    'Master'                      => 'Master\'s Degree /  ماجستير',
+                                                    'PhD'                         => 'Doctorate/Ph.D. / الدكتوراة',
+                                                    'Certification'               => 'Certification / شهادة اخرى',
                                                 ])
                                                 ->required(),
                                             TextInput::make('school')->label('School/University / المدرسة/الجامعة')->required(),
