@@ -8,11 +8,16 @@ use App\Models\Application;
 use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
@@ -132,7 +137,68 @@ class ApplicationResource extends Resource
                                 ->required()->hidden(fn(callable $get
                                 ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
                         ]),
-                    Wizard\Step::make('Professional and Personal Skills')->icon('heroicon-s-clipboard-document-list')
+                    Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
+                        ->schema([
+                            Section::make('Education')
+                                ->schema([
+                                    Repeater::make('education')
+                                        ->schema([
+                                            Select::make('degree')
+                                                ->options([
+                                                    'High School'                 => 'High School',
+                                                    'Vocational/Technical School' => 'Vocational/Technical School',
+                                                    'Bachelor'                    => 'Bachelor\'s Degree',
+                                                    'Master'                      => 'Master\'s Degree',
+                                                    'PhD'                         => 'Doctorate/Ph.D.',
+                                                    'Certification'               => 'Certification',
+                                                ])
+                                                ->required(),
+                                            TextInput::make('school')->label('School/University')->required(),
+                                            TextInput::make('major')->label('Major/Field of study')->required(),
+                                            DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                            Group::make([
+                                                Toggle::make('current')->label('Currently Studying There')->reactive(),
+                                            ])->extraAttributes(['class' => 'h-full content-center']),
+                                            DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                                ->hidden(fn(callable $get) => $get('current')),
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
+                                ])
+                        ]),
+                    Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
+                        ->schema([
+                            Section::make('Experience')
+                                ->schema([
+                                    Repeater::make('experience')->addActionLabel('Add Position')
+                                        ->schema([
+                                            Select::make('type')
+                                                ->options([
+                                                    'full-time'     => 'Full-time',
+                                                    'part-time'     => 'Part-time',
+                                                    'internship'    => 'Internship',
+                                                    'volunteer'     => 'Volunteer',
+                                                    'self-employed' => 'Self-employed',
+                                                    'freelance'     => 'Freelance',
+                                                ])
+                                                ->required(),
+                                            TextInput::make('company')->label('Company Name')->required(),
+                                            TextInput::make('title')->label('Title')->required(),
+                                            DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                            Group::make([
+                                                Toggle::make('current')->label('Currently Working There')->reactive(),
+                                            ])->extraAttributes(['class' => 'h-full content-center']),
+                                            DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                                ->hidden(fn(callable $get) => $get('current')),
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
+                                ]),
+                            Section::make('Skills')
+                                ->schema([
+                                    TagsInput::make('soft_skills')->label('Soft Skills')
+                                        ->placeholder('Type and press Enter')->splitKeys(['Tab', ',']),
+                                    TagsInput::make('technical_skills')->label('Technical Skills')
+                                        ->placeholder('Type and press Enter')->splitKeys(['Tab', ','])
+                                ])
+                        ]),
+                    Wizard\Step::make('Entrepreneurial Skills')->icon('heroicon-s-clipboard-document-list')
                         ->schema([
                             RichEditor::make('creative_solution')
                                 ->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome? (Please limit your response to 150-200 words)')
@@ -165,7 +231,13 @@ class ApplicationResource extends Resource
                             ])->required()->reactive(),
                             TextInput::make('application_type_other')->label('Please Specify')
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Other'),
-                            Textarea::make('team_members')->label('Please list the names, roles, phone numbers, and emails of your team members.')
+                            Repeater::make('team_members')->label('Team Members')->addActionLabel('Add Team Member')
+                                ->schema([
+                                    TextInput::make('name')->label('Name')->required(),
+                                    TextInput::make('role')->label('Role')->required(),
+                                    TextInput::make('phone')->label('Phone')->required(),
+                                    TextInput::make('email')->label('Email')->required(),
+                                ])->columns(4)->reorderableWithButtons()->inlineLabel(false)
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Team'),
                             Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
                                 'Yes' => 'Yes',
@@ -197,7 +269,7 @@ class ApplicationResource extends Resource
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
                         ]),
-                ])->columnSpan(2)->statePath('data'),
+                ])->columnSpan(2)->statePath('data')->startOnStep(6),
             ]);
     }
 

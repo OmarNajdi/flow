@@ -72,6 +72,11 @@ class User extends Authenticatable implements FilamentUser, HasName
         ];
     }
 
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
+
     public function getFilamentName(): string
     {
         return "{$this->first_name} {$this->last_name}";
