@@ -84,17 +84,6 @@ class ApplicationResource extends Resource
                             TextInput::make('residence_other')->label('Other Governorate / محافظة أخرى')
                                 ->hidden(fn(callable $get
                                 ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
-                            Select::make('educational_level')->label('Educational Level / المستوى التعليمي')->options([
-                                'High School'                 => 'High School / المدرسة الثانوية',
-                                'Vocational/Technical School' => 'Vocational/Technical School / المدرسة المهنية / التقنية',
-                                'Bachelor'                    => 'Bachelor\'s Degree / درجة البكالوريوس',
-                                'Master'                      => 'Master\'s Degree / درجة الماجستير',
-                                'PhD'                         => 'Doctorate/Ph.D. / دكتوراه / دكتوراه',
-                                'Other'                       => 'Other / أخرى (يرجى التحديد)',
-                            ])->required()->reactive()->default(auth()->user()->educational_level),
-                            TextInput::make('educational_level_other')->label('Other Educational Level / مستوى تعليمي آخر')
-                                ->hidden(fn(callable $get
-                                ) => $get('educational_level') !== 'Other')->default(auth()->user()->educational_level_other),
                             Select::make('description')->label('Describe Yourself / صِف نفسك')->options([
                                 'Student'      => 'Student / طالب',
                                 'Professional' => 'Professional / محترف',
@@ -132,7 +121,7 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date / تاريخ الانتهاء')->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
                                 ])
                         ]),
                     Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')

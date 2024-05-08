@@ -68,16 +68,6 @@ class EditProfile extends BaseEditProfile
                                         TextInput::make('residence_other')->label('Other Governorate')
                                             ->hidden(fn(callable $get
                                             ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
-                                        Select::make('educational_level')->label('Educational Level')->options([
-                                            'High School'                 => 'High School',
-                                            'Vocational/Technical School' => 'Vocational/Technical School',
-                                            'Bachelor'                    => 'Bachelor\'s Degree',
-                                            'Master'                      => 'Master\'s Degree',
-                                            'PhD'                         => 'Doctorate/Ph.D.',
-                                            'Other'                       => 'Other (Please Specify)',
-                                        ])->required()->reactive(),
-                                        TextInput::make('educational_level_other')->label('Other Educational Level')
-                                            ->hidden(fn(callable $get) => $get('educational_level') !== 'Other'),
                                         Select::make('description')->label('Describe Yourself')->options([
                                             'Student'      => 'Student',
                                             'Professional' => 'Professional',
