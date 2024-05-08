@@ -271,7 +271,7 @@ class ApplicationResource extends Resource
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project. / هل هناك أي شيء تود مشاركته معنا؟ يرجى مشاركة الروابط إلى أي محافظ على الإنترنت، أو مواقع إلكترونية، أو مستودعات تعرض أعمالك الإبداعية. اصف بإيجاز دورك ومساهماتك في كل مشروع.'),
                         ]),
-                ])->columnSpan(2)->statePath('data')->startOnStep(6),
+                ])->columnSpan(2)->statePath('data'),
             ]);
     }
 
