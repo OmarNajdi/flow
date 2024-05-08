@@ -7,6 +7,7 @@ use App\Filament\Resources\ProgramResource;
 use App\Models\Application;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Session;
 
 class CreateApplication extends CreateRecord
 {
@@ -30,12 +31,13 @@ class CreateApplication extends CreateRecord
 
     protected function authorizeAccess(): void
     {
-
-        $program_id = request('program');
+        $program_id = request('program') ?? Session::get('program_id', request('program'));
 
         if ( ! $program_id) {
             $this->redirect(ProgramResource::getUrl('index'));
         }
+
+        Session::put('program_id', $program_id);
 
         $application = Application::where('user_id', auth()->id())->where('program_id', $program_id)->first();
 
