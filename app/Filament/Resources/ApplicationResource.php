@@ -80,7 +80,7 @@ class ApplicationResource extends Resource
                                 'Khan Yunis'    => 'Khan Yunis / خان يونس',
                                 'Rafah'         => 'Rafah / رفح',
                                 'Other'         => 'Other / أخرى',
-                            ])->required()->default(auth()->user()->residence),
+                            ])->required()->reactive()->default(auth()->user()->residence),
                             TextInput::make('residence_other')->label('Other Governorate / محافظة أخرى')
                                 ->hidden(fn(callable $get
                                 ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
