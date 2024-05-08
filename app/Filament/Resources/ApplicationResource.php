@@ -163,7 +163,7 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date / تاريخ الانتهاء')->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
                                 ])
                         ]),
                     Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
@@ -190,7 +190,7 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date / تاريخ الانتهاء')->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
                                 ]),
                             Section::make('Skills')
                                 ->schema([
