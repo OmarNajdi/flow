@@ -65,7 +65,7 @@ class ApplicationResource extends Resource
                                 ->i18n([
                                     'il' => 'Palestine'
                                 ]),
-                            PhoneInput::make('whatsapp')->label('Whatsapp Number / رقم الواتساب')->required()->default(auth()->user()->phone)
+                            PhoneInput::make('whatsapp')->label('Whatsapp Number / رقم الواتساب')->required()->default(auth()->user()->whatsapp)
                                 ->defaultCountry('PS')
                                 ->preferredCountries(['ps', 'il'])
                                 ->showSelectedDialCode()
