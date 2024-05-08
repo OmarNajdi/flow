@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class EditProfile extends BaseEditProfile
 {
@@ -40,8 +41,22 @@ class EditProfile extends BaseEditProfile
                                 Section::make('Personal Details')
                                     ->schema([
                                         DatePicker::make('dob')->label('Date of Birth')->native(false)->required(),
-                                        TextInput::make('phone')->label('Phone')->required(),
-                                        TextInput::make('whatsapp')->label('Whatsapp Number')->required(),
+                                        PhoneInput::make('phone')->label('Phone')->required()
+                                            ->defaultCountry('PS')
+                                            ->preferredCountries(['ps', 'il'])
+                                            ->showSelectedDialCode()
+                                            ->validateFor()
+                                            ->i18n([
+                                                'il' => 'Palestine'
+                                            ]),
+                                        PhoneInput::make('whatsapp')->label('Whatsapp Number')->required()
+                                            ->defaultCountry('PS')
+                                            ->preferredCountries(['ps', 'il'])
+                                            ->showSelectedDialCode()
+                                            ->validateFor()
+                                            ->i18n([
+                                                'il' => 'Palestine'
+                                            ]),
                                         Select::make('gender')->options([
                                             'Male'   => 'Male',
                                             'Female' => 'Female'

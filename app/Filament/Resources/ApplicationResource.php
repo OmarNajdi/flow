@@ -28,6 +28,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class ApplicationResource extends Resource
 {
@@ -56,8 +57,22 @@ class ApplicationResource extends Resource
                                     ucwords($state))),
                             TextInput::make('email')->email()->label('Email / البريد الإلكتروني')->required()->default(auth()->user()->email)->email(),
                             DatePicker::make('dob')->label('Date of Birth / تاريخ الميلاد')->native(false)->required()->default(auth()->user()->dob),
-                            TextInput::make('phone')->label('Phone / رقم الهاتف')->required()->default(auth()->user()->phone),
-                            TextInput::make('whatsapp')->label('Whatsapp Number / رقم الواتساب')->required()->default(auth()->user()->whatsapp),
+                            PhoneInput::make('phone')->label('Phone / رقم الهاتف')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            PhoneInput::make('whatsapp')->label('Whatsapp Number / رقم الواتساب')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
                             Select::make('gender')->label('Gender / الجنس')->options([
                                 'Male'   => 'Male / ذكر',
                                 'Female' => 'Female / أنثى'
@@ -232,7 +247,14 @@ class ApplicationResource extends Resource
                                 ->schema([
                                     TextInput::make('name')->label('Name / الاسم')->required(),
                                     TextInput::make('role')->label('Role / الدور')->required(),
-                                    TextInput::make('phone')->label('Phone / الهاتف')->required(),
+                                    PhoneInput::make('phone')->label('Phone / رقم الهاتف')->required()->default(auth()->user()->phone)
+                                        ->defaultCountry('PS')
+                                        ->preferredCountries(['ps', 'il'])
+                                        ->showSelectedDialCode()
+                                        ->validateFor()
+                                        ->i18n([
+                                            'il' => 'Palestine'
+                                        ]),
                                     TextInput::make('email')->label('Email / البريد الإلكتروني')->required()->email(),
                                 ])->columns(4)->reorderableWithButtons()->inlineLabel(false)
                                 ->hidden(fn(callable $get) => $get('application_type') !== 'Team'),
