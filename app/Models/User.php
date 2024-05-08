@@ -29,6 +29,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         'whatsapp',
         'gender',
         'residence',
+        'residence_other',
         'educational_level',
         'educational_level_other',
         'description',

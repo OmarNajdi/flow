@@ -53,7 +53,7 @@ class EditProfile extends BaseEditProfile
                                             'Nablus'                => 'Nablus',
                                             'Qalqilya'              => 'Qalqilya',
                                             'Salfit'                => 'Salfit',
-                                            'Ramallah and al-Bireh' => 'Ramallah and al-Bireh',
+                                            'Ramallah' => 'Ramallah and al-Bireh',
                                             'Jericho'               => 'Jericho',
                                             'Jerusalem'             => 'Jerusalem',
                                             'Bethlehem'             => 'Bethlehem',
@@ -65,6 +65,9 @@ class EditProfile extends BaseEditProfile
                                             'Rafah'                 => 'Rafah',
                                             'Other'                 => 'Other',
                                         ])->required(),
+                                        TextInput::make('residence_other')->label('Other Governorate')
+                                            ->hidden(fn(callable $get
+                                            ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
                                         Select::make('educational_level')->label('Educational Level')->options([
                                             'High School'                 => 'High School',
                                             'Vocational/Technical School' => 'Vocational/Technical School',

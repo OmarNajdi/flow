@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('gender')->nullable();
             $table->string('residence')->nullable();
+            $table->string('residence_other')->nullable();
             $table->string('educational_level')->nullable();
             $table->string('educational_level_other')->nullable();
             $table->string('description')->nullable();
