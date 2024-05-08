@@ -7,6 +7,7 @@ use App\Filament\Pages\Auth\Register;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -49,6 +50,33 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Flow Accelerator Website')
+                    ->url('https://flow.ps', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-europe-africa')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
+//                NavigationItem::make('Flow Accelerator Facebook')
+//                    ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
+//                    ->icon('bi-facebook')
+//                    ->group('Flow Accelerator')
+//                    ->sort(99),
+//                NavigationItem::make('Flow Accelerator LinkedIn')
+//                    ->url('https://www.linkedin.com/company/flow-accelerator/', shouldOpenInNewTab: true)
+//                    ->icon('bi-linkedin')
+//                    ->group('Flow Accelerator')
+//                    ->sort(99),
+//                NavigationItem::make('Flow Accelerator YouTube')
+//                    ->url('https://www.youtube.com/channel/UCFakgIkVNQSHnHI_wYhfGWw')
+//                    ->icon('bi-youtube')
+//                    ->group('Flow Accelerator')
+//                    ->sort(99),
+//                NavigationItem::make('Flow Accelerator Instagram')
+//                    ->url('https://www.instagram.com/flow.accelerator/', shouldOpenInNewTab: true)
+//                    ->icon('bi-instagram')
+//                    ->group('Flow Accelerator')
+//                    ->sort(99),
             ])
             ->middleware([
                 EncryptCookies::class,
