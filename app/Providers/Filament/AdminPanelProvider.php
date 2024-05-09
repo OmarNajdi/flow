@@ -83,6 +83,10 @@ class AdminPanelProvider extends PanelProvider
 //                    ->group('Flow Accelerator')
 //                    ->sort(99),
             ])
+            ->renderHook(
+                'panels::head.start',
+                fn() => view('google_analytics'),
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
