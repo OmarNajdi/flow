@@ -20,13 +20,13 @@ class StatsOverview extends BaseWidget
             Stat::make('Open Programs',
                 Program::query()->whereDate('open_date', '<=', now())->whereDate('close_date', '>=', now())->count())
                 ->url(ProgramResource::getUrl('index'))
-                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100 dark:hover:to-[#018578] transition-all hover:scale-105']),
             Stat::make('My Applications', Application::query()->where('user_id', auth()->id())->count())
                 ->url(ApplicationResource::getUrl('index'))
-                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100 dark:hover:to-[#018578] transition-all hover:scale-105']),
             Stat::make('Open Jobs', Job::all()->count())
                 ->url(JobResource::getUrl('index'))
-                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100']),
+                ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100 dark:hover:to-[#018578] transition-all hover:scale-105']),
         ];
     }
 
