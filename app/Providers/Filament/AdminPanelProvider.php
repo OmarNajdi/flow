@@ -62,26 +62,26 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-map-pin')
                     ->group('Flow Accelerator')
                     ->sort(99),
-//                NavigationItem::make('Flow Accelerator Facebook')
-//                    ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
-//                    ->icon('bi-facebook')
-//                    ->group('Flow Accelerator')
-//                    ->sort(99),
-//                NavigationItem::make('Flow Accelerator LinkedIn')
-//                    ->url('https://www.linkedin.com/company/flow-accelerator/', shouldOpenInNewTab: true)
-//                    ->icon('bi-linkedin')
-//                    ->group('Flow Accelerator')
-//                    ->sort(99),
-//                NavigationItem::make('Flow Accelerator YouTube')
-//                    ->url('https://www.youtube.com/channel/UCFakgIkVNQSHnHI_wYhfGWw')
-//                    ->icon('bi-youtube')
-//                    ->group('Flow Accelerator')
-//                    ->sort(99),
-//                NavigationItem::make('Flow Accelerator Instagram')
-//                    ->url('https://www.instagram.com/flow.accelerator/', shouldOpenInNewTab: true)
-//                    ->icon('bi-instagram')
-//                    ->group('Flow Accelerator')
-//                    ->sort(99),
+                NavigationItem::make('Flow Accelerator Facebook')
+                    ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-facebook')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
+                NavigationItem::make('Flow Accelerator LinkedIn')
+                    ->url('https://www.linkedin.com/company/flow-accelerator/', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-linkedin')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
+                NavigationItem::make('Flow Accelerator YouTube')
+                    ->url('https://www.youtube.com/channel/UCFakgIkVNQSHnHI_wYhfGWw')
+                    ->icon('lineawesome-youtube')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
+                NavigationItem::make('Flow Accelerator Instagram')
+                    ->url('https://www.instagram.com/flow.accelerator/', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-instagram')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
             ])
             ->renderHook(
                 'panels::head.start',

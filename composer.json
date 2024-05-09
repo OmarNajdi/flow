@@ -1,11 +1,12 @@
 {
-    "name": "laravel/laravel",
+    "name": "omarnajdi/flow",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Flow Accelerator CMS",
+    "keywords": ["flow", "accelerator"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "codeat3/blade-line-awesome-icons": "^1.4",
         "filament/filament": "^3.2",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
