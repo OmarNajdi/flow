@@ -57,6 +57,11 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-globe-europe-africa')
                     ->group('Flow Accelerator')
                     ->sort(99),
+                NavigationItem::make('970TechMap')
+                    ->url('https://970techmap.ps/', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-map-pin')
+                    ->group('Flow Accelerator')
+                    ->sort(99),
 //                NavigationItem::make('Flow Accelerator Facebook')
 //                    ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
 //                    ->icon('bi-facebook')

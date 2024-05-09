@@ -60,7 +60,6 @@ class ProgramResource extends Resource
                 TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                 TextColumn::make('open_date'),
                 TextColumn::make('close_date'),
-                TextColumn::make('applications_count')->label('Applications')->counts('applications'),
             ])
             ->filters([
                 //
