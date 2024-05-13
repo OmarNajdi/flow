@@ -294,12 +294,27 @@ class ApplicationResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+        $columns = [
+            TextColumn::make('program.name')->label('Program'),
+            TextColumn::make('program.level')->label('Level')
+        ];
+
+        if (auth()->id() <= 4) {
+            $columns = array_merge($columns, [
+                TextColumn::make('data.first_name')->label('First Name'),
+                TextColumn::make('data.last_name')->label('Last Name'),
+                TextColumn::make('data.email')->label('Email'),
+            ]);
+        }
+
+        $columns = array_merge($columns, [
+            TextColumn::make('status')->label('Status'),
+            TextColumn::make('created_at')->label('Submitted at'),
+        ]);
+
         return $table
-            ->columns([
-                TextColumn::make('program.name')->label('Program'),
-                TextColumn::make('status')->label('Status'),
-                TextColumn::make('created_at')->label('Submitted at'),
-            ])
+            ->columns($columns)
             ->filters([
                 //
             ])
@@ -336,16 +351,19 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() == 1;
+        return $record->user_id === auth()->id() || auth()->id() <= 4;
     }
 
     public static function canView(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() == 1;
+        return $record->user_id === auth()->id() || auth()->id() <= 4;
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('user_id', auth()->id());
+        return auth()->id() <= 4 ? parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]) : parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }
