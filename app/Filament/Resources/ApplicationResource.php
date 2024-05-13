@@ -300,7 +300,7 @@ class ApplicationResource extends Resource
             TextColumn::make('program.level')->label('Level')
         ];
 
-        if (auth()->id() <= 4) {
+        if (auth()->id() <= 5) {
             $columns = array_merge($columns, [
                 TextColumn::make('data.first_name')->label('First Name'),
                 TextColumn::make('data.last_name')->label('Last Name'),
@@ -351,17 +351,17 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() <= 4;
+        return $record->user_id === auth()->id() || auth()->id() <= 5;
     }
 
     public static function canView(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() <= 4;
+        return $record->user_id === auth()->id() || auth()->id() <= 5;
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 4 ? parent::getEloquentQuery()
+        return auth()->id() <= 5 ? parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]) : parent::getEloquentQuery()->where('user_id', auth()->id());
