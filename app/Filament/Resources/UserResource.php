@@ -24,7 +24,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'User';
+//    protected static ?string $navigationGroup = 'User';
 
     public static function form(Form $form): Form
     {
@@ -95,30 +95,30 @@ class UserResource extends Resource
         ];
     }
 
-
-    public static function canViewAny(): bool
-    {
-        return auth()->id() <= 5;
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
-    public static function canEdit(Model $record): bool
-    {
-        return false;
-    }
-
-    public static function canDelete(Model $record): bool
-    {
-        return false;
-    }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return auth()->id() <= 5;
-    }
+//
+//    public static function canViewAny(): bool
+//    {
+//        return auth()->id() <= 5;
+//    }
+//
+//    public static function canCreate(): bool
+//    {
+//        return false;
+//    }
+//
+//    public static function canEdit(Model $record): bool
+//    {
+//        return false;
+//    }
+//
+//    public static function canDelete(Model $record): bool
+//    {
+//        return false;
+//    }
+//
+//    public static function shouldRegisterNavigation(): bool
+//    {
+//        return auth()->id() <= 5;
+//    }
 
 }
