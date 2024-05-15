@@ -26,7 +26,6 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'User';
 
-
     public static function form(Form $form): Form
     {
         return $form
@@ -96,6 +95,12 @@ class UserResource extends Resource
         ];
     }
 
+
+    public static function canViewAny(): bool
+    {
+        return auth()->id() <= 5;
+    }
+
     public static function canCreate(): bool
     {
         return false;
@@ -109,6 +114,11 @@ class UserResource extends Resource
     public static function canDelete(Model $record): bool
     {
         return false;
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->id() <= 5;
     }
 
 }
