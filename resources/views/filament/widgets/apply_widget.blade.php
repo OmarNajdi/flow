@@ -14,7 +14,7 @@
                             <h2 class="text-center pt-2 pb-4 color-primary">Level: Ideation And Innovation</h2>
                             <h3 class="font-bold text-2xl text-center pb-6 color-primary">Program: PIEC</h3>
                             <button
-                                class="w-full bg-[#01786C] fi-btn grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-lg fi-color-primary fi-btn-color-primary fi-color-primary fi-size-xl fi-btn-size-xl gap-1.5 px-4 py-3 text-sm inline-grid shadow-sm text-white fi-ac-action fi-ac-btn-action">
+                                class="w-full bg-[#01786C] fi-btn grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-2xl fi-color-primary fi-btn-color-primary fi-color-primary fi-size-xl fi-btn-size-xl gap-1.5 px-4 py-3 text-sm inline-grid shadow-sm text-white fi-ac-action fi-ac-btn-action">
                                 <span class="fi-btn-label">Apply</span>
                             </button>
                         </div>

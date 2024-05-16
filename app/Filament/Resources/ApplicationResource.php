@@ -21,6 +21,9 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -339,6 +342,100 @@ class ApplicationResource extends Resource
         ];
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                \Filament\Infolists\Components\Section::make('Personal Questions')
+                    ->schema([
+                        TextEntry::make('data.first_name')->label('First Name'),
+                        TextEntry::make('data.last_name')->label('Last Name'),
+                        TextEntry::make('data.email')->label('Email'),
+                        TextEntry::make('data.dob')->label('Date of Birth'),
+                        TextEntry::make('data.phone')->label('Phone'),
+                        TextEntry::make('data.whatsapp')->label('Whatsapp'),
+                        TextEntry::make('data.gender')->label('Gender'),
+                        TextEntry::make('data.residence')->label('Residence'),
+                        TextEntry::make('data.residence_other')->label('Other Governorate'),
+                        TextEntry::make('data.description')->label('Describe Yourself'),
+                        TextEntry::make('data.description_other')->label('Describe Yourself'),
+                        TextEntry::make('data.occupation')->label('Occupation'),
+                    ])->columns(3),
+                \Filament\Infolists\Components\Section::make('Educational Background')
+                    ->schema([
+                        RepeatableEntry::make('data.education / التعليم')->label('Education')
+                            ->schema([
+                                TextEntry::make('degree / الدرجة')->label('Degree'),
+                                TextEntry::make('school')->label('School/University'),
+                                TextEntry::make('major')->label('Major/Field of study'),
+                                TextEntry::make('start_date')->label('Start Date'),
+                                TextEntry::make('current')->label('Currently Studying There'),
+                                TextEntry::make('end_date')->label('End Date'),
+                            ])->columns(3),
+                    ])->columns(1),
+                \Filament\Infolists\Components\Section::make('Professional Experience')
+                    ->schema([
+                        RepeatableEntry::make('data.experience')->label('Experience')
+                            ->schema([
+                                TextEntry::make('type')->label('Type'),
+                                TextEntry::make('company')->label('Company Name'),
+                                TextEntry::make('title')->label('Title'),
+                                TextEntry::make('start_date')->label('Start Date'),
+                                TextEntry::make('current')->label('Currently Working There'),
+                                TextEntry::make('end_date')->label('End Date'),
+                            ])->columns(3),
+
+
+                        TextEntry::make('data.soft_skills')->label('Soft Skills'),
+                        TextEntry::make('data.technical_skills')->label('Technical Skills'),
+                    ])->columns(1),
+
+                \Filament\Infolists\Components\Section::make('Idea & Challenges')
+                    ->schema([
+                        TextEntry::make('data.has_idea')->label('Do you currently have a business idea or project?')->html(),
+                        TextEntry::make('data.idea_stage')->label('In which stage is your idea?')->html(),
+                        TextEntry::make('data.idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve.')->html(),
+                        TextEntry::make('data.uses_ai')->label('Does your business idea or project utilize Artificial Intelligence (AI)?')->html(),
+                        TextEntry::make('data.ai_role')->label('How do you envision Artificial Intelligence playing a role in your solution?')->html(),
+                        TextEntry::make('data.ai_future_plan')->label('How do you plan to incorporate AI or technological innovation into your project in the future?')->html(),
+                        TextEntry::make('data.has_challenge')->label('Do you have a specific challenge you would solve with Artificial Intelligence (AI)?')->html(),
+                        TextEntry::make('data.challenge_description')->label('What specific challenge would you like to solve, and how would you use Artificial Intelligence (AI) to address it')->html(),
+                    ])->columns(1),
+                \Filament\Infolists\Components\Section::make('Entrepreneurial Skills')
+                    ->schema([
+                        TextEntry::make('data.creative_solution')->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome?')->html(),
+                        TextEntry::make('data.random_objects_usage')->label('You have a box of random objects (rubber bands, Pencils, Tape, Plastic spoons, Bottle caps). How many different uses can you come up with for these items?')->html(),
+                        TextEntry::make('data.problem_solving_scenario')->label('Share a scenario where you faced a significant obstacle while working on a project. How did you identify the problem, and what steps did you take to overcome it?')->html(),
+                        TextEntry::make('data.motivation_participation')->label('What motivates you to participate in these ideation workshops, and how do you envision applying your passion or interests to generating new ideas or solutions?')->html(),
+                        TextEntry::make('data.collaboration_experience')->label('Can you share your experience with collaborating on creative projects or brainstorming sessions? Describe your role and contributions to the team\'s success.')->html(),
+                        TextEntry::make('data.participation_goals')->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience?')->html(),
+                    ])->columns(1),
+                \Filament\Infolists\Components\Section::make('Generic Questions')
+                    ->schema([
+                        TextEntry::make('data.skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments.')->html(),
+                        TextEntry::make('data.application_type')->label('Are you applying as an individual or as part of a team?')->html(),
+                        TextEntry::make('data.application_type_other')->label('Please Specify')->html(),
+                        RepeatableEntry::make('data.team_members')->label('Team Members')
+                            ->schema([
+                                TextEntry::make('name')->label('Name'),
+                                TextEntry::make('role')->label('Role'),
+                                TextEntry::make('phone')->label('Phone'),
+                                TextEntry::make('email')->label('Email'),
+                            ])->columns(4),
+                        TextEntry::make('data.startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->html(),
+                        TextEntry::make('data.experience_specification')->label('Please specify your experience:')->html(),
+                        TextEntry::make('data.new_skill')->label('If you are looking to acquire one new skill, what would it be?')->html(),
+                        TextEntry::make('data.program_discovery')->label('How did you hear about the PIEC Programme?')->html(),
+                        TextEntry::make('data.program_discovery_other')->label('Please Specify')->html(),
+                        TextEntry::make('data.commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the innovation challenge over two days?')->html(),
+                        TextEntry::make('data.commitment_other')->label('Please Specify')->html(),
+                        TextEntry::make('data.continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')->html(),
+                        TextEntry::make('data.additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.')->html(),
+                    ])->columns(1),
+
+            ]);
+    }
+
     public static function getPages(): array
     {
         return [
@@ -351,7 +448,7 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() <= 5;
+        return $record->status === 'Draft' && ($record->user_id === auth()->id() || auth()->id() <= 5);
     }
 
     public static function canView(Model $record): bool
