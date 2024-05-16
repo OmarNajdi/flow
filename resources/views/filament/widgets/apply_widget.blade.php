@@ -10,7 +10,9 @@
                     <a href="{{ url('/programs/1') }}">
                         <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl hover:scale-105 transition-all border">
                             <img src="{{ asset('images/PIEC-AI.webp') }}" alt="Apply Now" class="rounded-2xl"/>
-                            <h3 class="font-bold text-2xl text-center py-6 color-primary">PIEC</h3>
+                            <h2 class="text-center pt-6 pb-2 color-primary">Activity: Artificial Intelligence</h2>
+                            <h2 class="text-center pt-2 pb-4 color-primary">Level: Ideation And Innovation</h2>
+                            <h3 class="font-bold text-2xl text-center pb-6 color-primary">Program: PIEC</h3>
                             <button
                                 class="w-full bg-[#01786C] fi-btn grid-flow-col items-center justify-center font-semibold outline-none transition duration-75 focus-visible:ring-2 rounded-lg fi-color-primary fi-btn-color-primary fi-color-primary fi-size-xl fi-btn-size-xl gap-1.5 px-4 py-3 text-sm inline-grid shadow-sm text-white fi-ac-action fi-ac-btn-action">
                                 <span class="fi-btn-label">Apply</span>
