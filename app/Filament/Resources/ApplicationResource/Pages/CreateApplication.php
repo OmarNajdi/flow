@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource;
 use App\Filament\Resources\ProgramResource;
 use App\Models\Application;
+use App\Notifications\ApplicationSubmitted;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Session;
@@ -45,6 +46,20 @@ class CreateApplication extends CreateRecord
         if ($application) {
             $this->redirect(ApplicationResource::getUrl('edit', [$application]));
         }
+    }
+
+    protected function afterCreate(): void
+    {
+        $recipient = auth()->user();
+
+        $recipient->notify(
+            new ApplicationSubmitted(
+                [
+                    'program'    => $this->record->program->name,
+                    'first_name' => $this->record->data['first_name']
+                ]
+            )
+        );
     }
 
 }
