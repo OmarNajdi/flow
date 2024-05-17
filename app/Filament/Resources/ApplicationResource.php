@@ -314,6 +314,12 @@ class ApplicationResource extends Resource
             TextColumn::make('created_at')->label('Submitted at'),
         ]);
 
+        $header_actions = auth()->id() <= 5 ? [
+            Tables\Actions\Action::make('Export')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(route('applications.export'))
+        ] : [];
+
         return $table
             ->columns($columns)
             ->filters([
@@ -331,12 +337,7 @@ class ApplicationResource extends Resource
                 return $record->status === 'draft' ? ApplicationResource::getUrl('edit',
                     [$record]) : ApplicationResource::getUrl('view', [$record]);
             })
-            ->headerActions([
-                Tables\Actions\Action::make('Export')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->url(route('applications.export'))
-            ]);
-
+            ->headerActions($header_actions);
     }
 
     public static function getRelations(): array
