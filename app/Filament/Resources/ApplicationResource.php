@@ -5,8 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
-use Filament\Actions\Action;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -332,7 +330,13 @@ class ApplicationResource extends Resource
 
                 return $record->status === 'draft' ? ApplicationResource::getUrl('edit',
                     [$record]) : ApplicationResource::getUrl('view', [$record]);
-            });
+            })
+            ->headerActions([
+                Tables\Actions\Action::make('Export')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->url(route('applications.export'))
+            ]);
+
     }
 
     public static function getRelations(): array
