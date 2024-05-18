@@ -36,7 +36,7 @@ class UsersExport implements FromCollection, WithMapping, WithHeadings, ShouldAu
             'First Name',
             'Last Name',
             'Email',
-            'Sign Up Time',
+            'Registration Time',
         ];
     }
 

@@ -29,7 +29,6 @@ class CreateApplication extends CreateRecord
             ->keyBindings(['mod+s']);
     }
 
-
     protected function authorizeAccess(): void
     {
         $program_id = request('program') ?? Session::get('program_id', request('program'));
@@ -43,9 +42,28 @@ class CreateApplication extends CreateRecord
         $application = Application::where('user_id', auth()->id())->where('program_id', $program_id)->first();
 
         // If user has an application with this program, redirect to edit page
-        if ($application) {
-            $this->redirect(ApplicationResource::getUrl('edit', [$application]));
+        if ( ! $application) {
+            $application = Application::create([
+                'user_id'    => auth()->id(),
+                'program_id' => $program_id,
+                'status'     => 'Draft',
+                'data'       => [
+                    'first_name'        => auth()->user()->first_name,
+                    'last_name'         => auth()->user()->last_name,
+                    'email'             => auth()->user()->email,
+                    'dob'               => auth()->user()->dob,
+                    'phone'             => auth()->user()->phone,
+                    'whatsapp'          => auth()->user()->whatsapp,
+                    'gender'            => auth()->user()->gender,
+                    'residence'         => auth()->user()->residence,
+                    'residence_other'   => auth()->user()->residence_other,
+                    'description'       => auth()->user()->description,
+                    'description_other' => auth()->user()->description_other,
+                    'occupation'        => auth()->user()->occupation,
+                ]
+            ]);
         }
+        $this->redirect(ApplicationResource::getUrl('edit', [$application]));
     }
 
     protected function afterCreate(): void

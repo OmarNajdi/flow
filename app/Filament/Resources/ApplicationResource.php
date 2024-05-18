@@ -8,6 +8,7 @@ use App\Models\Application;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
@@ -18,6 +19,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -26,9 +28,13 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use HTMLPurifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
+use Livewire\Component;
 use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class ApplicationResource extends Resource
@@ -45,8 +51,8 @@ class ApplicationResource extends Resource
     {
         return $form
             ->schema([
-                Hidden::make('user_id')->default(auth()->id()),
-                Hidden::make('program_id')->default(request('program')),
+//                Hidden::make('user_id')->default(auth()->id()),
+//                Hidden::make('program_id')->default(request('program')),
                 Wizard::make([
                     Wizard\Step::make('Personal Questions')->icon('heroicon-s-user')
                         ->schema([
@@ -112,7 +118,26 @@ class ApplicationResource extends Resource
                             TextInput::make('occupation')->label('Occupation / المهنة')->required()
                                 ->hidden(fn(callable $get) => in_array($get('description'), ['Student', 'Other']))
                                 ->default(auth()->user()->occupation),
-                        ])->columns(2),
+                        ])->columns(2)->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'first_name'        => $get('first_name'),
+                                        'last_name'         => $get('last_name'),
+                                        'email'             => $get('email'),
+                                        'dob'               => $get('dob'),
+                                        'phone'             => $get('phone'),
+                                        'whatsapp'          => $get('whatsapp'),
+                                        'gender'            => $get('gender'),
+                                        'residence'         => $get('residence'),
+                                        'residence_other'   => $get('residence_other'),
+                                        'description'       => $get('description'),
+                                        'description_other' => $get('description_other'),
+                                        'occupation'        => $get('occupation'),
+                                    ])
+                                ]);
+                        }),
                     Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
                         ->schema([
                             Section::make('Education / التعليم')
@@ -139,7 +164,15 @@ class ApplicationResource extends Resource
                                                 ->hidden(fn(callable $get) => $get('current')),
                                         ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
                                 ])
-                        ]),
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'education / التعليم' => $get('education / التعليم'),
+                                    ])
+                                ]);
+                        }),
                     Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
                         ->schema([
                             Section::make('Experience / الخبرة')
@@ -179,7 +212,17 @@ class ApplicationResource extends Resource
                                             'Tab', ','
                                         ])
                                 ])
-                        ]),
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'experience'       => $get('experience'),
+                                        'soft_skills'      => $get('soft_skills'),
+                                        'technical_skills' => $get('technical_skills'),
+                                    ])
+                                ]);
+                        }),
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([
                             Select::make('has_idea')->label('Do you currently have a business idea or project? / هل لديك فكرة أو مشروع تجاري حاليًا؟')->options([
@@ -210,7 +253,22 @@ class ApplicationResource extends Resource
                             Textarea::make('challenge_description')->label('What specific challenge would you like to solve, and how would you use Artificial Intelligence (AI) to address it / إذا كانت الإجابة نعم، ما هو التحدي المحدد الذي ترغب في حله، وكيف ستستخدم الذكاء الاصطناعي (AI) لمعالجته؟')
                                 ->required()->hidden(fn(callable $get
                                 ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
-                        ]),
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'has_idea'              => $get('has_idea'),
+                                        'idea_stage'            => $get('idea_stage'),
+                                        'idea_description'      => $get('idea_description'),
+                                        'uses_ai'               => $get('uses_ai'),
+                                        'ai_role'               => $get('ai_role'),
+                                        'ai_future_plan'        => $get('ai_future_plan'),
+                                        'has_challenge'         => $get('has_challenge'),
+                                        'challenge_description' => $get('challenge_description'),
+                                    ])
+                                ]);
+                        }),
                     Wizard\Step::make('Entrepreneurial Skills')->icon('heroicon-s-clipboard-document-list')
                         ->schema([
                             RichEditor::make('creative_solution')
@@ -231,7 +289,20 @@ class ApplicationResource extends Resource
                             RichEditor::make('participation_goals')
                                 ->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience? (Please limit your response to 150-200 words) / ما الذي تأمل في تحقيقه من خلال المشاركة في ورشة عمل الأفكار؟ هل هناك مهارات أو رؤى محددة تتطلع إلى اكتسابها من هذه التجربة؟ بحد أقصى 150-200 كلمة')
                                 ->required(),
-                        ]),
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'creative_solution'        => $get('creative_solution'),
+                                        'random_objects_usage'     => $get('random_objects_usage'),
+                                        'problem_solving_scenario' => $get('problem_solving_scenario'),
+                                        'motivation_participation' => $get('motivation_participation'),
+                                        'collaboration_experience' => $get('collaboration_experience'),
+                                        'participation_goals'      => $get('participation_goals'),
+                                    ])
+                                ]);
+                        }),
                     Wizard\Step::make('Generic Questions')->icon('heroicon-s-question-mark-circle')
                         ->schema([
                             RichEditor::make('skills_expertise')
@@ -288,8 +359,145 @@ class ApplicationResource extends Resource
                                 'No'  => 'No / لا',
                             ])->required(),
                             RichEditor::make('additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project. / هل هناك أي شيء تود مشاركته معنا؟ يرجى مشاركة الروابط إلى أي محافظ على الإنترنت، أو مواقع إلكترونية، أو مستودعات تعرض أعمالك الإبداعية. اصف بإيجاز دورك ومساهماتك في كل مشروع.'),
-                        ]),
-                ])->columnSpan(2)->statePath('data'),
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'skills_expertise'         => $get('skills_expertise'),
+                                        'application_type'         => $get('application_type'),
+                                        'application_type_other'   => $get('application_type_other'),
+                                        'team_members'             => $get('team_members'),
+                                        'startup_experience'       => $get('startup_experience'),
+                                        'experience_specification' => $get('experience_specification'),
+                                        'new_skill'                => $get('new_skill'),
+                                        'program_discovery'        => $get('program_discovery'),
+                                        'program_discovery_other'  => $get('program_discovery_other'),
+                                        'commitment'               => $get('commitment'),
+                                        'commitment_other'         => $get('commitment_other'),
+                                        'continuation_plan'        => $get('continuation_plan'),
+                                        'additional_info'          => $get('additional_info'),
+                                    ])
+                                ]);
+                        }),
+                    Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
+                        ->schema([
+                            Placeholder::make('review_section')->hiddenLabel()->content(
+                                new HtmlString('<div style="font-size: 24px;text-align: center">Please review your application before submitting / يرجى مراجعة طلبك قبل التقديم</div>')
+                            ),
+                            Section::make('Personal Information')
+                                ->schema([
+                                    Placeholder::make('review_first_name')->label('First Name / الاسم الأول')
+                                        ->content(fn(Application $record): string => $record->data['first_name'] ?? ''),
+                                    Placeholder::make('review_last_name')->label('Last Name / الاسم الأخير')
+                                        ->content(fn(Application $record): string => $record->data['last_name'] ?? ''),
+                                    Placeholder::make('review_email')->label('Email / البريد الإلكتروني')
+                                        ->content(fn(Application $record): string => $record->data['email'] ?? ''),
+                                    Placeholder::make('review_dob')->label('Date of Birth / تاريخ الميلاد')
+                                        ->content(fn(Application $record): string => $record->data['dob'] ?? ''),
+                                    Placeholder::make('review_phone')->label('Phone / رقم الهاتف')
+                                        ->content(fn(Application $record): string => $record->data['phone'] ?? ''),
+                                    Placeholder::make('review_whatsapp')->label('Whatsapp / واتساب')
+                                        ->content(fn(Application $record): string => $record->data['whatsapp'] ?? ''),
+                                    Placeholder::make('review_gender')->label('Gender / الجنس')
+                                        ->content(fn(Application $record): string => $record->data['gender'] ?? ''),
+                                    Placeholder::make('review_residence')->label('Governorate of Residence / المحافظة')
+                                        ->content(fn(Application $record): string => $record->data['residence'] ?? ''),
+                                    Placeholder::make('review_residence_other')->label('Other Governorate / محافظة أخرى')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['residence_other'] ?? ''),
+                                    Placeholder::make('review_description')->label('Describe Yourself / صِف نفسك')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['description'] ?? ''),
+                                    Placeholder::make('review_description_other')->label('Describe Yourself (Other) / صِف نفسك')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['description_other'] ?? ''),
+                                    Placeholder::make('review_occupation')->label('Occupation / المهنة')
+                                        ->content(fn(Application $record): string => $record->data['occupation'] ?? ''),
+                                ])->columns(3),
+                            Section::make('Idea & Challenges')
+                                ->schema([
+                                    Placeholder::make('review_has_idea')->label('Do you currently have a business idea or project? / هل لديك فكرة أو مشروع تجاري حاليًا؟')
+                                        ->content(fn(Application $record): string => $record->data['has_idea'] ?? ''),
+                                    Placeholder::make('review_idea_stage')->label('In which stage is your idea? / في أي مرحلة حالياً فكرتك؟')
+                                        ->content(fn(Application $record): string => $record->data['idea_stage'] ?? ''),
+                                    Placeholder::make('review_idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve./ إذا كانت الإجابة نعم، يرجى تقديم وصف موجز لفكرتك والمشكلة التي تهدف إلى حلها. ')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['idea_description'] ?? ''),
+                                    Placeholder::make('review_uses_ai')->label('Does your business idea or project utilize Artificial Intelligence (AI)? / هل تستخدم فكرتك  أو مشروعك الذكاء الاصطناعي؟')
+                                        ->content(fn(Application $record): string => $record->data['uses_ai'] ?? ''),
+                                    Placeholder::make('review_ai_role')->label('How do you envision Artificial Intelligence playing a role in your solution? / ما هو دور الذكاء الاصطناعي في حلك؟')
+                                        ->content(fn(Application $record): string => $record->data['ai_role'] ?? ''),
+                                    Placeholder::make('review_ai_future_plan')->label('How do you plan to incorporate AI or technological innovation into your project in the future? / إذا لم تكن فكرتك متعلقة بالذكاء الاصطناعي، كيف تخطط لدمج الذكاء الاصطناعي أو الابتكار التكنولوجي في مشروعك في المستقبل؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['ai_future_plan'] ?? ''),
+                                    Placeholder::make('review_has_challenge')->label('Do you have a specific challenge you would solve with Artificial Intelligence (AI)? / هل لديك تحدي محدد تود حله باستخدام الذكاء الاصطناعي؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['has_challenge'] ?? ''),
+                                    Placeholder::make('review_challenge_description')->label('What specific challenge would you like to solve, and how would you use Artificial Intelligence (AI) to address it / إذا كانت الإجابة نعم، ما هو التحدي المحدد الذي ترغب في حله، وكيف ستستخدم الذكاء الاصطناعي (AI) لمعالجته؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['challenge_description'] ?? ''),
+                                ]),
+                            Section::make('Entrepreneurial Skills')
+                                ->schema([
+                                    Placeholder::make('review_creative_solution')->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome? / قدم مثالًا على حل إبداعي قمت بتطويره لمعالجة تحدي. ما هو مصدر إلهامك وماذا كانت النتيجة؟')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['creative_solution'] ?? '')),
+                                    Placeholder::make('review_random_objects_usage')->label('You have a box of random objects (rubber bands, Pencils, Tape, Plastic spoons, Bottle caps). How many different uses can you come up with for these items? / لديك صندوق من الأغراض العشوائية (أشرطة مطاطية، وأقلام رصاص، وأشرطة لاصقة، وملاعق بلاستيكية، وأغطية زجاجات). كم عدد الاستخدامات المختلفة التي يمكنك ابتكارها لهذه العناصر؟')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['random_objects_usage'] ?? '')),
+                                    Placeholder::make('review_problem_solving_scenario')->label('Share a scenario where you faced a significant obstacle while working on a project. How did you identify the problem, and what steps did you take to overcome it? / شاركنا بسيناريو حيث واجهت عقبة كبيرة أثناء العمل على مشروع. كيف حددت المشكلة، وما هي الخطوات التي اتخذتها للتغلب عليها؟')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['problem_solving_scenario'] ?? '')),
+                                    Placeholder::make('review_motivation_participation')->label('What motivates you to participate in these ideation workshops, and how do you envision applying your passion or interests to generating new ideas or solutions? / ما الذي يحفزك على المشاركة في ورش العمل الخاصة بالتفكير الإبداعي، وكيف تتصور تطبيق شغفك أو اهتماماتك لتوليد أفكار أو حلول جديدة؟')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['motivation_participation'] ?? '')),
+                                    Placeholder::make('review_collaboration_experience')->label('Can you share your experience with collaborating on creative projects or brainstorming sessions? Describe your role and contributions to the team\'s success. / هل يمكنك مشاركة تجربتك في التعاون على المشاريع الإبداعية أو جلسات التفكير الجماعي؟ صف دورك ومساهماتك في نجاح الفريق.')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['collaboration_experience'] ?? '')),
+                                    Placeholder::make('review_participation_goals')->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience? / ما الذي تأمل في تحقيقه من خلال المشاركة في ورشة عمل الأفكار؟ هل هناك مهارات أو رؤى محددة تتطلع إلى اكتسابها من هذه التجربة؟')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['participation_goals'] ?? '')),
+                                ]),
+                            Section::make('Generic Questions')
+                                ->schema([
+                                    Placeholder::make('review_skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments. / يرجى إخبارنا عن مهاراتك ومجالات خبرتك. يمكن أن يشمل ذلك المهارات التقنية مثل لغات البرمجة أو تقنيات تحليل البيانات، بالإضافة إلى المهارات غير التقنية مثل التواصل، أو حل المشكلات أو إدارة المشاريع أو القدرات القيادية. لا تتردد في إبراز أي خبرات أو إنجازات ذات صلة.')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['skills_expertise'] ?? '')),
+                                    Placeholder::make('review_application_type')->label('Are you applying as an individual or as part of a team? / هل تتقدم بطلبك كفرد أو كجزء من فريق؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['application_type'] ?? ''),
+                                    Placeholder::make('review_application_type_other')->label('Please Specify / يرجى التحديد')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['application_type_other'] ?? ''),
+                                    Placeholder::make('review_startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups? / هل لديك أي معرفة أو خبرة في ريادة الأعمال / الشركات الناشئة؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['startup_experience'] ?? ''),
+                                    Placeholder::make('review_experience_specification')->label('Please specify your experience: / يرجى تحديد خبرتك:')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['experience_specification'] ?? ''),
+                                    Placeholder::make('review_new_skill')->label('If you are looking to acquire one new skill, what would it be? / إذا كنت تتطلع إلى اكتساب مهارة جديدة واحدة، فما هي؟')
+                                        ->content(fn(Application $record): string => $record->data['new_skill'] ?? ''),
+                                    Placeholder::make('review_program_discovery')->label('How did you hear about the PIEC Programme? / كيف سمعت البرنامج؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['program_discovery'] ?? ''),
+                                    Placeholder::make('review_program_discovery_other')->label('Please Specify / يرجى التحديد')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['program_discovery_other'] ?? ''),
+                                    Placeholder::make('review_commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the innovation challenge over two days? / هل أنت قادر على الالتزام بحضور جميع ورش العمل والجلسات ذات الصلة خلال تحدي الابتكار على مدار يومين؟')
+                                        ->content(fn(Application $record): string => $record->data['commitment'] ?? ''),
+                                    Placeholder::make('review_commitment_other')->label('Please Specify / يرجى التحديد')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['commitment_other'] ?? ''),
+                                    Placeholder::make('review_continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes? / هل تخطط لمتابعة العمل على الفكرة التي تطورها، من خلال المشاركة في برامج الحاضنة والتسريع بعد انتهاء تحدي الابتكار؟')
+                                        ->content(fn(Application $record
+                                        ): string => $record->data['continuation_plan'] ?? ''),
+                                    Placeholder::make('review_additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project. / هل هناك أي شيء تود مشاركته معنا؟ يرجى مشاركة الروابط إلى أي محافظ على الإنترنت، أو مواقع إلكترونية، أو مستودعات تعرض أعمالك الإبداعية. اصف بإيجاز دورك ومساهماتك في كل مشروع.')
+                                        ->content(fn(Application $record
+                                        ): HtmlString => new HtmlString($record->data['additional_info'] ?? ''))
+                                ])
+                        ])
+                ])->columnSpan(2)->statePath('data')->startOnStep(7),
             ]);
     }
 
@@ -462,10 +670,16 @@ class ApplicationResource extends Resource
         return $record->user_id === auth()->id() || auth()->id() <= 5;
     }
 
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return auth()->id() <= 5
             ? parent::getEloquentQuery()
             : parent::getEloquentQuery()->where('user_id', auth()->id());
     }
+
 }

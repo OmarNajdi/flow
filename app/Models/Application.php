@@ -11,8 +11,8 @@ class Application extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'program_id',
         'user_id',
+        'program_id',
         'status',
         'data'
     ];

@@ -3,8 +3,13 @@
 namespace App\Filament\Resources\ApplicationResource\Pages;
 
 use App\Filament\Resources\ApplicationResource;
+use App\Models\Application;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\App;
+use Illuminate\Database\Eloquent\Model;
+
 
 class EditApplication extends EditRecord
 {
@@ -13,7 +18,28 @@ class EditApplication extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+//            Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getSaveFormAction(): Action
+    {
+        return Action::make('update')
+            ->label('Submit')
+            ->submit('update')
+            ->keyBindings(['mod+s']);
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $data['status'] = 'Submitted';
+        $record->update($data);
+
+        return $record;
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return route('filament.admin.pages.dashboard');
     }
 }
