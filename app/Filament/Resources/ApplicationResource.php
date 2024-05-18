@@ -299,6 +299,7 @@ class ApplicationResource extends Resource
         $columns = [
             TextColumn::make('program.name')->label('Program'),
             TextColumn::make('program.level')->label('Level')
+                ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
         ];
 
         if (auth()->id() <= 5) {
@@ -463,9 +464,8 @@ class ApplicationResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 5 ? parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]) : parent::getEloquentQuery()->where('user_id', auth()->id());
+        return auth()->id() <= 5
+            ? parent::getEloquentQuery()
+            : parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }
