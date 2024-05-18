@@ -7,8 +7,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting
+class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, WithStyles
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -152,5 +154,12 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             'AT' => "0",
         ];
 
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => ['font' => ['bold' => true], 'alignment' => ['horizontal' => 'center', 'vertical' => 'center']],
+        ];
     }
 }

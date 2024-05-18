@@ -36,6 +36,13 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
+
+        $header_actions = auth()->id() <= 5 ? [
+            Tables\Actions\Action::make('Export')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(route('users.export'))
+        ] : [];
+
         return $table
             ->columns([
                 TextColumn::make('id'),
@@ -54,7 +61,9 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                 ]),
-            ]);
+            ])
+            ->headerActions($header_actions);
+
     }
 
     public static function infolist(Infolist $infolist): Infolist
