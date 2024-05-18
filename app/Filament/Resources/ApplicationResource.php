@@ -497,7 +497,7 @@ class ApplicationResource extends Resource
                                         ): HtmlString => new HtmlString($record->data['additional_info'] ?? ''))
                                 ])
                         ])
-                ])->columnSpan(2)->statePath('data')->startOnStep(7),
+                ])->columnSpan(2)->statePath('data'),
             ]);
     }
 
