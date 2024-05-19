@@ -42,4 +42,11 @@ class EditApplication extends EditRecord
     {
         return route('filament.admin.pages.dashboard');
     }
+
+    protected function authorizeAccess(): void
+    {
+        if ($this->record->status != 'Draft') {
+            $this->redirect($this->getResource()::getUrl('view', [$this->record]));
+        }
+    }
 }
