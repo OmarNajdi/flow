@@ -25,6 +25,7 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
         $team_members = array_values($application->data['team_members'] ?? []);
 
         return [
+            $application->created_at ?? '',
             $application->status ?? '',
             $application->data['first_name'] ?? '',
             $application->data['last_name'] ?? '',
@@ -88,6 +89,7 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
     public function headings(): array
     {
         return [
+            'Created At',
             'Status',
             'First Name',
             'Last Name',

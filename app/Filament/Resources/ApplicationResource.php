@@ -520,7 +520,7 @@ class ApplicationResource extends Resource
 
         $columns = array_merge($columns, [
             TextColumn::make('status')->label('Status'),
-            TextColumn::make('created_at')->label('Submitted at'),
+            TextColumn::make('created_at')->label('Created at'),
         ]);
 
         $header_actions = auth()->id() <= 5 ? [
