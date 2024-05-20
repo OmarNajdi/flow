@@ -26,6 +26,12 @@ class UsersExport implements FromCollection, WithMapping, WithHeadings, ShouldAu
             $row->first_name,
             $row->last_name,
             $row->email,
+            $row->dob,
+            $row->phone,
+            $row->whatsapp,
+            $row->gender,
+            $row->residence,
+            $row->residence_other,
             $row->created_at,
         ];
     }
@@ -36,6 +42,12 @@ class UsersExport implements FromCollection, WithMapping, WithHeadings, ShouldAu
             'First Name',
             'Last Name',
             'Email',
+            'Date of Birth',
+            'Phone',
+            'WhatsApp',
+            'Gender',
+            'Residence',
+            'Residence (Other)',
             'Registration Time',
         ];
     }
