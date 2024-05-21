@@ -7,6 +7,7 @@ use App\Filament\Pages\Auth\Register;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
@@ -51,6 +52,11 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
             ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Social')
+                    ->extraSidebarAttributes(['class' => 'social-sidebar-group'])
+            ])
             ->navigationItems([
                 NavigationItem::make('Flow Accelerator Website')
                     ->url('https://flow.ps', shouldOpenInNewTab: true)
@@ -61,6 +67,26 @@ class AdminPanelProvider extends PanelProvider
                     ->url('https://970techmap.ps/', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-map-pin')
                     ->group('Flow Accelerator')
+                    ->sort(99),
+                NavigationItem::make('Facebook')
+                    ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-facebook')
+                    ->group('Social')
+                    ->sort(99),
+                NavigationItem::make('LinkedIn')
+                    ->url('https://www.linkedin.com/company/flow-accelerator/', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-linkedin')
+                    ->group('Social')
+                    ->sort(99),
+                NavigationItem::make('YouTube')
+                    ->url('https://www.youtube.com/channel/UCFakgIkVNQSHnHI_wYhfGWw')
+                    ->icon('lineawesome-youtube')
+                    ->group('Social')
+                    ->sort(99),
+                NavigationItem::make('Instagram')
+                    ->url('https://www.instagram.com/flow.accelerator/', shouldOpenInNewTab: true)
+                    ->icon('lineawesome-instagram')
+                    ->group('Social')
                     ->sort(99),
             ])
             ->renderHook(

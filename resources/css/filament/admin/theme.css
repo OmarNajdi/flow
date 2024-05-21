@@ -22,3 +22,12 @@
     background-position: -4185px 0 !important;
     height: 10px !important;
 }
+
+.social-sidebar-group .fi-sidebar-group-items {
+    flex-direction: row !important;
+}
+
+.social-sidebar-group .fi-sidebar-group-items span, .social-sidebar-group .fi-sidebar-group-button {
+    display: none;
+}
+
