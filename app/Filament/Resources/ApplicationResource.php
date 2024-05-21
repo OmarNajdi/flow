@@ -190,7 +190,7 @@ class ApplicationResource extends Resource
                                                 ])
                                                 ->required(),
                                             TextInput::make('company')->label('Company Name / اسم الشركة')->required(),
-                                            TextInput::make('title')->label('Title / العنوان')->required(),
+                                            TextInput::make('title')->label('Title / المسمى الوظيفي')->required(),
                                             DatePicker::make('start_date')->label('Start Date / تاريخ البدء')->required()->extraInputAttributes(['type' => 'month']),
                                             Group::make([
                                                 Toggle::make('current')->label('Currently Working There / ما زلت أعمل هناك')->reactive(),
