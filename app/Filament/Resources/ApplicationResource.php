@@ -519,8 +519,13 @@ class ApplicationResource extends Resource
         }
 
         $columns = array_merge($columns, [
-            TextColumn::make('status')->label('Status'),
-            TextColumn::make('created_at')->label('Created at'),
+            TextColumn::make('status')->label('Status')
+                ->getStateUsing(fn($record) => match ($record->status) {
+                    'Draft' => $record->program->status === 'open' ? 'Draft' : 'Incomplete',
+                    'Submitted' => $record->program->status === 'open' ? 'Submitted' : ucwords($record->program->status),
+                    default => $record->status
+                }),
+            TextColumn::make('created_at')->label('Created at')->dateTime('Y-m-d H:i'),
         ]);
 
         $header_actions = auth()->id() <= 5 ? [
