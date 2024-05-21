@@ -14,6 +14,7 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Split;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -40,11 +41,11 @@ class ProgramResource extends Resource
             ->schema([
                 TextInput::make('name')->label('Name')->required(),
                 Select::make('level')->label('Level')->options([
-                    'ideation and innovation'   => 'Ideation and Innovation',
-                    'pre-incubation'   => 'Pre-Incubation',
-                    'incubation'       => 'Incubation',
-                    'pre-acceleration' => 'Pre-Acceleration',
-                    'community'        => 'Community Development',
+                    'ideation and innovation' => 'Ideation and Innovation',
+                    'pre-incubation'          => 'Pre-Incubation',
+                    'incubation'              => 'Incubation',
+                    'pre-acceleration'        => 'Pre-Acceleration',
+                    'community'               => 'Community Development',
                 ])->required(),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
@@ -108,7 +109,20 @@ class ProgramResource extends Resource
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
                                     ['program' => $record])),
-                        ])->fullWidth(),
+                        ])->alignment(Alignment::Center)->fullWidth()->grow(false),
+                        Infolists\Components\Actions::make([
+                            Infolists\Components\Actions\Action::make('share')
+                                ->label('Share')
+                                ->size('sm')
+                                ->icon('heroicon-s-share')
+                                ->link()
+                                ->extraAttributes([
+                                    'class' => 'mt-4',
+                                ])
+                                ->url(fn(Program $record
+                                ): string => "mailto:?to=&subject=Invitation%20to%20Apply%20for%20".$record->name."%20at%20Flow%20Accelerator&body=Dear%20,%20I%20would%20like%20to%20invite%20you%20to%20apply%20for%20the%20".$record->name."%20program%20at%20Flow%20Accelerator.%20The%20program%20is%20designed%20to%20help%20you%20achieve%20your%20goals%20and%20make%20a%20positive%20impact%20in%20the%20world.%20You%20can%20learn%20more%20about%20the%20program%20and%20apply%20by%20visiting%20the%20following%20link:%20"
+                                             .ProgramResource::getUrl('view', [$record])),
+                        ])->alignment(Alignment::Center)->fullWidth()->grow(false),
                     ])->grow(false),
                 ])->from('md')->columnSpan(2)
             ]);
