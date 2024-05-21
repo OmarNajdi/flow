@@ -47,6 +47,12 @@ class ProgramResource extends Resource
                     'pre-acceleration'        => 'Pre-Acceleration',
                     'community'               => 'Community Development',
                 ])->required(),
+                TextInput::make('activity')->label('Activity'),
+                Select::make('status')->label('Status')->options([
+                    'open'          => 'Open',
+                    'in review'     => 'In Review',
+                    'decision made' => 'Decision Made'
+                ]),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
                 RichEditor::make('description')->label('Description')->required()->columnSpan(2),
@@ -59,15 +65,18 @@ class ProgramResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
-                TextColumn::make('open_date'),
-                TextColumn::make('close_date'),
+                TextColumn::make('activity'),
+                TextColumn::make('open_date')->date(),
+                TextColumn::make('close_date')->date(),
+                TextColumn::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Action::make('apply')->label('Apply')->button()->icon('heroicon-s-plus')
-                    ->url(fn(Program $record): string => ApplicationResource::getUrl('create', ['program' => $record])),
+                    ->url(fn(Program $record): string => ApplicationResource::getUrl('create', ['program' => $record]))
+                    ->visible(fn(Program $record): bool => $record->status === 'open'),
                 Tables\Actions\ViewAction::make()->button(),
                 Tables\Actions\EditAction::make()->button()->color('gray'),
             ])
@@ -93,15 +102,18 @@ class ProgramResource extends Resource
                                 ->size('xl')
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
-                                    ['program' => $record])),
+                                    ['program' => $record]))
+                                ->visible(fn(Program $record): bool => $record->status === 'open'),
                         ])->fullWidth(),
                     ]),
                     Section::make([
                         TextEntry::make('name')->label('Program Name')
                             ->weight(FontWeight::Bold),
                         TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
+                        TextEntry::make('activity'),
                         TextEntry::make('open_date')->date('l, M j, Y'),
                         TextEntry::make('close_date')->date('l, M j, Y'),
+                        TextEntry::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('apply')
                                 ->label('Apply')
@@ -109,7 +121,8 @@ class ProgramResource extends Resource
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Program $record): string => ApplicationResource::getUrl('create',
                                     ['program' => $record])),
-                        ])->alignment(Alignment::Center)->fullWidth()->grow(false),
+                        ])->alignment(Alignment::Center)->fullWidth()->grow(false)
+                            ->visible(fn(Program $record): bool => $record->status === 'open'),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('share')
                                 ->label('Share')
@@ -122,7 +135,8 @@ class ProgramResource extends Resource
                                 ->url(fn(Program $record
                                 ): string => "mailto:?to=&subject=Invitation%20to%20Apply%20for%20".$record->name."%20at%20Flow%20Accelerator&body=Dear%20,%20I%20would%20like%20to%20invite%20you%20to%20apply%20for%20the%20".$record->name."%20program%20at%20Flow%20Accelerator.%20The%20program%20is%20designed%20to%20help%20you%20achieve%20your%20goals%20and%20make%20a%20positive%20impact%20in%20the%20world.%20You%20can%20learn%20more%20about%20the%20program%20and%20apply%20by%20visiting%20the%20following%20link:%20"
                                              .ProgramResource::getUrl('view', [$record])),
-                        ])->alignment(Alignment::Center)->fullWidth()->grow(false),
+                        ])->alignment(Alignment::Center)->fullWidth()->grow(false)
+                            ->visible(fn(Program $record): bool => $record->status === 'open'),
                     ])->grow(false),
                 ])->from('md')->columnSpan(2)
             ]);

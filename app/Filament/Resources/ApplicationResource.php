@@ -662,7 +662,7 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->status === 'Draft' && ($record->user_id === auth()->id() || auth()->id() <= 5);
+        return $record->status === 'Draft' && $record->program->status == 'open' && ($record->user_id === auth()->id() || auth()->id() <= 5);
     }
 
     public static function canView(Model $record): bool

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource;
 use App\Filament\Resources\ProgramResource;
 use App\Models\Application;
+use App\Models\Program;
 use App\Notifications\ApplicationSubmitted;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
@@ -39,7 +40,22 @@ class CreateApplication extends CreateRecord
 
         Session::put('program_id', $program_id);
 
+        $program = Program::find($program_id);
+
+        if ( ! $program) {
+            $this->redirect(ProgramResource::getUrl('index'));
+            return;
+        }
+
+
+        if ($program->status !== 'open') {
+            $this->redirect(ProgramResource::getUrl('index'));
+            return;
+        }
+
+
         $application = Application::where('user_id', auth()->id())->where('program_id', $program_id)->first();
+
 
         // If user has an application with this program, redirect to edit page
         if ( ! $application) {

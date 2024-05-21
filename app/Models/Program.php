@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,11 +17,30 @@ class Program extends Model
         'level',
         'open_date',
         'close_date',
-        'description'
+        'description',
+        'activity',
+        'status',
     ];
+
+    protected $casts = [
+        'open_date'  => 'date:Y-m-d',
+        'close_date' => 'date:d/m/Y',
+    ];
+
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('d/m/Y');
+    }
 
     public function applications(): HasMany
     {
         return $this->hasMany(Application::class);
     }
+
+    public function getStatusAttribute($value): string
+    {
+        return $this->close_date->endOfDay()->isFuture() ? 'open' : ($value === 'decision-made' ? 'decision made' : 'in review');
+    }
+
+
 }
