@@ -33,12 +33,13 @@ class SendApplicationReminderEmails extends Command
                 ->where('status', 'Submitted');
         })->get();
 
-//        foreach ($users as $user) {
-//            $user->notify(new ApplicationReminder([
-//                'program'    => 'PIEC',
-//                'first_name' => $user->first_name,
-//                'close_date' => 'May 22',
-//            ]));
-//        }
+        foreach ($users as $user) {
+            $user->notify(new ApplicationReminder([
+                'program'    => 'PIEC',
+                'first_name' => $user->first_name,
+                'close_date' => 'May 22',
+                'url'        => 'https://dashboard.flow.ps/programs/1'
+            ]));
+        }
     }
 }
