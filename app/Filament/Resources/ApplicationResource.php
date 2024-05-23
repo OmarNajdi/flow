@@ -524,7 +524,16 @@ class ApplicationResource extends Resource
                     'Draft' => $record->program->status === 'open' ? 'Draft' : 'Incomplete',
                     'Submitted' => $record->program->status === 'open' ? 'Submitted' : ucwords($record->program->status),
                     default => $record->status
-                }),
+                })->badge()
+                ->color(fn(string $state): string => match ($state) {
+                    'Submitted' => 'success',
+                    'Incomplete' => 'danger',
+                    'Draft' => 'info',
+                    'In Review' => 'warning',
+                    'Decision Made' => 'gray',
+                    default => 'gray',
+                })
+                ->sortable(),
             TextColumn::make('created_at')->label('Created at')->dateTime('Y-m-d H:i'),
         ]);
 

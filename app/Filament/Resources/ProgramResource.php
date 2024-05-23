@@ -66,9 +66,19 @@ class ProgramResource extends Resource
                 TextColumn::make('name'),
                 TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                 TextColumn::make('activity'),
-                TextColumn::make('open_date')->date(),
-                TextColumn::make('close_date')->date(),
-                TextColumn::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
+                TextColumn::make('open_date')->date()->sortable(),
+                TextColumn::make('close_date')->date()->sortable(),
+                TextColumn::make('status')
+                    ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'open' => 'success',
+                        'in review' => 'info',
+                        'incomplete' => 'danger',
+                        'decision made' => 'gray',
+                        default => 'gray',
+                    })
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -86,7 +96,8 @@ class ProgramResource extends Resource
                 }
 
                 return ProgramResource::getUrl('view', [$record]);
-            });
+            })
+            ->emptyStateHeading('There are no open programs at the moment, please check later.');
     }
 
     public static function infolist(Infolist $infolist): Infolist
