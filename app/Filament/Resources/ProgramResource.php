@@ -73,7 +73,7 @@ class ProgramResource extends Resource
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'open' => 'success',
-                        'in review' => 'info',
+                        'in review' => 'warning',
                         'incomplete' => 'danger',
                         'decision made' => 'gray',
                         default => 'gray',
