@@ -21,8 +21,21 @@ class JobResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationGroup = 'Jobs';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Jobs');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Jobs');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Jobs');
+    }
 
     public static function form(Form $form): Form
     {
@@ -51,7 +64,7 @@ class JobResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
-            ->emptyStateHeading('There are no open jobs at the moment, please check back later.');
+            ->emptyStateHeading(__('There are no open jobs at the moment, please check back later.'));
     }
 
     public static function getRelations(): array
@@ -64,10 +77,10 @@ class JobResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListJobs::route('/'),
+            'index'  => Pages\ListJobs::route('/'),
             'create' => Pages\CreateJob::route('/create'),
-            'view' => Pages\ViewJob::route('/{record}'),
-            'edit' => Pages\EditJob::route('/{record}/edit'),
+            'view'   => Pages\ViewJob::route('/{record}'),
+            'edit'   => Pages\EditJob::route('/{record}/edit'),
         ];
     }
 

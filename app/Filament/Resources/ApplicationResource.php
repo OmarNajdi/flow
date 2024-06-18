@@ -7,7 +7,6 @@ use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -31,10 +30,7 @@ use Filament\Tables\Table;
 use HTMLPurifier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
-use Livewire\Component;
 use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class ApplicationResource extends Resource
@@ -45,7 +41,20 @@ class ApplicationResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationGroup = 'Programs';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Programs');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Applications');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Applications');
+    }
 
     public static function form(Form $form): Form
     {
@@ -505,7 +514,7 @@ class ApplicationResource extends Resource
     {
 
         $columns = [
-            TextColumn::make('program.name')->label('Program'),
+            TextColumn::make('program.name')->label('Program')->translateLabel(),
             TextColumn::make('program.level')->label('Level')
                 ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
         ];
@@ -514,7 +523,7 @@ class ApplicationResource extends Resource
             $columns = array_merge($columns, [
                 TextColumn::make('data.first_name')->label('First Name'),
                 TextColumn::make('data.last_name')->label('Last Name'),
-                TextColumn::make('data.email')->label('Email'),
+                TextColumn::make('data.email')->label('Email')->translateLabel(),
             ]);
         }
 
@@ -541,6 +550,7 @@ class ApplicationResource extends Resource
             Tables\Actions\Action::make('Export')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(route('applications.export'))
+                ->translateLabel()
         ] : [];
 
         return $table

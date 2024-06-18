@@ -33,7 +33,21 @@ class ProgramResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationGroup = 'Programs';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Programs');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Programs');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Programs');
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -63,11 +77,11 @@ class ProgramResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
-                TextColumn::make('activity'),
-                TextColumn::make('open_date')->date()->sortable(),
-                TextColumn::make('close_date')->date()->sortable(),
+                TextColumn::make('name')->translateLabel(),
+                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- '))->translateLabel(),
+                TextColumn::make('activity')->translateLabel(),
+                TextColumn::make('open_date')->date()->sortable()->translateLabel(),
+                TextColumn::make('close_date')->date()->sortable()->translateLabel(),
                 TextColumn::make('status')
                     ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
                     ->badge()
@@ -78,7 +92,8 @@ class ProgramResource extends Resource
                         'decision made' => 'gray',
                         default => 'gray',
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->translateLabel(),
             ])
             ->filters([
                 //

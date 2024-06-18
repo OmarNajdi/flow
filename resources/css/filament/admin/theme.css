@@ -9,6 +9,10 @@
     background-position: 0 70px;
 }
 
+[dir="rtl"] .fi-body {
+    background-image: url('/resources/images/bg-ar.webp');
+}
+
 .content-center {
     align-content: center;
 }

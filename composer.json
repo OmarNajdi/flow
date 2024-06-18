@@ -8,6 +8,7 @@
         "php": "^8.2",
         "codeat3/blade-line-awesome-icons": "^1.4",
         "filament/filament": "^3.2",
+        "kenepa/translation-manager": "^4.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",

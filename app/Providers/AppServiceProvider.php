@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Placeholder;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Filters\BaseFilter;
 use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
@@ -27,10 +31,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Filament::serving(function () {
             Filament::registerNavigationItems([
-                NavigationItem::make('Profile')
+                NavigationItem::make(__('Profile'))
+                    ->label(fn() => __('Profile'))
                     ->url('/profile')
                     ->icon('heroicon-o-user')
-                    ->group('User')
+                    ->group(fn() => __('User'))
                     ->sort(2),
             ]);
         });
@@ -42,5 +47,26 @@ class AppServiceProvider extends ServiceProvider
                 ->send();
         };
 
+        $this->autoTranslateLabels();
+    }
+
+    private function autoTranslateLabels(): void
+    {
+        $this->translateLabels([
+            Field::class,
+            BaseFilter::class,
+            Placeholder::class,
+            Column::class,
+            // or even `BaseAction::class`,
+        ]);
+    }
+
+    private function translateLabels(array $components = []): void
+    {
+        foreach ($components as $component) {
+            $component::configureUsing(function ($c): void {
+                $c->translateLabel();
+            });
+        }
     }
 }

@@ -12,7 +12,6 @@ use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -21,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Kenepa\TranslationManager\TranslationManagerPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -59,14 +59,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationItems([
                 NavigationItem::make('Flow Accelerator Website')
+                    ->label(fn() => __('Flow Accelerator Website'))
                     ->url('https://flow.ps', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-globe-europe-africa')
-                    ->group('Flow Accelerator')
+                    ->group(fn() => __('Flow Accelerator'))
                     ->sort(99),
                 NavigationItem::make('970TechMap')
                     ->url('https://970techmap.ps/', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-map-pin')
-                    ->group('Flow Accelerator')
+                    ->group(fn() => __('Flow Accelerator'))
                     ->sort(99),
                 NavigationItem::make('Facebook')
                     ->url('https://www.facebook.com/accelerator.Flow', shouldOpenInNewTab: true)
@@ -106,6 +107,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->plugin(TranslationManagerPlugin::make());
     }
 }

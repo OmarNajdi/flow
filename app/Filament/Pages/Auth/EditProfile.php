@@ -24,9 +24,9 @@ class EditProfile extends BaseEditProfile
             ->schema([
                 Tabs::make('Tabs')
                     ->tabs([
-                        Tabs\Tab::make('Personal Information')->icon('heroicon-o-user')
+                        Tabs\Tab::make(__('Personal Information'))->icon('heroicon-o-user')
                             ->schema([
-                                Section::make('User Details')
+                                Section::make(__('User Details'))
                                     ->schema([
                                         TextInput::make('first_name')->label('First Name')->required()->maxLength(255)->autofocus()->reactive()
                                             ->afterStateUpdated(fn(Set $set, ?string $state) => $set('first_name',
@@ -38,7 +38,7 @@ class EditProfile extends BaseEditProfile
                                         $this->getPasswordFormComponent(),
                                         $this->getPasswordConfirmationFormComponent(),
                                     ])->columns(2),
-                                Section::make('Personal Details')
+                                Section::make(__('Personal Details'))
                                     ->schema([
                                         DatePicker::make('dob')->label('Date of Birth')->native(false)->required(),
                                         PhoneInput::make('phone')->label('Phone')->required()
@@ -95,7 +95,7 @@ class EditProfile extends BaseEditProfile
                                             ->hidden(fn(callable $get) => in_array($get('description'),
                                                 ['Student', 'Other'])),
                                     ])->columns(2),
-                                Section::make('Social Profiles')
+                                Section::make(__('Social Profiles'))
                                     ->schema([
                                         TextInput::make('social.linkedin')->label('LinkedIn Profile URL'),
                                         TextInput::make('social.facebook')->label('Facebook Profile URL'),
@@ -105,9 +105,9 @@ class EditProfile extends BaseEditProfile
                                         TextInput::make('social.website')->label('Website URL'),
                                     ])->columns(2)
                             ]),
-                        Tabs\Tab::make('Educational Background')->icon('heroicon-o-academic-cap')
+                        Tabs\Tab::make(__('Educational Background'))->icon('heroicon-o-academic-cap')
                             ->schema([
-                                Section::make('Education')
+                                Section::make(__('Education'))
                                     ->schema([
                                         Repeater::make('education')
                                             ->schema([
@@ -132,11 +132,11 @@ class EditProfile extends BaseEditProfile
                                             ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
                                     ])
                             ]),
-                        Tabs\Tab::make('Professional Experience')->icon('heroicon-o-briefcase')
+                        Tabs\Tab::make(__('Professional Experience'))->icon('heroicon-o-briefcase')
                             ->schema([
-                                Section::make('Experience')
+                                Section::make(__('Experience'))
                                     ->schema([
-                                        Repeater::make('experience')->addActionLabel('Add Position')
+                                        Repeater::make('experience')->addActionLabel(__('Add Position'))
                                             ->schema([
                                                 Select::make('type')
                                                     ->options([
@@ -158,7 +158,7 @@ class EditProfile extends BaseEditProfile
                                                     ->hidden(fn(callable $get) => $get('current')),
                                             ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
                                     ]),
-                                Section::make('Skills')
+                                Section::make(__('Skills'))
                                     ->schema([
                                         TagsInput::make('soft_skills')->label('Soft Skills')
                                             ->placeholder('Type and press Enter')->splitKeys(['Tab', ',']),
