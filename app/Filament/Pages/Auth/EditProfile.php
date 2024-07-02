@@ -123,11 +123,11 @@ class EditProfile extends BaseEditProfile
                                                     ->required(),
                                                 TextInput::make('school')->label('School/University')->required(),
                                                 TextInput::make('major')->label('Major/Field of study')->required(),
-                                                DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                                DatePicker::make('start_date')->label('Start Date')->required(),
                                                 Group::make([
                                                     Toggle::make('current')->label('Currently Studying There')->reactive(),
                                                 ])->extraAttributes(['class' => 'h-full content-center']),
-                                                DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                                DatePicker::make('end_date')->label('End Date')
                                                     ->hidden(fn(callable $get) => $get('current')),
                                             ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
                                     ])
@@ -150,19 +150,19 @@ class EditProfile extends BaseEditProfile
                                                     ->required(),
                                                 TextInput::make('company')->label('Company Name')->required(),
                                                 TextInput::make('title')->label('Title')->required(),
-                                                DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                                DatePicker::make('start_date')->label('Start Date')->required(),
                                                 Group::make([
                                                     Toggle::make('current')->label('Currently Working There')->reactive(),
                                                 ])->extraAttributes(['class' => 'h-full content-center']),
-                                                DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                                DatePicker::make('end_date')->label('End Date')
                                                     ->hidden(fn(callable $get) => $get('current')),
                                             ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()
                                     ]),
                                 Section::make(__('Skills'))
                                     ->schema([
-                                        TagsInput::make('soft_skills')->label('Soft Skills')
+                                        TagsInput::make('soft_skills')->label('Please list your Soft Skills')
                                             ->placeholder('Type and press Enter')->splitKeys(['Tab', ',']),
-                                        TagsInput::make('technical_skills')->label('Technical Skills')
+                                        TagsInput::make('technical_skills')->label('Please list your Technical Skills')
                                             ->placeholder('Type and press Enter')->splitKeys(['Tab', ','])
                                     ])
                             ])

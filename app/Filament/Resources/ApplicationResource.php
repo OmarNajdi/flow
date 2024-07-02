@@ -150,7 +150,7 @@ class ApplicationResource extends Resource
                                 ->schema([
                                     Repeater::make('education')
                                         ->schema([
-                                            Select::make('degreere')
+                                            Select::make('degree')
                                                 ->options([
                                                     'High School'                 => 'High School',
                                                     'Vocational/Technical School' => 'Vocational/Technical School',
@@ -160,15 +160,16 @@ class ApplicationResource extends Resource
                                                     'Certification'               => 'Certification',
                                                 ])
                                                 ->required(),
-                                            TextInput::make('school')->label('School/University ')->required(),
+                                            TextInput::make('school')->label('School/University')->required(),
                                             TextInput::make('major')->label('Major/Field of study')->required(),
-                                            DatePicker::make('start_date')->label('Start Date')->required()->extraInputAttributes(['type' => 'month']),
+                                            DatePicker::make('start_date')->label('Start Date')->required(),
                                             Group::make([
                                                 Toggle::make('current')->label('Currently Studying There')->reactive(),
                                             ])->extraAttributes(['class' => 'h-full content-center']),
-                                            DatePicker::make('end_date')->label('End Date')->extraInputAttributes(['type' => 'month'])
+                                            DatePicker::make('end_date')->label('End Date')
                                                 ->hidden(fn(callable $get) => $get('current')),
                                         ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
+                                        ->addActionLabel('Add')
                                 ])
                         ])->afterValidation(function (Get $get) use ($form) {
                             $application = $form->getModelInstance();
@@ -197,13 +198,11 @@ class ApplicationResource extends Resource
                                                 ->required(),
                                             TextInput::make('company')->label('Company Name')->required(),
                                             TextInput::make('title')->label('Title')->required(),
-                                            DatePicker::make('start_date')->label('Start Date')
-                                                ->required()->extraInputAttributes(['type' => 'month']),
+                                            DatePicker::make('start_date')->label('Start Date')->required(),
                                             Group::make([
                                                 Toggle::make('current')->label('Currently Working There')->reactive(),
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date')
-                                                ->extraInputAttributes(['type' => 'month'])
                                                 ->hidden(fn(callable $get) => $get('current')),
                                         ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
                                             callable $get
@@ -211,11 +210,11 @@ class ApplicationResource extends Resource
                                 ]),
                             Section::make('Skills')
                                 ->schema([
-                                    TagsInput::make('soft_skills')->label('Soft Skills')
+                                    TagsInput::make('soft_skills')->label('Please list your Soft Skills')
                                         ->placeholder('Type and press Enter')->splitKeys([
                                             'Tab', ','
                                         ]),
-                                    TagsInput::make('technical_skills')->label('Technical Skills')
+                                    TagsInput::make('technical_skills')->label('Please list your Technical Skills')
                                         ->placeholder('Type and press Enter')->splitKeys([
                                             'Tab', ','
                                         ])
@@ -249,7 +248,7 @@ class ApplicationResource extends Resource
                             ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             RichEditor::make('idea_sector')->label('Which sector is it, and what specific problem or challenge does your idea aim to address? (Please limit your response to 150 words.)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            RichEditor::make('idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve. (Please limit your response to 200 words)')
+                            RichEditor::make('idea_description')->label('Please provide a brief description of your idea (Please limit your response to 200 words)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             Select::make('has_challenge')->label('Do you have a specific challenge you would solve within the circular economy sectors?')->options([
                                 'Yes' => 'Yes',
@@ -410,10 +409,10 @@ class ApplicationResource extends Resource
                                         ->content(fn(Application $record): string => $record->data['idea_stage'] ?? ''),
                                     Placeholder::make('review_idea_sector')->label('Which sector is it, and what specific problem or challenge does your idea aim to address? (Please limit your response to 150 words.)')
                                         ->content(fn(Application $record
-                                        ): string => $record->data['idea_sector'] ?? ''),
-                                    Placeholder::make('review_idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve.')
+                                        ): HtmlString => new HtmlString($record->data['idea_sector'] ?? '')),
+                                    Placeholder::make('review_idea_description')->label('Please provide a brief description of your idea')
                                         ->content(fn(Application $record
-                                        ): string => $record->data['idea_description'] ?? ''),
+                                        ): HtmlString => new HtmlString($record->data['idea_description'] ?? '')),
                                     Placeholder::make('review_has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')
                                         ->content(fn(Application $record
                                         ): string => $record->data['has_challenge'] ?? ''),
@@ -588,8 +587,8 @@ class ApplicationResource extends Resource
                             ])->columns(3),
 
 
-                        TextEntry::make('data.soft_skills')->label('Soft Skills'),
-                        TextEntry::make('data.technical_skills')->label('Technical Skills'),
+                        TextEntry::make('data.soft_skills')->label('Please list your Soft Skills'),
+                        TextEntry::make('data.technical_skills')->label('Please list your Technical Skills'),
                     ])->columns(1),
 
                 \Filament\Infolists\Components\Section::make('Idea & Challenges')
@@ -598,7 +597,7 @@ class ApplicationResource extends Resource
                         TextEntry::make('data.circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')->html(),
                         TextEntry::make('data.idea_stage')->label('In which stage is your idea?')->html(),
                         TextEntry::make('data.idea_sector')->label('Which sector is it, and what specific problem or challenge does your idea aim to address? (Please limit your response to 150 words.)')->html(),
-                        TextEntry::make('data.idea_description')->label('Please provide a brief description of your idea and what problem it aims to solve.')->html(),
+                        TextEntry::make('data.idea_description')->label('Please provide a brief description of your idea')->html(),
                         TextEntry::make('data.has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')->html(),
                         TextEntry::make('data.challenge_description')->label('Which sector is it, and what specific challenge would you like to solve?')->html(),
                     ])->columns(1),
