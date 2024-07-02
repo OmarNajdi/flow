@@ -24,6 +24,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 
 class ProgramResource extends Resource
@@ -79,9 +80,10 @@ class ProgramResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->translateLabel(),
-                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state,
-                    '- '))->translateLabel(),
-                TextColumn::make('activity')->translateLabel(),
+                TextColumn::make('level')
+                    ->formatStateUsing(fn(string $state): string => ucwords(__($state), '- '))->translateLabel(),
+                TextColumn::make('activity')->translateLabel()
+                    ->formatStateUsing(fn(string $state): string => __($state)),
                 TextColumn::make('open_date')->date()->sortable()->translateLabel(),
                 TextColumn::make('close_date')->date()->sortable()->translateLabel(),
                 TextColumn::make('status')
@@ -123,7 +125,8 @@ class ProgramResource extends Resource
             ->schema([
                 Split::make([
                     Section::make([
-                        TextEntry::make('description')->html()->hiddenLabel(),
+                        TextEntry::make('description')->html()->hiddenLabel()->formatStateUsing(fn(string $state
+                        ): HtmlString => new HtmlString(__($state))),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('apply')
                                 ->label('Apply')
@@ -137,8 +140,9 @@ class ProgramResource extends Resource
                     Section::make([
                         TextEntry::make('name')->label('Program Name')
                             ->weight(FontWeight::Bold),
-                        TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
-                        TextEntry::make('activity'),
+                        TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords(__($state),
+                            '- ')),
+                        TextEntry::make('activity')->formatStateUsing(fn(string $state): string => __($state)),
                         TextEntry::make('open_date')->date('l, M j, Y'),
                         TextEntry::make('close_date')->date('l, M j, Y'),
                         TextEntry::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),

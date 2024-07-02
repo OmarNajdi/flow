@@ -87,36 +87,36 @@ class ApplicationResource extends Resource
                                     'il' => 'Palestine'
                                 ]),
                             Select::make('gender')->label('Gender')->options([
-                                'Male'   => 'Male',
-                                'Female' => 'Female'
+                                'Male'   => __('Male'),
+                                'Female' => __('Female')
                             ])->required()->default(auth()->user()->gender),
                             Select::make('residence')->label('Governorate of Residence')->options([
-                                'Jenin'         => 'Jenin',
-                                'Tubas'         => 'Tubas',
-                                'Tulkarm'       => 'Tulkarm',
-                                'Nablus'        => 'Nablus',
-                                'Qalqilya'      => 'Qalqilya',
-                                'Salfit'        => 'Salfit',
-                                'Ramallah'      => 'Ramallah and al-Bireh',
-                                'Jericho'       => 'Jericho',
-                                'Jerusalem'     => 'Jerusalem',
-                                'Bethlehem'     => 'Bethlehem',
-                                'Hebron'        => 'Hebron',
-                                'North Gaza'    => 'North Gaza',
-                                'Gaza'          => 'Gaza',
-                                'Deir al-Balah' => 'Deir al-Balah',
-                                'Khan Yunis'    => 'Khan Yunis',
-                                'Rafah'         => 'Rafah',
-                                'Other'         => 'Other',
+                                'Jenin'         => __('Jenin'),
+                                'Tubas'         => __('Tubas'),
+                                'Tulkarm'       => __('Tulkarm'),
+                                'Nablus'        => __('Nablus'),
+                                'Qalqilya'      => __('Qalqilya'),
+                                'Salfit'        => __('Salfit'),
+                                'Ramallah'      => __('Ramallah and al-Bireh'),
+                                'Jericho'       => __('Jericho'),
+                                'Jerusalem'     => __('Jerusalem'),
+                                'Bethlehem'     => __('Bethlehem'),
+                                'Hebron'        => __('Hebron'),
+                                'North Gaza'    => __('North Gaza'),
+                                'Gaza'          => __('Gaza'),
+                                'Deir al-Balah' => __('Deir al-Balah'),
+                                'Khan Yunis'    => __('Khan Yunis'),
+                                'Rafah'         => __('Rafah'),
+                                'Other'         => __('Other'),
                             ])->required()->reactive()->default(auth()->user()->residence),
                             TextInput::make('residence_other')->label('Other Governorate')
                                 ->hidden(fn(callable $get
                                 ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
                             Select::make('description')->label('Describe Yourself')->options([
-                                'Student'      => 'Student',
-                                'Professional' => 'Professional',
-                                'Entrepreneur' => 'Entrepreneur',
-                                'Other'        => 'Other',
+                                'Student'      => __('Student'),
+                                'Professional' => __('Professional'),
+                                'Entrepreneur' => __('Entrepreneur'),
+                                'Other'        => __('Other'),
                             ])->required()->reactive()->default(auth()->user()->description),
                             TextInput::make('description_other')->label('Describe Yourself')
                                 ->hidden(fn(callable $get
@@ -146,18 +146,18 @@ class ApplicationResource extends Resource
                         }),
                     Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
                         ->schema([
-                            Section::make('Education')
+                            Section::make(__('Education'))
                                 ->schema([
                                     Repeater::make('education')
                                         ->schema([
                                             Select::make('degree')
                                                 ->options([
-                                                    'High School'                 => 'High School',
-                                                    'Vocational/Technical School' => 'Vocational/Technical School',
-                                                    'Bachelor'                    => 'Bachelor\'s Degree',
-                                                    'Master'                      => 'Master\'s Degree',
-                                                    'PhD'                         => 'Doctorate/Ph.D.',
-                                                    'Certification'               => 'Certification',
+                                                    'High School'                 => __('High School'),
+                                                    'Vocational/Technical School' => __('Vocational/Technical School'),
+                                                    'Bachelor'                    => __('Bachelor\'s Degree'),
+                                                    'Master'                      => __('Master\'s Degree'),
+                                                    'PhD'                         => __('Doctorate/Ph.D.'),
+                                                    'Certification'               => __('Certification'),
                                                 ])
                                                 ->required(),
                                             TextInput::make('school')->label('School/University')->required(),
@@ -169,7 +169,7 @@ class ApplicationResource extends Resource
                                             DatePicker::make('end_date')->label('End Date')
                                                 ->hidden(fn(callable $get) => $get('current')),
                                         ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
-                                        ->addActionLabel('Add')
+                                        ->addActionLabel(__('Add'))
                                 ])
                         ])->afterValidation(function (Get $get) use ($form) {
                             $application = $form->getModelInstance();
@@ -182,18 +182,18 @@ class ApplicationResource extends Resource
                         }),
                     Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
                         ->schema([
-                            Section::make('Experience')
+                            Section::make(__('Experience'))
                                 ->schema([
-                                    Repeater::make('experience')->addActionLabel('Add Position')
+                                    Repeater::make('experience')->addActionLabel(__('Add Position'))
                                         ->schema([
                                             Select::make('type')
                                                 ->options([
-                                                    'full-time'     => 'Full-time',
-                                                    'part-time'     => 'Part-time',
-                                                    'internship'    => 'Internship',
-                                                    'volunteer'     => 'Volunteer',
-                                                    'self-employed' => 'Self-employed',
-                                                    'freelance'     => 'Freelance',
+                                                    'full-time'     => __('Full-time'),
+                                                    'part-time'     => __('Part-time'),
+                                                    'internship'    => __('Internship'),
+                                                    'volunteer'     => __('Volunteer'),
+                                                    'self-employed' => __('Self-employed'),
+                                                    'freelance'     => __('Freelance'),
                                                 ])
                                                 ->required(),
                                             TextInput::make('company')->label('Company Name')->required(),
@@ -208,7 +208,7 @@ class ApplicationResource extends Resource
                                             callable $get
                                         ) => $get('description') !== 'Other')
                                 ]),
-                            Section::make('Skills')
+                            Section::make(__('Skills'))
                                 ->schema([
                                     TagsInput::make('soft_skills')->label('Please list your Soft Skills')
                                         ->placeholder('Type and press Enter')->splitKeys([
@@ -233,28 +233,28 @@ class ApplicationResource extends Resource
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([
                             Select::make('has_idea')->label('Do you currently have a business idea or project?')->options([
-                                'Yes' => 'Yes',
-                                'No'  => 'No',
+                                'Yes' => __('Yes'),
+                                'No'  => __('No'),
                             ])->required()->reactive(),
                             Select::make('circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')->options([
-                                'Yes' => 'Yes',
-                                'No'  => 'No',
+                                'Yes' => __('Yes'),
+                                'No'  => __('No'),
                             ])->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             Select::make('idea_stage')->label('In which stage is your idea?')->options([
-                                'Idea Phase'                   => 'Idea Phase',
-                                'Proof of Concept'             => 'Proof of Concept',
-                                'Minimum Viable Product (MVP)' => 'Minimum Viable Product (MVP)',
-                                'Market-ready'                 => 'Market-ready',
+                                'Idea Phase'                   => __('Idea Phase'),
+                                'Proof of Concept'             => __('Proof of Concept'),
+                                'Minimum Viable Product (MVP)' => __('Minimum Viable Product (MVP)'),
+                                'Market-ready'                 => __('Market-ready'),
                             ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             RichEditor::make('idea_sector')->label('Which sector is it, and what specific problem or challenge does your idea aim to address? (Please limit your response to 150 words.)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             RichEditor::make('idea_description')->label('Please provide a brief description of your idea (Please limit your response to 200 words)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            Select::make('has_challenge')->label('Do you have a specific challenge you would solve within the circular economy sectors?')->options([
-                                'Yes' => 'Yes',
-                                'No'  => 'No',
+                            Select::make('has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')->options([
+                                'Yes' => __('Yes'),
+                                'No'  => __('No'),
                             ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'No'),
-                            Textarea::make('challenge_description')->label('Which sector is it, and what specific challenge would you like to solve')
+                            Textarea::make('challenge_description')->label('Which sector is it, and what specific challenge would you like to solve?')
                                 ->required()->hidden(fn(callable $get
                                 ) => $get('has_challenge') !== 'Yes' || $get('has_idea') !== 'No'),
                         ])->afterValidation(function (Get $get) use ($form) {
@@ -300,7 +300,7 @@ class ApplicationResource extends Resource
                                 ->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments. (Please limit your response to 150-200 words)')
                                 ->required(),
                             TextInput::make('team_count')->label('How many team members will participate in the problem-solving workshop?')->numeric()->minValue(1)->required(),
-                            Repeater::make('team_members')->label('Team Members')->addActionLabel('Add Team Member')
+                            Repeater::make('team_members')->label('Team Members')->addActionLabel(__('Add Team Member'))
                                 ->schema([
                                     TextInput::make('name')->label('Name')->required(),
                                     TextInput::make('role')->label('Role')->required(),
@@ -315,34 +315,34 @@ class ApplicationResource extends Resource
                                     TextInput::make('email')->label('Email')->required()->email(),
                                 ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required(),
                             Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
-                                'Yes' => 'Yes',
-                                'No'  => 'No',
+                                'Yes' => __('Yes'),
+                                'No'  => __('No'),
                             ])->required()->reactive(),
-                            Textarea::make('experience_specification')->label('Please specify your experience:')
+                            Textarea::make('experience_specification')->label('Please specify your experience')
                                 ->hidden(fn(callable $get) => $get('startup_experience') !== 'Yes'),
                             TextInput::make('new_skill')->label('If you are looking to acquire one new skill, what would it be?')->required(),
                             Select::make('program_discovery')->label('How did you hear about the PIEC Programme?')->options([
-                                'Facebook'           => 'Facebook',
-                                'Instagram'          => 'Instagram',
-                                'LinkedIn'           => 'LinkedIn',
-                                'Other Social Media' => 'Other Social Media Channels',
-                                'Friend'             => 'Friend/Colleague',
-                                'Other'              => 'Other',
+                                'Facebook'           => __('Facebook'),
+                                'Instagram'          => __('Instagram'),
+                                'LinkedIn'           => __('LinkedIn'),
+                                'Other Social Media' => __('Other Social Media Channels'),
+                                'Friend'             => __('Friend/Colleague'),
+                                'Other'              => __('Other'),
                             ])->required()->reactive(),
                             TextInput::make('program_discovery_other')->label('Please Specify')
                                 ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
-                            Select::make('commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days')->options([
-                                'Yes'   => 'Yes',
-                                'No'    => 'No',
-                                'Other' => 'Other',
+                            Select::make('commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')->options([
+                                'Yes'   => __('Yes'),
+                                'No'    => __('No'),
+                                'Other' => __('Other'),
                             ])->required()->reactive(),
                             TextInput::make('commitment_other')->label('Please Specify')
                                 ->hidden(fn(callable $get) => $get('commitment') !== 'Other'),
                             Select::make('continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')->options([
-                                'Yes' => 'Yes',
-                                'No'  => 'No',
+                                'Yes' => __('Yes'),
+                                'No'  => __('No'),
                             ])->required(),
-                            RichEditor::make('additional_info')->label('Anything you\'d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.'),
+                            RichEditor::make('additional_info')->label('Anything you\'d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project'),
                         ])->afterValidation(function (Get $get) use ($form) {
                             $application = $form->getModelInstance();
                             $application->update(
@@ -366,9 +366,9 @@ class ApplicationResource extends Resource
                     Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
                         ->schema([
                             Placeholder::make('review_section')->hiddenLabel()->content(
-                                new HtmlString('<div style="font-size: 24px;text-align: center">Please review your application before submitting</div>')
+                                new HtmlString('<div style="font-size: 24px;text-align: center">'.__("Please review your application before submitting").'</div>')
                             ),
-                            Section::make('Personal Information')
+                            Section::make(__('Personal Information'))
                                 ->schema([
                                     Placeholder::make('review_first_name')->label('First Name')
                                         ->content(fn(Application $record): string => $record->data['first_name'] ?? ''),
@@ -398,7 +398,7 @@ class ApplicationResource extends Resource
                                     Placeholder::make('review_occupation')->label('Occupation')
                                         ->content(fn(Application $record): string => $record->data['occupation'] ?? ''),
                                 ])->columns(3),
-                            Section::make('Idea & Challenges')
+                            Section::make(__('Idea & Challenges'))
                                 ->schema([
                                     Placeholder::make('review_has_idea')->label('Do you currently have a business idea or project?')
                                         ->content(fn(Application $record): string => $record->data['has_idea'] ?? ''),
@@ -420,14 +420,11 @@ class ApplicationResource extends Resource
                                         ->content(fn(Application $record
                                         ): string => $record->data['challenge_description'] ?? ''),
                                 ]),
-                            Section::make('Entrepreneurial Skills')
+                            Section::make(__('Entrepreneurial Skills'))
                                 ->schema([
                                     Placeholder::make('review_creative_solution')->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome?')
                                         ->content(fn(Application $record
                                         ): HtmlString => new HtmlString($record->data['creative_solution'] ?? '')),
-                                    Placeholder::make('review_random_objects_usage')->label('You have a box of random objects (rubber bands, Pencils, Tape, Plastic spoons, Bottle caps). How many different uses can you come up with for these items?')
-                                        ->content(fn(Application $record
-                                        ): HtmlString => new HtmlString($record->data['random_objects_usage'] ?? '')),
                                     Placeholder::make('review_problem_solving_scenario')->label('Share a scenario where you faced a significant obstacle while working on a project. How did you identify the problem, and what steps did you take to overcome it?')
                                         ->content(fn(Application $record
                                         ): HtmlString => new HtmlString($record->data['problem_solving_scenario'] ?? '')),
@@ -435,7 +432,7 @@ class ApplicationResource extends Resource
                                         ->content(fn(Application $record
                                         ): HtmlString => new HtmlString($record->data['participation_goals'] ?? '')),
                                 ]),
-                            Section::make('Generic Questions')
+                            Section::make(__('Generic Questions'))
                                 ->schema([
                                     Placeholder::make('review_skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments.')
                                         ->content(fn(Application $record
@@ -445,7 +442,7 @@ class ApplicationResource extends Resource
                                     Placeholder::make('review_startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')
                                         ->content(fn(Application $record
                                         ): string => $record->data['startup_experience'] ?? ''),
-                                    Placeholder::make('review_experience_specification')->label('Please specify your experience:')
+                                    Placeholder::make('review_experience_specification')->label('Please specify your experience')
                                         ->content(fn(Application $record
                                         ): string => $record->data['experience_specification'] ?? ''),
                                     Placeholder::make('review_new_skill')->label('If you are looking to acquire one new skill, what would it be?')
@@ -456,7 +453,7 @@ class ApplicationResource extends Resource
                                     Placeholder::make('review_program_discovery_other')->label('Please Specify')
                                         ->content(fn(Application $record
                                         ): string => $record->data['program_discovery_other'] ?? ''),
-                                    Placeholder::make('review_commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the innovation challenge over two days?')
+                                    Placeholder::make('review_commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')
                                         ->content(fn(Application $record): string => $record->data['commitment'] ?? ''),
                                     Placeholder::make('review_commitment_other')->label('Please Specify')
                                         ->content(fn(Application $record
@@ -464,12 +461,12 @@ class ApplicationResource extends Resource
                                     Placeholder::make('review_continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')
                                         ->content(fn(Application $record
                                         ): string => $record->data['continuation_plan'] ?? ''),
-                                    Placeholder::make('review_additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.')
+                                    Placeholder::make('review_additional_info')->label('Anything you\'d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project')
                                         ->content(fn(Application $record
                                         ): HtmlString => new HtmlString($record->data['additional_info'] ?? ''))
                                 ])
                         ])
-                ])->columnSpan(2)->statePath('data'),
+                ])->columnSpan(2)->statePath('data')->startOnStep(3),
             ]);
     }
 
@@ -479,7 +476,7 @@ class ApplicationResource extends Resource
         $columns = [
             TextColumn::make('program.name')->label('Program')->translateLabel(),
             TextColumn::make('program.level')->label('Level')
-                ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
+                ->formatStateUsing(fn(string $state): string => ucwords(__($state), '- '))
         ];
 
         if (auth()->id() <= 5) {
@@ -547,7 +544,7 @@ class ApplicationResource extends Resource
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\Section::make('Personal Questions')
+                \Filament\Infolists\Components\Section::make(__('Personal Questions'))
                     ->schema([
                         TextEntry::make('data.first_name')->label('First Name'),
                         TextEntry::make('data.last_name')->label('Last Name'),
@@ -562,7 +559,7 @@ class ApplicationResource extends Resource
                         TextEntry::make('data.description_other')->label('Describe Yourself'),
                         TextEntry::make('data.occupation')->label('Occupation'),
                     ])->columns(3),
-                \Filament\Infolists\Components\Section::make('Educational Background')
+                \Filament\Infolists\Components\Section::make(__('Educational Background'))
                     ->schema([
                         RepeatableEntry::make('data.education')->label('Education')
                             ->schema([
@@ -574,7 +571,7 @@ class ApplicationResource extends Resource
                                 TextEntry::make('end_date')->label('End Date'),
                             ])->columns(3),
                     ])->columns(1),
-                \Filament\Infolists\Components\Section::make('Professional Experience')
+                \Filament\Infolists\Components\Section::make(__('Professional Experience'))
                     ->schema([
                         RepeatableEntry::make('data.experience')->label('Experience')
                             ->schema([
@@ -586,12 +583,11 @@ class ApplicationResource extends Resource
                                 TextEntry::make('end_date')->label('End Date'),
                             ])->columns(3),
 
-
                         TextEntry::make('data.soft_skills')->label('Please list your Soft Skills'),
                         TextEntry::make('data.technical_skills')->label('Please list your Technical Skills'),
                     ])->columns(1),
 
-                \Filament\Infolists\Components\Section::make('Idea & Challenges')
+                \Filament\Infolists\Components\Section::make(__('Idea & Challenges'))
                     ->schema([
                         TextEntry::make('data.has_idea')->label('Do you currently have a business idea or project?')->html(),
                         TextEntry::make('data.circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')->html(),
@@ -601,13 +597,13 @@ class ApplicationResource extends Resource
                         TextEntry::make('data.has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')->html(),
                         TextEntry::make('data.challenge_description')->label('Which sector is it, and what specific challenge would you like to solve?')->html(),
                     ])->columns(1),
-                \Filament\Infolists\Components\Section::make('Entrepreneurial Skills')
+                \Filament\Infolists\Components\Section::make(__('Entrepreneurial Skills'))
                     ->schema([
                         TextEntry::make('data.creative_solution')->label('Provide an example of a creative solution you developed to address a challenge. What inspired your approach, and what was the outcome?')->html(),
                         TextEntry::make('data.problem_solving_scenario')->label('Share a scenario where you faced a significant obstacle while working on a project. How did you identify the problem, and what steps did you take to overcome it?')->html(),
                         TextEntry::make('data.participation_goals')->label('What do you hope to achieve by participating in the ideation workshop? Are there specific skills or insights you\'re looking to gain from the experience?')->html(),
                     ])->columns(1),
-                \Filament\Infolists\Components\Section::make('Generic Questions')
+                \Filament\Infolists\Components\Section::make(__('Generic Questions'))
                     ->schema([
                         TextEntry::make('data.skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments.')->html(),
                         TextEntry::make('data.team_count')->label('How many team members will participate in the problem-solving workshop?')->html(),
@@ -619,14 +615,14 @@ class ApplicationResource extends Resource
                                 TextEntry::make('email')->label('Email'),
                             ])->columns(4),
                         TextEntry::make('data.startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->html(),
-                        TextEntry::make('data.experience_specification')->label('Please specify your experience:')->html(),
+                        TextEntry::make('data.experience_specification')->label('Please specify your experience')->html(),
                         TextEntry::make('data.new_skill')->label('If you are looking to acquire one new skill, what would it be?')->html(),
                         TextEntry::make('data.program_discovery')->label('How did you hear about the PIEC Programme?')->html(),
                         TextEntry::make('data.program_discovery_other')->label('Please Specify')->html(),
-                        TextEntry::make('data.commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the innovation challenge over two days?')->html(),
+                        TextEntry::make('data.commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')->html(),
                         TextEntry::make('data.commitment_other')->label('Please Specify')->html(),
                         TextEntry::make('data.continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')->html(),
-                        TextEntry::make('data.additional_info')->label('Anything you’d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project.')->html(),
+                        TextEntry::make('data.additional_info')->label('Anything you\'d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project')->html(),
                     ])->columns(1),
 
             ]);

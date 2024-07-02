@@ -7,6 +7,7 @@ use App\Models\Application;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class EditApplication extends EditRecord
 {
     protected static string $resource = ApplicationResource::class;
+
+    public function getTitle(): string|Htmlable
+    {
+        return __('Apply');
+    }
 
     protected function getHeaderActions(): array
     {
@@ -26,6 +32,7 @@ class EditApplication extends EditRecord
     {
         return Action::make('update')
             ->label('Submit')
+            ->translateLabel()
             ->submit('update')
             ->keyBindings(['mod+s']);
     }
