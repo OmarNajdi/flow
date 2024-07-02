@@ -35,3 +35,6 @@
     display: none;
 }
 
+.fi-topbar {
+    overflow-x: initial !important;
+}
