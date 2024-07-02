@@ -22,6 +22,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -78,7 +79,8 @@ class ProgramResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')->translateLabel(),
-                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state, '- '))->translateLabel(),
+                TextColumn::make('level')->formatStateUsing(fn(string $state): string => ucwords($state,
+                    '- '))->translateLabel(),
                 TextColumn::make('activity')->translateLabel(),
                 TextColumn::make('open_date')->date()->sortable()->translateLabel(),
                 TextColumn::make('close_date')->date()->sortable()->translateLabel(),
@@ -198,5 +200,10 @@ class ProgramResource extends Resource
     public static function canDelete(Model $record): bool
     {
         return auth()->id() == 1;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('status', 'open');
     }
 }
