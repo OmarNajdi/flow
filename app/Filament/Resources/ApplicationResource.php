@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
@@ -23,6 +24,7 @@ use Filament\Forms\Set;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -143,6 +145,10 @@ class ApplicationResource extends Resource
                                         'occupation'        => $get('occupation'),
                                     ])
                                 ]);
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
                         ->schema([
@@ -179,6 +185,11 @@ class ApplicationResource extends Resource
                                         'education' => $get('education'),
                                     ])
                                 ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
                         ->schema([
@@ -229,6 +240,11 @@ class ApplicationResource extends Resource
                                         'technical_skills' => $get('technical_skills'),
                                     ])
                                 ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Idea & Challenges')->icon('heroicon-s-bolt')
                         ->schema([
@@ -271,6 +287,11 @@ class ApplicationResource extends Resource
                                         'challenge_description' => $get('challenge_description'),
                                     ])
                                 ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Entrepreneurial Skills')->icon('heroicon-s-clipboard-document-list')
                         ->schema([
@@ -293,6 +314,11 @@ class ApplicationResource extends Resource
                                         'participation_goals'      => $get('participation_goals'),
                                     ])
                                 ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Generic Questions')->icon('heroicon-s-question-mark-circle')
                         ->schema([
@@ -362,6 +388,11 @@ class ApplicationResource extends Resource
                                         'additional_info'          => $get('additional_info'),
                                     ])
                                 ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
                         }),
                     Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
                         ->schema([
@@ -466,7 +497,9 @@ class ApplicationResource extends Resource
                                         ): HtmlString => new HtmlString($record->data['additional_info'] ?? ''))
                                 ])
                         ])
-                ])->columnSpan(2)->statePath('data')->startOnStep(3),
+                ])->columnSpan(2)->statePath('data')->nextAction(
+                    fn(Action $action) => $action->label('Save and Continue')->translateLabel(),
+                ),
             ]);
     }
 
