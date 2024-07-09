@@ -252,7 +252,7 @@ class ApplicationResource extends Resource
                                 'Yes' => __('Yes'),
                                 'No'  => __('No'),
                             ])->required()->reactive(),
-                            Select::make('circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')->options([
+                            Select::make('circular_economy')->label(fn(Application $record): string => 'Is your business idea or project focused on a specific sector within the '.optional($record->program)->activity.'?')->options([
                                 'Yes' => __('Yes'),
                                 'No'  => __('No'),
                             ])->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
@@ -266,7 +266,9 @@ class ApplicationResource extends Resource
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
                             RichEditor::make('idea_description')->label('Please provide a brief description of your idea (Please limit your response to 200 words)')
                                 ->required()->hidden(fn(callable $get) => $get('has_idea') !== 'Yes'),
-                            Select::make('has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')->options([
+                            Select::make('has_challenge')
+                                ->label(fn(Application $record): string => 'Do you have a specific challenge you aim to solve within the '.optional($record->program)->activity.' sectors?')
+                                ->options([
                                 'Yes' => __('Yes'),
                                 'No'  => __('No'),
                             ])->required()->reactive()->hidden(fn(callable $get) => $get('has_idea') !== 'No'),
@@ -433,7 +435,7 @@ class ApplicationResource extends Resource
                                 ->schema([
                                     Placeholder::make('review_has_idea')->label('Do you currently have a business idea or project?')
                                         ->content(fn(Application $record): string => $record->data['has_idea'] ?? ''),
-                                    Placeholder::make('review_circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')
+                                    Placeholder::make('review_circular_economy')->label(fn(Application $record): string => 'Is your business idea or project focused on a specific sector within the '.optional($record->program)->activity.'?')
                                         ->content(fn(Application $record
                                         ): string => $record->data['circular_economy'] ?? ''),
                                     Placeholder::make('review_idea_stage')->label('In which stage is your idea?')
@@ -444,7 +446,7 @@ class ApplicationResource extends Resource
                                     Placeholder::make('review_idea_description')->label('Please provide a brief description of your idea')
                                         ->content(fn(Application $record
                                         ): HtmlString => new HtmlString($record->data['idea_description'] ?? '')),
-                                    Placeholder::make('review_has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')
+                                    Placeholder::make('review_has_challenge')->label(fn(Application $record): string => 'Do you have a specific challenge you aim to solve within the '.optional($record->program)->activity.' sectors?')
                                         ->content(fn(Application $record
                                         ): string => $record->data['has_challenge'] ?? ''),
                                     Placeholder::make('review_challenge_description')->label('Which sector is it, and what specific challenge would you like to solve?')
@@ -623,11 +625,11 @@ class ApplicationResource extends Resource
                 \Filament\Infolists\Components\Section::make(__('Idea & Challenges'))
                     ->schema([
                         TextEntry::make('data.has_idea')->label('Do you currently have a business idea or project?')->html(),
-                        TextEntry::make('data.circular_economy')->label('Is your business idea or project focused on a specific sector within the circular economy?')->html(),
+                        TextEntry::make('data.circular_economy')->label(fn(Application $record): string => 'Is your business idea or project focused on a specific sector within the '.optional($record->program)->activity.'?')->html(),
                         TextEntry::make('data.idea_stage')->label('In which stage is your idea?')->html(),
                         TextEntry::make('data.idea_sector')->label('Which sector is it, and what specific problem or challenge does your idea aim to address? (Please limit your response to 150 words.)')->html(),
                         TextEntry::make('data.idea_description')->label('Please provide a brief description of your idea')->html(),
-                        TextEntry::make('data.has_challenge')->label('Do you have a specific challenge you aim to solve within the circular economy sectors?')->html(),
+                        TextEntry::make('data.has_challenge')->label(fn(Application $record): string => 'Do you have a specific challenge you aim to solve within the '.optional($record->program)->activity.' sectors?')->html(),
                         TextEntry::make('data.challenge_description')->label('Which sector is it, and what specific challenge would you like to solve?')->html(),
                     ])->columns(1),
                 \Filament\Infolists\Components\Section::make(__('Entrepreneurial Skills'))

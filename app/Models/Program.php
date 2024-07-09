@@ -24,7 +24,7 @@ class Program extends Model
 
     protected $casts = [
         'open_date'  => 'date:Y-m-d',
-        'close_date' => 'date:d/m/Y',
+        'close_date' => 'date:Y-m-d',
     ];
 
     protected function serializeDate(DateTimeInterface $date): string

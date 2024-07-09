@@ -55,7 +55,9 @@ class ProgramResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->label('Name')->required(),
+                Select::make('name')->label('Name')->options([
+                    'PIEC' => 'PIEC',
+                ])->required(),
                 Select::make('level')->label('Level')->options([
                     'ideation and innovation' => 'Ideation and Innovation',
                     'pre-incubation'          => 'Pre-Incubation',
@@ -68,7 +70,7 @@ class ProgramResource extends Resource
                     'open'          => 'Open',
                     'in review'     => 'In Review',
                     'decision made' => 'Decision Made'
-                ]),
+                ])->default('open'),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
                 RichEditor::make('description')->label('Description')->required()->columnSpan(2),
@@ -193,12 +195,12 @@ class ProgramResource extends Resource
 
     public static function canCreate(): bool
     {
-        return auth()->id() == 1;
+        return auth()->id() <= 5;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->id() == 1;
+        return auth()->id() <= 5;
     }
 
     public static function canDelete(Model $record): bool
