@@ -685,7 +685,7 @@ class ApplicationResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return false;
+        return auth()->id() <= 5;
     }
 
     public static function getEloquentQuery(): Builder
