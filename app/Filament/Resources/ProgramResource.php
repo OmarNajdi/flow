@@ -55,9 +55,7 @@ class ProgramResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('name')->label('Name')->options([
-                    'PIEC' => 'PIEC',
-                ])->required(),
+                TextInput::make('name')->label('Name')->required(),
                 Select::make('level')->label('Level')->options([
                     'ideation and innovation' => 'Ideation and Innovation',
                     'pre-incubation'          => 'Pre-Incubation',
@@ -70,7 +68,7 @@ class ProgramResource extends Resource
                     'open'          => 'Open',
                     'in review'     => 'In Review',
                     'decision made' => 'Decision Made'
-                ])->default('open'),
+                ])->default('open')->required(),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
                 RichEditor::make('description')->label('Description')->required()->columnSpan(2),
