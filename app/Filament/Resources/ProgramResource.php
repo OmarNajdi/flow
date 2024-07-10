@@ -208,6 +208,6 @@ class ProgramResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('status', 'open');
+        return parent::getEloquentQuery()->where('status', 'open')->whereDate('open_date', '<=', now());
     }
 }
