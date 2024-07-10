@@ -142,7 +142,8 @@ class ProgramResource extends Resource
                             ->weight(FontWeight::Bold),
                         TextEntry::make('level')->formatStateUsing(fn(string $state): string => ucwords(__($state),
                             '- ')),
-                        TextEntry::make('activity')->formatStateUsing(fn(string $state): string => __($state)),
+                        TextEntry::make('activity')->formatStateUsing(fn(string $state): string => __($state))
+                            ->hidden(fn($state): bool => ! $state),
                         TextEntry::make('open_date')->date('l, M j, Y'),
                         TextEntry::make('close_date')->date('l, M j, Y'),
                         TextEntry::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
