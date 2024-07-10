@@ -782,7 +782,7 @@ class ApplicationResource extends Resource
                     ...$wizard
                 ])->columnSpan(2)->statePath('data')->nextAction(
                     fn(Action $action) => $action->label('Save and Continue')->translateLabel(),
-                )->skippable(),
+                ),
             ]);
     }
 
