@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Filament\Resources\ApplicationResource\RelationManagers;
 use App\Models\Application;
+use App\Models\Program;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -28,6 +29,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -832,8 +835,16 @@ class ApplicationResource extends Resource
         return $table
             ->columns($columns)
             ->filters([
-                //
-            ])
+                SelectFilter::make('program')->relationship('program', 'name')->label('Program')
+                    ->getOptionLabelFromRecordUsing(fn(Program $record) => "{$record->name} - {$record->level}"),
+                SelectFilter::make('status')->options([
+                    'Draft'        => __('Draft'),
+                    'Submitted'    => __('Submitted'),
+                    'Incomplete'   => __('Incomplete'),
+                    'In Review'    => __('In Review'),
+                    'Decision Made' => __('Decision Made'),
+                ])->label('Status'),
+            ], layout: FiltersLayout::AboveContentCollapsible)
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
