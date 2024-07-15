@@ -529,20 +529,20 @@ class ApplicationResource extends Resource
                     Section::make(__('Problem & Need'))
                         ->schema([
                             Placeholder::make('review_problem')->label('What specific problem or need does your startup address?')
-                                ->content(fn(Application $record): string => $record->data['problem'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['problem'] ?? '')),
                             Placeholder::make('review_target')->label('Who is affected by this problem? And who’s your target segment?')
-                                ->content(fn(Application $record): string => $record->data['target'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['target'] ?? '')),
                             Placeholder::make('review_identify')->label('How did you identify this problem?')
-                                ->content(fn(Application $record): string => $record->data['identify'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['identify'] ?? '')),
                         ]),
                     Section::make(__('Solution & Stage'))
                         ->schema([
                             Placeholder::make('review_solution')->label('Describe your proposed solution to the problem')
-                                ->content(fn(Application $record): string => $record->data['solution'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['solution'] ?? '')),
                             Placeholder::make('review_unique')->label('What makes your solution unique or innovative?')
-                                ->content(fn(Application $record): string => $record->data['unique'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['unique'] ?? '')),
                             Placeholder::make('review_alternatives')->label('How does your solution address the problem better than existing alternatives?')
-                                ->content(fn(Application $record): string => $record->data['alternatives'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['alternatives'] ?? '')),
                             Placeholder::make('review_sector')->label('What industry sector does your product/service target?')
                                 ->content(fn(Application $record): string => $record->data['sector'] ?? ''),
                             Placeholder::make('review_sector_other')->label('Please Specify')
@@ -565,9 +565,9 @@ class ApplicationResource extends Resource
                     Section::make(__('Next Milestones'))
                         ->schema([
                             Placeholder::make('review_milestones')->label('What are the next key milestones you aim to achieve in the next 3-6 months?')
-                                ->content(fn(Application $record): string => $record->data['milestones'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['milestones'] ?? '')),
                             Placeholder::make('review_resources')->label('What resources or support do you need to achieve these milestones?')
-                                ->content(fn(Application $record): string => $record->data['resources'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['resources'] ?? '')),
                         ]),
                     Section::make(__('Additional Information'))
                         ->schema([
@@ -581,7 +581,7 @@ class ApplicationResource extends Resource
                                 ->content(fn(Application $record
                                 ): string => $record->data['program_discovery_other'] ?? ''),
                             Placeholder::make('review_additional_info')->label('Anything you’d like to share with us? Share your pitch deck or any additional supporting documents if available.')
-                                ->content(fn(Application $record): string => $record->data['additional_info'] ?? ''),
+                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['additional_info'] ?? '')),
                         ])
                 ])
         ];
