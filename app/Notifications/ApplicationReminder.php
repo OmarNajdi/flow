@@ -42,7 +42,7 @@ class ApplicationReminder extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Complete Your Application for '.$this->program.' by '.$this->close_date)
             ->greeting('Dear '.$this->first_name.',')
-            ->line('Our records indicate that you have started your application to join '.$this->program.' , but it has not yet been submitted. We wanted to remind you that the deadline to finalize and submit your application is fast approaching.')
+            ->line('Our records indicate that you have started your application to join '.$this->program.', but it has not yet been submitted. We wanted to remind you that the deadline to finalize and submit your application is fast approaching.')
             ->line('Closing Date: '.$this->close_date)
             ->line('To complete your application, please log in to your account and ensure all required information is filled out and submitted. If you encounter any issues or have any questions, please do not hesitate to reach out to our Program team by replying directly to this email.')
             ->line('This program offers a unique opportunity, and we don’t want you to miss out. We are excited about the potential of having you join us and look forward to reviewing your completed application.')

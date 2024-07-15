@@ -561,8 +561,6 @@ class ApplicationResource extends Resource
                                 ->content(fn(Application $record): string => $record->data['customers_count'] ?? ''),
                             Placeholder::make('review_individual_or_team')->label('Are you applying as an individual or as part of a team?')
                                 ->content(fn(Application $record): string => $record->data['individual_or_team'] ?? ''),
-                            Placeholder::make('review_team_members')->label('Team Members')
-                                ->content(fn(Application $record): string => $record->data['team_members'] ?? ''),
                         ]),
                     Section::make(__('Next Milestones'))
                         ->schema([
@@ -836,7 +834,7 @@ class ApplicationResource extends Resource
             ->columns($columns)
             ->filters([
                 SelectFilter::make('program')->relationship('program', 'name')->label('Program')
-                    ->getOptionLabelFromRecordUsing(fn(Program $record) => "{$record->name} - {$record->level}"),
+                    ->getOptionLabelFromRecordUsing(fn(Program $record) => "$record->name - $record->level"),
                 SelectFilter::make('status')->options([
                     'Draft'        => __('Draft'),
                     'Submitted'    => __('Submitted'),
