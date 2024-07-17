@@ -8,6 +8,7 @@ use App\Models\Application;
 use App\Models\Program;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -34,6 +35,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
@@ -472,7 +474,8 @@ class ApplicationResource extends Resource
                     ])->required()->reactive(),
                     TextInput::make('program_discovery_other')->label('Please Specify')
                         ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
-                    RichEditor::make('additional_info')->label('Anything you’d like to share with us? Share your pitch deck or any additional supporting documents if available.')
+                    FileUpload::make('attachments')->label('Anything you\'d like to share with us? Share your pitch deck or any additional supporting documents if available.')
+                        ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments')
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
@@ -480,10 +483,8 @@ class ApplicationResource extends Resource
                             'data' => array_merge($application->data, [
                                 'why'                     => $get('why'),
                                 'achieve'                 => $get('achieve'),
-                                'resources'               => $get('resources'),
                                 'program_discovery'       => $get('program_discovery'),
                                 'program_discovery_other' => $get('program_discovery_other'),
-                                'additional_info'         => $get('additional_info'),
                             ])
                         ]);
                     Notification::make()
@@ -580,8 +581,6 @@ class ApplicationResource extends Resource
                             Placeholder::make('review_program_discovery_other')->label('Please Specify')
                                 ->content(fn(Application $record
                                 ): string => $record->data['program_discovery_other'] ?? ''),
-                            Placeholder::make('review_additional_info')->label('Anything you’d like to share with us? Share your pitch deck or any additional supporting documents if available.')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['additional_info'] ?? '')),
                         ])
                 ])
         ];
@@ -951,7 +950,10 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.achieve')->label('What do you hope to achieve by the end of the program?')->html(),
                     TextEntry::make('data.program_discovery')->label('How did you hear about the PIEC Programme?')->html(),
                     TextEntry::make('data.program_discovery_other')->label('Please Specify')->html(),
-                    TextEntry::make('data.additional_info')->label('Anything you’d like to share with us? Share your pitch deck or any additional supporting documents if available.')->html(),
+                    RepeatableEntry::make('data.attachments')->label('Attachments')
+                        ->schema([
+                            TextEntry::make('')->formatStateUsing(fn (string $state): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                        ])->columns(1),
                 ])->columns(1),
         ];
 
