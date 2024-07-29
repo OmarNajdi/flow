@@ -28,15 +28,15 @@ class SendApplicationReminderEmails extends Command
     public function handle()
     {
         $users = User::whereHas('applications', function ($query) {
-            $query->where('program_id', 2)->where('status', '!=', 'submitted');
+            $query->where('program_id', 3)->where('status', '!=', 'submitted');
         })->get();
 
         foreach ($users as $user) {
             $user->notify(new ApplicationReminder([
                 'program'    => 'PIEC',
                 'first_name' => $user->first_name,
-                'close_date' => 'July 17',
-                'url'        => 'https://dashboard.flow.ps/programs/2'
+                'close_date' => 'July 31',
+                'url'        => 'https://dashboard.flow.ps/programs/3'
             ]));
         }
     }
