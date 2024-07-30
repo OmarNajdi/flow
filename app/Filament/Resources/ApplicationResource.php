@@ -394,7 +394,7 @@ class ApplicationResource extends Resource
                         'Yes' => __('Yes'),
                         'No'  => __('No'),
                     ])->required()->reactive(),
-                    TextInput::make('customers_count')->label('how many customers and what is their feedback?')
+                    TextInput::make('customers_count')->label('How many customers and what is their feedback?')
                         ->hidden(fn(callable $get) => $get('customers') !== 'Yes'),
 
                     Select::make('individual_or_team')->label('Are you applying as an individual or as part of a team?')->options([
@@ -558,7 +558,7 @@ class ApplicationResource extends Resource
                                 ->content(fn(Application $record): string => $record->data['duration'] ?? ''),
                             Placeholder::make('review_customers')->label('Do you have any customers or users currently?')
                                 ->content(fn(Application $record): string => $record->data['customers'] ?? ''),
-                            Placeholder::make('review_customers_count')->label('how many customers and what is their feedback?')
+                            Placeholder::make('review_customers_count')->label('How many customers and what is their feedback?')
                                 ->content(fn(Application $record): string => $record->data['customers_count'] ?? ''),
                             Placeholder::make('review_individual_or_team')->label('Are you applying as an individual or as part of a team?')
                                 ->content(fn(Application $record): string => $record->data['individual_or_team'] ?? ''),
@@ -832,7 +832,7 @@ class ApplicationResource extends Resource
         return $table
             ->columns($columns)
             ->filters([
-                SelectFilter::make('program')->relationship('program', 'name')->label('Program')
+                SelectFilter::make('program')->relationship('program', 'name',fn (Builder $query) => $query->where('status', 'open'))->label('Program')
                     ->getOptionLabelFromRecordUsing(fn(Program $record) => "$record->name - $record->level"),
                 SelectFilter::make('status')->options([
                     'Draft'        => __('Draft'),
@@ -929,7 +929,7 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.prototype_details')->label('Please provide us with details')->html(),
                     TextEntry::make('data.duration')->label('How long have you been working on this solution?')->html(),
                     TextEntry::make('data.customers')->label('Do you have any customers or users currently?')->html(),
-                    TextEntry::make('data.customers_count')->label('how many customers and what is their feedback?')->html(),
+                    TextEntry::make('data.customers_count')->label('How many customers and what is their feedback?')->html(),
                     TextEntry::make('data.individual_or_team')->label('Are you applying as an individual or as part of a team?')->html(),
                     RepeatableEntry::make('data.team_members')->label('Team Members')
                         ->schema([
