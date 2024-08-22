@@ -6,26 +6,43 @@ use App\Filament\Resources\JobApplicationResource\Pages;
 use App\Filament\Resources\JobApplicationResource\RelationManagers;
 use App\Models\Application;
 use App\Models\Job;
-use App\Models\Program;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Section;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Split;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class JobApplicationResource extends Resource
 {
@@ -54,25 +71,219 @@ class JobApplicationResource extends Resource
     {
         return $form
             ->schema([
+                Wizard::make([
+                    Wizard\Step::make('Personal Questions')->icon('heroicon-s-user')
+                        ->schema([
+                            TextInput::make('first_name')->label('First Name')->required()->reactive()->default(auth()->user()->first_name)
+                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('first_name',
+                                    ucwords($state))),
+                            TextInput::make('last_name')->label('Last Name')->required()->reactive()->default(auth()->user()->last_name)
+                                ->afterStateUpdated(fn(Set $set, ?string $state) => $set('last_name',
+                                    ucwords($state))),
+                            TextInput::make('email')->email()->label('Email')->required()->default(auth()->user()->email)->email(),
+                            DatePicker::make('dob')->label('Date of Birth')->native(false)->required()->default(auth()->user()->dob),
+                            PhoneInput::make('phone')->label('Phone')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            PhoneInput::make('whatsapp')->label('Whatsapp Number')->required()->default(auth()->user()->whatsapp)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            Select::make('gender')->label('Gender')->options([
+                                'Male'   => __('Male'),
+                                'Female' => __('Female')
+                            ])->required()->default(auth()->user()->gender),
+                            Select::make('residence')->label('Governorate of Residence')->options([
+                                'Jenin'         => __('Jenin'),
+                                'Tubas'         => __('Tubas'),
+                                'Tulkarm'       => __('Tulkarm'),
+                                'Nablus'        => __('Nablus'),
+                                'Qalqilya'      => __('Qalqilya'),
+                                'Salfit'        => __('Salfit'),
+                                'Ramallah'      => __('Ramallah and al-Bireh'),
+                                'Jericho'       => __('Jericho'),
+                                'Jerusalem'     => __('Jerusalem'),
+                                'Bethlehem'     => __('Bethlehem'),
+                                'Hebron'        => __('Hebron'),
+                                'North Gaza'    => __('North Gaza'),
+                                'Gaza'          => __('Gaza'),
+                                'Deir al-Balah' => __('Deir al-Balah'),
+                                'Khan Yunis'    => __('Khan Yunis'),
+                                'Rafah'         => __('Rafah'),
+                                'Other'         => __('Other'),
+                            ])->required()->reactive()->default(auth()->user()->residence),
+                            TextInput::make('residence_other')->label('Other Governorate')
+                                ->hidden(fn(callable $get
+                                ) => $get('residence') !== 'Other')->default(auth()->user()->residence_other),
+                            Select::make('description')->label('Describe Yourself')->options([
+                                'Student'      => __('Student'),
+                                'Professional' => __('Professional'),
+                                'Entrepreneur' => __('Entrepreneur'),
+                                'Other'        => __('Other'),
+                            ])->required()->reactive()->default(auth()->user()->description),
+                            TextInput::make('description_other')->label('Describe Yourself')
+                                ->hidden(fn(callable $get
+                                ) => $get('description') !== 'Other')->default(auth()->user()->description_other),
+                            TextInput::make('occupation')->label('Occupation')->required()
+                                ->hidden(fn(callable $get) => in_array($get('description'), ['Student', 'Other']))
+                                ->default(auth()->user()->occupation),
+                        ])->columns(2)->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'first_name'        => $get('first_name'),
+                                        'last_name'         => $get('last_name'),
+                                        'email'             => $get('email'),
+                                        'dob'               => $get('dob'),
+                                        'phone'             => $get('phone'),
+                                        'whatsapp'          => $get('whatsapp'),
+                                        'gender'            => $get('gender'),
+                                        'residence'         => $get('residence'),
+                                        'residence_other'   => $get('residence_other'),
+                                        'description'       => $get('description'),
+                                        'description_other' => $get('description_other'),
+                                        'occupation'        => $get('occupation'),
+                                    ])
+                                ]);
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
+                        }),
+                    Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
+                        ->schema([
+                            Section::make(__('Education'))
+                                ->schema([
+                                    Repeater::make('education')
+                                        ->schema([
+                                            Select::make('degree')
+                                                ->options([
+                                                    'High School'                 => __('High School'),
+                                                    'Vocational/Technical School' => __('Vocational/Technical School'),
+                                                    'Bachelor'                    => __('Bachelor\'s Degree'),
+                                                    'Master'                      => __('Master\'s Degree'),
+                                                    'PhD'                         => __('Doctorate/Ph.D.'),
+                                                    'Certification'               => __('Certification'),
+                                                ])
+                                                ->required(),
+                                            TextInput::make('school')->label('School/University')->required(),
+                                            TextInput::make('major')->label('Major/Field of study')->required(),
+                                            DatePicker::make('start_date')->label('Start Date')->required(),
+                                            Group::make([
+                                                Toggle::make('current')->label('Currently Studying There')->reactive(),
+                                            ])->extraAttributes(['class' => 'h-full content-center']),
+                                            DatePicker::make('end_date')->label('End Date')
+                                                ->hidden(fn(callable $get) => $get('current')),
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
+                                        ->addActionLabel(__('Add'))
+                                ])
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'education' => $get('education'),
+                                    ])
+                                ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
+                        }),
+                    Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
+                        ->schema([
+                            Section::make(__('Experience'))
+                                ->schema([
+                                    Repeater::make('experience')->addActionLabel(__('Add Position'))
+                                        ->schema([
+                                            Select::make('type')
+                                                ->options([
+                                                    'full-time'     => __('Full-time'),
+                                                    'part-time'     => __('Part-time'),
+                                                    'internship'    => __('Internship'),
+                                                    'volunteer'     => __('Volunteer'),
+                                                    'self-employed' => __('Self-employed'),
+                                                    'freelance'     => __('Freelance'),
+                                                ])
+                                                ->required(),
+                                            TextInput::make('company')->label('Company Name')->required(),
+                                            TextInput::make('title')->label('Title')->required(),
+                                            DatePicker::make('start_date')->label('Start Date')->required(),
+                                            Group::make([
+                                                Toggle::make('current')->label('Currently Working There')->reactive(),
+                                            ])->extraAttributes(['class' => 'h-full content-center']),
+                                            DatePicker::make('end_date')->label('End Date')
+                                                ->hidden(fn(callable $get) => $get('current')),
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
+                                            callable $get
+                                        ) => $get('description') !== 'Other')
+                                ]),
+                            Section::make(__('Skills'))
+                                ->schema([
+                                    TagsInput::make('soft_skills')->label('Please list your Soft Skills')
+                                        ->placeholder('Type and press Enter')->splitKeys([
+                                            'Tab', ','
+                                        ]),
+                                    TagsInput::make('technical_skills')->label('Please list your Technical Skills')
+                                        ->placeholder('Type and press Enter')->splitKeys([
+                                            'Tab', ','
+                                        ])
+                                ])
+                        ])->afterValidation(function (Get $get) use ($form) {
+                            $application = $form->getModelInstance();
+                            $application->update(
+                                [
+                                    'data' => array_merge($application->data, [
+                                        'experience'       => $get('experience'),
+                                        'soft_skills'      => $get('soft_skills'),
+                                        'technical_skills' => $get('technical_skills'),
+                                    ])
+                                ]);
+
+                            Notification::make()
+                                ->title(__('Saved successfully'))
+                                ->success()
+                                ->send();
+                        }),
+                    Wizard\Step::make('Documents')->icon('heroicon-o-briefcase')
+                        ->schema([
+                            FileUpload::make('cv')->label('Upload your CV')
+                                ->multiple()->appendFiles()->maxFiles(1)->maxSize(10240)->directory('job-attachments'),
+                            FileUpload::make('cover_letter')->label('Upload your Cover Letter')
+                                ->multiple()->appendFiles()->maxFiles(1)->maxSize(10240)->directory('job-attachments')
+                        ]),
+                ])->columnSpan(2)->statePath('data')->nextAction(
+                    fn(\Filament\Forms\Components\Actions\Action $action) => $action->label('Save and Continue')->translateLabel(),
+                ),
             ]);
     }
 
     public static function table(Table $table): Table
     {
+
+        $columns = [
+//            TextColumn::make('job.title')->label('Job Title')->translateLabel(),
+            TextColumn::make('data.first_name')->label('First Name'),
+            TextColumn::make('data.last_name')->label('Last Name'),
+            TextColumn::make('data.email')->label('Email')->translateLabel(),
+        ];
+
         return $table
-            ->columns([
-            ])
-            ->filters([
-                //
-            ])
+            ->columns($columns)
+            ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make()->button(),
-                Tables\Actions\EditAction::make()->button()->color('gray'),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\ViewAction::make(),
             ]);
     }
 
@@ -83,6 +294,68 @@ class JobApplicationResource extends Resource
         ];
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                \Filament\Infolists\Components\Section::make(__('Personal Questions'))
+                    ->schema([
+                        TextEntry::make('data.first_name')->label('First Name'),
+                        TextEntry::make('data.last_name')->label('Last Name'),
+                        TextEntry::make('data.email')->label('Email'),
+                        TextEntry::make('data.dob')->label('Date of Birth'),
+                        TextEntry::make('data.phone')->label('Phone'),
+                        TextEntry::make('data.whatsapp')->label('Whatsapp'),
+                        TextEntry::make('data.gender')->label('Gender'),
+                        TextEntry::make('data.residence')->label('Residence'),
+                        TextEntry::make('data.residence_other')->label('Other Governorate'),
+                        TextEntry::make('data.description')->label('Describe Yourself'),
+                        TextEntry::make('data.description_other')->label('Describe Yourself'),
+                        TextEntry::make('data.occupation')->label('Occupation'),
+                    ])->columns(3),
+                \Filament\Infolists\Components\Section::make(__('Educational Background'))
+                    ->schema([
+                        RepeatableEntry::make('data.education')->label('Education')
+                            ->schema([
+                                TextEntry::make('degree')->label('Degree'),
+                                TextEntry::make('school')->label('School/University'),
+                                TextEntry::make('major')->label('Major/Field of study'),
+                                TextEntry::make('start_date')->label('Start Date'),
+                                TextEntry::make('current')->label('Currently Studying There'),
+                                TextEntry::make('end_date')->label('End Date'),
+                            ])->columns(3),
+                    ])->columns(1),
+                \Filament\Infolists\Components\Section::make(__('Professional Experience'))
+                    ->schema([
+                        RepeatableEntry::make('data.experience')->label('Experience')
+                            ->schema([
+                                TextEntry::make('type')->label('Type'),
+                                TextEntry::make('company')->label('Company Name'),
+                                TextEntry::make('title')->label('Title'),
+                                TextEntry::make('start_date')->label('Start Date'),
+                                TextEntry::make('current')->label('Currently Working There'),
+                                TextEntry::make('end_date')->label('End Date'),
+                            ])->columns(3),
+
+                        TextEntry::make('data.soft_skills')->label('Please list your Soft Skills'),
+                        TextEntry::make('data.technical_skills')->label('Please list your Technical Skills'),
+                    ])->columns(1),
+                \Filament\Infolists\Components\Section::make(__('Documents'))
+                    ->schema([
+                        RepeatableEntry::make('data.cv')->label('CV')
+                            ->schema([
+                                TextEntry::make('')->formatStateUsing(fn(string $state
+                                ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download CV')."</a>"))
+                            ])->columns(1),
+                        RepeatableEntry::make('data.cover_letter')->label('Cover Letter')
+                            ->schema([
+                                TextEntry::make('')->formatStateUsing(fn(string $state
+                                ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Cover Letter')."</a>"))
+                            ])->columns(1),
+                    ])->columns(1),
+            ]);
+    }
+
     public static function getPages(): array
     {
         return [
@@ -91,4 +364,27 @@ class JobApplicationResource extends Resource
             'edit' => Pages\EditJobApplication::route('/{record}/edit'),
         ];
     }
+
+    public static function canEdit(Model $record): bool
+    {
+        return ($record->user_id === auth()->id() || auth()->id() <= 5);
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return $record->user_id === auth()->id() || auth()->id() <= 5;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->id() <= 5;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return auth()->id() <= 5
+            ? parent::getEloquentQuery()->whereNotNull('career_id')
+            : parent::getEloquentQuery()->whereNotNull('career_id')->where('user_id', auth()->id());
+    }
+
 }
