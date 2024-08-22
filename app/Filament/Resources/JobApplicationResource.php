@@ -273,10 +273,20 @@ class JobApplicationResource extends Resource
     {
 
         $columns = [
-//            TextColumn::make('job.title')->label('Job Title')->translateLabel(),
+            TextColumn::make('job.title')->label('Job Title')->translateLabel(),
             TextColumn::make('data.first_name')->label('First Name'),
             TextColumn::make('data.last_name')->label('Last Name'),
             TextColumn::make('data.email')->label('Email')->translateLabel(),
+            TextColumn::make('status')->label('Status')->badge()
+                ->color(fn(string $state): string => match ($state) {
+                    'Submitted' => 'success',
+                    'Incomplete' => 'danger',
+                    'Draft' => 'info',
+                    'In Review' => 'warning',
+                    'Decision Made' => 'gray',
+                    default => 'gray',
+                })
+                ->sortable(),
         ];
 
         return $table
