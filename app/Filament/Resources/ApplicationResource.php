@@ -110,7 +110,6 @@ class ApplicationResource extends Resource
                                 'challenge_description' => $get('challenge_description'),
                             ])
                         ]);
-
                     Notification::make()
                         ->title(__('Saved successfully'))
                         ->success()
@@ -530,20 +529,26 @@ class ApplicationResource extends Resource
                     Section::make(__('Problem & Need'))
                         ->schema([
                             Placeholder::make('review_problem')->label('What specific problem or need does your startup address?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['problem'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['problem'] ?? '')),
                             Placeholder::make('review_target')->label('Who is affected by this problem? And who’s your target segment?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['target'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['target'] ?? '')),
                             Placeholder::make('review_identify')->label('How did you identify this problem?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['identify'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['identify'] ?? '')),
                         ]),
                     Section::make(__('Solution & Stage'))
                         ->schema([
                             Placeholder::make('review_solution')->label('Describe your proposed solution to the problem')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['solution'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['solution'] ?? '')),
                             Placeholder::make('review_unique')->label('What makes your solution unique or innovative?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['unique'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['unique'] ?? '')),
                             Placeholder::make('review_alternatives')->label('How does your solution address the problem better than existing alternatives?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['alternatives'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['alternatives'] ?? '')),
                             Placeholder::make('review_sector')->label('What industry sector does your product/service target?')
                                 ->content(fn(Application $record): string => $record->data['sector'] ?? ''),
                             Placeholder::make('review_sector_other')->label('Please Specify')
@@ -566,9 +571,11 @@ class ApplicationResource extends Resource
                     Section::make(__('Next Milestones'))
                         ->schema([
                             Placeholder::make('review_milestones')->label('What are the next key milestones you aim to achieve in the next 3-6 months?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['milestones'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['milestones'] ?? '')),
                             Placeholder::make('review_resources')->label('What resources or support do you need to achieve these milestones?')
-                                ->content(fn(Application $record): HtmlString => new HtmlString($record->data['resources'] ?? '')),
+                                ->content(fn(Application $record
+                                ): HtmlString => new HtmlString($record->data['resources'] ?? '')),
                         ]),
                     Section::make(__('Additional Information'))
                         ->schema([
@@ -585,10 +592,274 @@ class ApplicationResource extends Resource
                 ])
         ];
 
+        $incubation_form = [
+            Wizard\Step::make('Startup Overview')->icon('heroicon-s-light-bulb')
+                ->schema([
+                    Textarea::make('idea')->label('Please provide a brief description of your business or idea.')->required(),
+                    Textarea::make('problem')->label('What problem are you solving?')->required(),
+                    Textarea::make('fit')->label('How did you validate the problem-solution fit?')->required(),
+                    Textarea::make('solution')->label('Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition')->required(),
+                    Select::make('sector')->label('What industry sector does your product/service target?')->options([
+                        'Agriculture'                   => __('Agriculture'),
+                        'Automotive'                    => __('Automotive'),
+                        'Banking'                       => __('Banking & Finance'),
+                        'Construction'                  => __('Construction'),
+                        'Education'                     => __('Education'),
+                        'Energy'                        => __('Energy'),
+                        'Entertainment'                 => __('Entertainment'),
+                        'Environmental Services'        => __('Environmental Services'),
+                        'Fashion'                       => __('Fashion'),
+                        'Food Processing and Nutrition' => __('Food Processing and Nutrition'),
+                        'Healthcare'                    => __('Healthcare'),
+                        'Hospitality'                   => __('Hospitality'),
+                        'Information Technology (IT)'   => __('Information Technology (IT)'),
+                        'Legal Services'                => __('Legal Services'),
+                        'Logistics & Transportation'    => __('Logistics & Transportation'),
+                        'Manufacturing'                 => __('Manufacturing'),
+                        'Media & Communications'        => __('Media & Communications'),
+                        'Real Estate'                   => __('Real Estate'),
+                        'Sports & Recreation'           => __('Sports & Recreation'),
+                        'Telecommunications'            => __('Telecommunications'),
+                        'Travel & Tourism'              => __('Travel & Tourism'),
+                        'Other'                         => __('Other'),
+                    ])->required()->reactive(),
+                    TextInput::make('sector_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('sector') !== 'Other'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'idea'         => $get('idea'),
+                                'problem'      => $get('problem'),
+                                'fit'          => $get('fit'),
+                                'solution'     => $get('solution'),
+                                'sector'       => $get('sector'),
+                                'sector_other' => $get('sector_other'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Current Status')->icon('heroicon-s-bolt')
+                ->schema([
+                    Select::make('stage')->label('What stage is your solution currently in?')->options([
+                        'Idea'             => __('Idea'),
+                        'Proof-of-Concept' => __('Proof-of-Concept'),
+                        'Prototype'        => __('Prototype'),
+                        'MVP'              => __('MVP'),
+                    ])->required()->reactive(),
+                    Select::make('features')->label('Have you identified the must-have features that your MVP should include?')->options([
+                        'Yes' => __('Yes'),
+                        'No'  => __('No'),
+                    ])->hidden(fn(callable $get) => ! in_array($get('stage'),
+                        ['Prototype', 'Proof-of-Concept']))->reactive(),
+                    Textarea::make('milestones')->label('What key milestones have you achieved so far?')->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'stage'      => $get('stage'),
+                                'features'   => $get('features'),
+                                'milestones' => $get('milestones'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Market Research')->icon('heroicon-s-building-storefront')
+                ->schema([
+                    TextInput::make('target')->label('Who are your target customers?')->required(),
+                    Textarea::make('how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)'),
+                    Textarea::make('advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market? '),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'target'     => $get('target'),
+                                'how_target' => $get('how_target'),
+                                'advantage'  => $get('advantage'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Team')->icon('heroicon-s-users')
+                ->schema([
+                    Repeater::make('team_members')->label('Team Members')->addActionLabel(__('Add Team Member'))
+                        ->schema([
+                            TextInput::make('name')->label('Name')->required(),
+                            TextInput::make('role')->label('Role')->required(),
+                            PhoneInput::make('phone')->label('Phone')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            TextInput::make('email')->label('Email')->required()->email(),
+                        ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'team_members' => $get('team_members'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Vision and Goals')->icon('heroicon-s-forward')
+                ->schema([
+                    Textarea::make('vision')->label('What is your vision for the startup in the next 1-3 years?')->required(),
+                    Textarea::make('achieve')->label('What are the key milestones you aim to achieve during the incubation program?'),
+                    Textarea::make('support')->label('How can Flow Accelerator support you in developing your MVP?'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'vision'  => $get('vision'),
+                                'achieve' => $get('achieve'),
+                                'support' => $get('support'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Additional Information')->icon('heroicon-s-information-circle')
+                ->schema([
+                    Textarea::make('other')->label('Have you participated in any other incubation or acceleration programs? If yes, provide details.'),
+                    Select::make('committed')->label('Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?')->options([
+                        'Yes' => __('Yes'),
+                        'No'  => __('No'),
+                    ])->required(),
+                    TextInput::make('issues')->label('Are there any legal issues or intellectual property concerns related to your startup?'),
+                    FileUpload::make('attachments')->label('Please upload your pitch deck or any relevant documents you would like to share with us.')
+                        ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'other'     => $get('other'),
+                                'committed' => $get('committed'),
+                                'issues'    => $get('issues'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
+                ->schema([
+                    Placeholder::make('review_section')->hiddenLabel()->content(
+                        new HtmlString('<div style="font-size: 24px;text-align: center">'.__("Please review your application before submitting").'</div>')
+                    ),
+                    Section::make(__('Personal Information'))
+                        ->schema([
+                            Placeholder::make('review_first_name')->label('First Name')
+                                ->content(fn(Application $record): string => $record->data['first_name'] ?? ''),
+                            Placeholder::make('review_last_name')->label('Last Name')
+                                ->content(fn(Application $record): string => $record->data['last_name'] ?? ''),
+                            Placeholder::make('review_email')->label('Email')
+                                ->content(fn(Application $record): string => $record->data['email'] ?? ''),
+                            Placeholder::make('review_dob')->label('Date of Birth')
+                                ->content(fn(Application $record): string => $record->data['dob'] ?? ''),
+                            Placeholder::make('review_phone')->label('Phone')
+                                ->content(fn(Application $record): string => $record->data['phone'] ?? ''),
+                            Placeholder::make('review_whatsapp')->label('Whatsapp')
+                                ->content(fn(Application $record): string => $record->data['whatsapp'] ?? ''),
+                            Placeholder::make('review_gender')->label('Gender')
+                                ->content(fn(Application $record): string => $record->data['gender'] ?? ''),
+                            Placeholder::make('review_residence')->label('Governorate of Residence')
+                                ->content(fn(Application $record): string => $record->data['residence'] ?? ''),
+                            Placeholder::make('review_residence_other')->label('Other Governorate')
+                                ->content(fn(Application $record
+                                ): string => $record->data['residence_other'] ?? ''),
+                            Placeholder::make('review_description')->label('Describe Yourself')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description'] ?? ''),
+                            Placeholder::make('review_description_other')->label('Describe Yourself (Other)')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description_other'] ?? ''),
+                            Placeholder::make('review_occupation')->label('Occupation')
+                                ->content(fn(Application $record): string => $record->data['occupation'] ?? ''),
+                        ])->columns(3),
+                    Section::make(__('Startup Overview'))
+                        ->schema([
+                            Placeholder::make('review_idea')->label('Please provide a brief description of your business or idea.')
+                                ->content(fn(Application $record): string => $record->data['idea'] ?? ''),
+                            Placeholder::make('review_problem')->label('What problem are you solving?')
+                                ->content(fn(Application $record): string => $record->data['problem'] ?? ''),
+                            Placeholder::make('review_fit')->label('How did you validate the problem-solution fit?')
+                                ->content(fn(Application $record): string => $record->data['fit'] ?? ''),
+                            Placeholder::make('review_solution')->label('Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition')
+                                ->content(fn(Application $record): string => $record->data['solution'] ?? ''),
+                            Placeholder::make('review_sector')->label('What industry sector does your product/service target?')
+                                ->content(fn(Application $record): string => $record->data['sector'] ?? ''),
+                            Placeholder::make('review_sector_other')->label('Please Specify')
+                                ->content(fn(Application $record): string => $record->data['sector_other'] ?? ''),
+                        ]),
+                    Section::make(__('Current Status'))
+                        ->schema([
+                            Placeholder::make('review_stage')->label('What stage is your solution currently in?')
+                                ->content(fn(Application $record): string => $record->data['stage'] ?? ''),
+                            Placeholder::make('review_features')->label('Have you identified the must-have features that your MVP should include?')
+                                ->content(fn(Application $record): string => $record->data['features'] ?? ''),
+                            Placeholder::make('review_milestones')->label('What key milestones have you achieved so far?')
+                                ->content(fn(Application $record): string => $record->data['milestones'] ?? ''),
+                        ]),
+                    Section::make(__('Market Research and Target Customer'))
+                        ->schema([
+                            Placeholder::make('review_target')->label('Who are your target customers?')
+                                ->content(fn(Application $record): string => $record->data['target'] ?? ''),
+                            Placeholder::make('review_how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')
+                                ->content(fn(Application $record): string => $record->data['how_target'] ?? ''),
+                            Placeholder::make('review_advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?')
+                                ->content(fn(Application $record): string => $record->data['advantage'] ?? ''),
+                        ]),
+                    Section::make(__('Vision and Goals'))
+                        ->schema([
+                            Placeholder::make('review_vision')->label('What is your vision for the startup in the next 1-3 years?')
+                                ->content(fn(Application $record): string => $record->data['vision'] ?? ''),
+                            Placeholder::make('review_achieve')->label('What are the key milestones you aim to achieve during the incubation program?')
+                                ->content(fn(Application $record): string => $record->data['achieve'] ?? ''),
+                            Placeholder::make('review_support')->label('How can Flow Accelerator support you in developing your MVP?')
+                                ->content(fn(Application $record): string => $record->data['support'] ?? ''),
+                        ]),
+                    Section::make(__('Additional Information'))
+                        ->schema([
+                            Placeholder::make('review_other')->label('Have you participated in any other incubation or acceleration programs? If yes, provide details.')
+                                ->content(fn(Application $record): string => $record->data['other'] ?? ''),
+                            Placeholder::make('review_committed')->label('Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?')
+                                ->content(fn(Application $record): string => $record->data['committed'] ?? ''),
+                            Placeholder::make('review_issues')->label('Are there any legal issues or intellectual property concerns related to your startup?')
+                                ->content(fn(Application $record): string => $record->data['issues'] ?? ''),
+                        ])
+                ])
+        ];
+
         $application = $form->getModelInstance();
         $wizard      = match (optional($application->program)->level) {
             'ideation and innovation' => $ideation_from,
             'pre-incubation' => $pre_incubation_form,
+            'incubation' => $incubation_form,
             default => $ideation_from
         };
 
@@ -832,13 +1103,14 @@ class ApplicationResource extends Resource
         return $table
             ->columns($columns)
             ->filters([
-                SelectFilter::make('program')->relationship('program', 'name',fn (Builder $query) => $query->where('status', 'open'))->label('Program')
+                SelectFilter::make('program')->relationship('program', 'name',
+                    fn(Builder $query) => $query->where('status', 'open'))->label('Program')
                     ->getOptionLabelFromRecordUsing(fn(Program $record) => "$record->name - $record->level"),
                 SelectFilter::make('status')->options([
-                    'Draft'        => __('Draft'),
-                    'Submitted'    => __('Submitted'),
-                    'Incomplete'   => __('Incomplete'),
-                    'In Review'    => __('In Review'),
+                    'Draft'         => __('Draft'),
+                    'Submitted'     => __('Submitted'),
+                    'Incomplete'    => __('Incomplete'),
+                    'In Review'     => __('In Review'),
                     'Decision Made' => __('Decision Made'),
                 ])->label('Status'),
             ], layout: FiltersLayout::AboveContentCollapsible)
@@ -952,7 +1224,58 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.program_discovery_other')->label('Please Specify')->html(),
                     RepeatableEntry::make('data.attachments')->label('Attachments')
                         ->schema([
-                            TextEntry::make('')->formatStateUsing(fn (string $state): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                            TextEntry::make('')->formatStateUsing(fn(string $state
+                            ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                        ])->columns(1),
+                ])->columns(1),
+        ];
+
+        $incubation_infolist = [
+            \Filament\Infolists\Components\Section::make(__('Startup Overview'))
+                ->schema([
+                    TextEntry::make('data.idea')->label('Please provide a brief description of your business or idea.')->html(),
+                    TextEntry::make('data.problem')->label('What problem are you solving?')->html(),
+                    TextEntry::make('data.fit')->label('How did you validate the problem-solution fit?')->html(),
+                    TextEntry::make('data.solution')->label('Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition')->html(),
+                    TextEntry::make('data.sector')->label('What industry sector does your product/service target?')->html(),
+                    TextEntry::make('data.sector_other')->label('Please Specify')->html(),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Current Status'))
+                ->schema([
+                    TextEntry::make('data.stage')->label('What stage is your solution currently in?')->html(),
+                    TextEntry::make('data.features')->label('Have you identified the must-have features that your MVP should include?')->html(),
+                    TextEntry::make('data.milestones')->label('What key milestones have you achieved so far?')->html(),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Market Research'))
+                ->schema([
+                    TextEntry::make('data.target')->label('Who are your target customers?')->html(),
+                    TextEntry::make('data.how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')->html(),
+                    TextEntry::make('data.advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?')->html(),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Team'))
+                ->schema([
+                    RepeatableEntry::make('data.team_members')->label('Team Members')
+                        ->schema([
+                            TextEntry::make('name')->label('Name'),
+                            TextEntry::make('role')->label('Role'),
+                            TextEntry::make('phone')->label('Phone'),
+                            TextEntry::make('email')->label('Email'),
+                        ])->columns(4),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Vision and Goals'))
+                ->schema([
+                    TextEntry::make('data.vision')->label('What is your vision for the startup in the next 1-3 years?')->html(),
+                    TextEntry::make('data.achieve')->label('What are the key milestones you aim to achieve during the incubation program?')->html(),
+                    TextEntry::make('data.support')->label('How can Flow Accelerator support you in developing your MVP?')->html(),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Additional Information'))
+                ->schema([
+                    TextEntry::make('data.other')->label('Have you participated in any other incubation or acceleration programs? If yes, provide details.')->html(),
+                    TextEntry::make('data.committed')->label('Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?')->html(),
+                    TextEntry::make('data.issues')->label('Are there any legal issues or intellectual property concerns related to your startup?')->html(),
+                    RepeatableEntry::make('data.attachments')->label('Attachments')
+                        ->schema([
+                            TextEntry::make('')->formatStateUsing(fn(string $state): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
                         ])->columns(1),
                 ])->columns(1),
         ];
@@ -962,6 +1285,7 @@ class ApplicationResource extends Resource
         $program_infolist = match (optional($application->program)->level) {
             'ideation and innovation' => $ideation_infolist,
             'pre-incubation' => $pre_incubation_infolist,
+            'incubation' => $incubation_infolist,
             default => []
         };
 
