@@ -14,7 +14,8 @@ class Application extends Model
         'user_id',
         'program_id',
         'status',
-        'data'
+        'data',
+        'career_id',
     ];
 
     protected $casts = [
@@ -30,4 +31,10 @@ class Application extends Model
     {
         return $this->belongsTo(Program::class);
     }
+
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
+
 }
