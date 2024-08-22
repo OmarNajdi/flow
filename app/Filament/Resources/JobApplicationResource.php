@@ -258,9 +258,9 @@ class JobApplicationResource extends Resource
                         }),
                     Wizard\Step::make('Documents')->icon('heroicon-o-briefcase')
                         ->schema([
-                            FileUpload::make('cv')->label('Upload your CV')
+                            FileUpload::make('cv')->label('Upload your CV')->required()
                                 ->multiple()->appendFiles()->maxFiles(1)->maxSize(10240)->directory('job-attachments'),
-                            FileUpload::make('cover_letter')->label('Upload your Cover Letter')
+                            FileUpload::make('cover_letter')->label('Upload your Cover Letter')->required()
                                 ->multiple()->appendFiles()->maxFiles(1)->maxSize(10240)->directory('job-attachments')
                         ]),
                 ])->columnSpan(2)->statePath('data')->nextAction(
