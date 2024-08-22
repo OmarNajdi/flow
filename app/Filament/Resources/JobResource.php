@@ -100,7 +100,7 @@ class JobResource extends Resource
                                 ->label('Apply')
                                 ->size('xl')
                                 ->icon('heroicon-s-plus')
-                                ->url(fn(Job $record): string => ApplicationResource::getUrl('create',
+                                ->url(fn(Job $record): string => JobApplicationResource::getUrl('create',
                                     ['job' => $record])),
                         ])->fullWidth(),
                     ]),
