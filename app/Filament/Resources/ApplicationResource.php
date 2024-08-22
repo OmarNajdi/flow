@@ -675,7 +675,7 @@ class ApplicationResource extends Resource
             Wizard\Step::make('Market Research')->icon('heroicon-s-building-storefront')
                 ->schema([
                     TextInput::make('target')->label('Who are your target customers?')->required(),
-                    Textarea::make('how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)'),
+                    Textarea::make('how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)'),
                     Textarea::make('advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market? '),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
@@ -829,7 +829,7 @@ class ApplicationResource extends Resource
                         ->schema([
                             Placeholder::make('review_target')->label('Who are your target customers?')
                                 ->content(fn(Application $record): string => $record->data['target'] ?? ''),
-                            Placeholder::make('review_how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')
+                            Placeholder::make('review_how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')
                                 ->content(fn(Application $record): string => $record->data['how_target'] ?? ''),
                             Placeholder::make('review_advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?')
                                 ->content(fn(Application $record): string => $record->data['advantage'] ?? ''),
@@ -1249,7 +1249,7 @@ class ApplicationResource extends Resource
             \Filament\Infolists\Components\Section::make(__('Market Research'))
                 ->schema([
                     TextEntry::make('data.target')->label('Who are your target customers?')->html(),
-                    TextEntry::make('data.how_target')->label('How did you identify your target market? How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')->html(),
+                    TextEntry::make('data.how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')->html(),
                     TextEntry::make('data.advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?')->html(),
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Team'))
