@@ -10,13 +10,10 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
@@ -24,13 +21,10 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Split;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -264,7 +258,8 @@ class JobApplicationResource extends Resource
                                 ->multiple()->appendFiles()->maxFiles(1)->maxSize(10240)->directory('job-attachments')
                         ]),
                 ])->columnSpan(2)->statePath('data')->nextAction(
-                    fn(\Filament\Forms\Components\Actions\Action $action) => $action->label('Save and Continue')->translateLabel(),
+                    fn(\Filament\Forms\Components\Actions\Action $action
+                    ) => $action->label('Save and Continue')->translateLabel(),
                 ),
             ]);
     }
@@ -294,7 +289,14 @@ class JobApplicationResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-            ]);
+            ])->recordUrl(function ($record) {
+                if ($record->trashed()) {
+                    return null;
+                }
+
+                return $record->status === 'Draft' ? JobApplicationResource::getUrl('edit',
+                    [$record]) : JobApplicationResource::getUrl('view', [$record]);
+            });
     }
 
     public static function getRelations(): array
@@ -369,15 +371,16 @@ class JobApplicationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListJobApplications::route('/'),
+            'index'  => Pages\ListJobApplications::route('/'),
             'create' => Pages\CreateJobApplication::route('/create'),
-            'edit' => Pages\EditJobApplication::route('/{record}/edit'),
+            'view'   => Pages\ViewJobApplication::route('/{record}'),
+            'edit'   => Pages\EditJobApplication::route('/{record}/edit'),
         ];
     }
 
     public static function canEdit(Model $record): bool
     {
-        return ($record->user_id === auth()->id() || auth()->id() <= 5);
+        return $record->status === 'Draft' && ($record->user_id === auth()->id() || auth()->id() <= 5);
     }
 
     public static function canView(Model $record): bool

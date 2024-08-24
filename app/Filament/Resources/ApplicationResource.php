@@ -1613,7 +1613,7 @@ class ApplicationResource extends Resource
                     return null;
                 }
 
-                return $record->status === 'draft' ? ApplicationResource::getUrl('edit',
+                return $record->status === 'Draft' ? ApplicationResource::getUrl('edit',
                     [$record]) : ApplicationResource::getUrl('view', [$record]);
             })
             ->headerActions($header_actions);
