@@ -44,12 +44,14 @@ class CreateApplication extends CreateRecord
 
         if ( ! $program) {
             $this->redirect(ProgramResource::getUrl('index'));
+
             return;
         }
 
 
-        if ($program->status !== 'open') {
+        if ( ! in_array($program->status, ['open', 'draft'])) {
             $this->redirect(ProgramResource::getUrl('index'));
+
             return;
         }
 
