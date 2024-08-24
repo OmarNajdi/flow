@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\JobApplicationResource\Pages;
 
 use App\Filament\Resources\JobApplicationResource;
+use App\Notifications\JobApplicationSubmitted;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
@@ -32,6 +33,17 @@ class EditJobApplication extends EditRecord
     {
         $data['status'] = 'Submitted';
         $record->update($data);
+
+        $recipient = auth()->user();
+
+        $recipient->notify(
+            new JobApplicationSubmitted(
+                [
+                    'job'        => $record->job?->title,
+                    'first_name' => $record->data['first_name']
+                ]
+            )
+        );
 
         return $record;
     }

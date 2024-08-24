@@ -6,8 +6,6 @@ use App\Filament\Resources\JobApplicationResource;
 use App\Filament\Resources\JobResource;
 use App\Models\Application;
 use App\Models\Job;
-use App\Notifications\ApplicationSubmitted;
-use App\Notifications\JobApplicationSubmitted;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Session;
 
@@ -58,18 +56,4 @@ class CreateJobApplication extends CreateRecord
         $this->redirect(JobApplicationResource::getUrl('edit', [$application]));
     }
 
-
-    protected function afterCreate(): void
-    {
-        $recipient = auth()->user();
-
-        $recipient->notify(
-            new JobApplicationSubmitted(
-                [
-                    'job'    => $this->record?->job?->title,
-                    'first_name' => $this->record?->data['first_name']
-                ]
-            )
-        );
-    }
 }
