@@ -1722,24 +1722,24 @@ class ApplicationResource extends Resource
         $incubation_infolist = [
             \Filament\Infolists\Components\Section::make(__('Startup Overview'))
                 ->schema([
-                    TextEntry::make('data.idea')->label('Please provide a brief description of your business or idea.')->html(),
-                    TextEntry::make('data.problem')->label('What problem are you solving?')->html(),
-                    TextEntry::make('data.fit')->label('How did you validate the problem-solution fit?')->html(),
-                    TextEntry::make('data.solution')->label('Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition')->html(),
-                    TextEntry::make('data.sector')->label('What industry sector does your product/service target?')->html(),
-                    TextEntry::make('data.sector_other')->label('Please Specify')->html(),
+                    TextEntry::make('data.idea')->label('Please provide a brief description of your business or idea.'),
+                    TextEntry::make('data.problem')->label('What problem are you solving?'),
+                    TextEntry::make('data.fit')->label('How did you validate the problem-solution fit?'),
+                    TextEntry::make('data.solution')->label('Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition'),
+                    TextEntry::make('data.sector')->label('What industry sector does your product/service target?'),
+                    TextEntry::make('data.sector_other')->label('Please Specify'),
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Current Status'))
                 ->schema([
-                    TextEntry::make('data.stage')->label('What stage is your solution currently in?')->html(),
-                    TextEntry::make('data.features')->label('Have you identified the must-have features that your MVP should include?')->html(),
-                    TextEntry::make('data.milestones')->label('What key milestones have you achieved so far?')->html(),
+                    TextEntry::make('data.stage')->label('What stage is your solution currently in?'),
+                    TextEntry::make('data.features')->label('Have you identified the must-have features that your MVP should include?'),
+                    TextEntry::make('data.milestones')->label('What key milestones have you achieved so far?'),
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Market Research'))
                 ->schema([
-                    TextEntry::make('data.target')->label('Who are your target customers?')->html(),
-                    TextEntry::make('data.how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)')->html(),
-                    TextEntry::make('data.advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?')->html(),
+                    TextEntry::make('data.target')->label('Who are your target customers?'),
+                    TextEntry::make('data.how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)'),
+                    TextEntry::make('data.advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?'),
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Team'))
                 ->schema([
@@ -1753,15 +1753,15 @@ class ApplicationResource extends Resource
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Vision and Goals'))
                 ->schema([
-                    TextEntry::make('data.vision')->label('What is your vision for the startup in the next 1-3 years?')->html(),
-                    TextEntry::make('data.achieve')->label('What are the key milestones you aim to achieve during the incubation program?')->html(),
-                    TextEntry::make('data.support')->label('How can Flow Accelerator support you in developing your MVP?')->html(),
+                    TextEntry::make('data.vision')->label('What is your vision for the startup in the next 1-3 years?'),
+                    TextEntry::make('data.achieve')->label('What are the key milestones you aim to achieve during the incubation program?'),
+                    TextEntry::make('data.support')->label('How can Flow Accelerator support you in developing your MVP?'),
                 ])->columns(1),
             \Filament\Infolists\Components\Section::make(__('Additional Information'))
                 ->schema([
-                    TextEntry::make('data.other')->label('Have you participated in any other incubation or acceleration programs? If yes, provide details.')->html(),
-                    TextEntry::make('data.committed')->label('Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?')->html(),
-                    TextEntry::make('data.issues')->label('Are there any legal issues or intellectual property concerns related to your startup?')->html(),
+                    TextEntry::make('data.other')->label('Have you participated in any other incubation or acceleration programs? If yes, provide details.'),
+                    TextEntry::make('data.committed')->label('Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?'),
+                    TextEntry::make('data.issues')->label('Are there any legal issues or intellectual property concerns related to your startup?'),
                     RepeatableEntry::make('data.attachments')->label('Attachments')
                         ->schema([
                             TextEntry::make('')->formatStateUsing(fn(string $state
