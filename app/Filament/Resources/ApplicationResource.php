@@ -323,7 +323,6 @@ class ApplicationResource extends Resource
                 ])
         ];
 
-
         $pre_incubation_form = [
             Wizard\Step::make('Problem & Need')->icon('heroicon-s-bolt')
                 ->schema([
@@ -855,11 +854,501 @@ class ApplicationResource extends Resource
                 ])
         ];
 
+        $pre_acceleration_form = [
+            Wizard\Step::make('Solution')->icon('heroicon-s-light-bulb')
+                ->schema([
+                    Select::make('sector')->label('In which industry does your solution fit?')->options([
+                        'Agriculture'                   => __('Agriculture'),
+                        'Automotive'                    => __('Automotive'),
+                        'Banking'                       => __('Banking & Finance'),
+                        'Construction'                  => __('Construction'),
+                        'Education'                     => __('Education'),
+                        'Energy'                        => __('Energy'),
+                        'Entertainment'                 => __('Entertainment'),
+                        'Environmental Services'        => __('Environmental Services'),
+                        'Fashion'                       => __('Fashion'),
+                        'Food Processing and Nutrition' => __('Food Processing and Nutrition'),
+                        'Healthcare'                    => __('Healthcare'),
+                        'Hospitality'                   => __('Hospitality'),
+                        'Information Technology (IT)'   => __('Information Technology (IT)'),
+                        'Legal Services'                => __('Legal Services'),
+                        'Logistics & Transportation'    => __('Logistics & Transportation'),
+                        'Manufacturing'                 => __('Manufacturing'),
+                        'Media & Communications'        => __('Media & Communications'),
+                        'Real Estate'                   => __('Real Estate'),
+                        'Sports & Recreation'           => __('Sports & Recreation'),
+                        'Telecommunications'            => __('Telecommunications'),
+                        'Travel & Tourism'              => __('Travel & Tourism'),
+                        'Other'                         => __('Other'),
+                    ])->required()->reactive(),
+                    TextInput::make('sector_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('sector') !== 'Other'),
+                    Select::make('stage')->label('What stage is your solution currently in?')->options([
+                        'PoC-Prototype-MVP' => __('Proof-of-Concept / Prototype / MVP'),
+                        'Launch'            => __('Market Launch'),
+                    ])->required()->reactive(),
+
+
+                    // Combined Questions
+                    TextInput::make('solution_name')->label('What is the name of your solution?')->required(),
+                    Textarea::make('solution')->label('In a short paragraph, describe your solution briefly?')->required(),
+                    Select::make('solution_type')->label('Is your solution a software, hardware or System?')
+                        ->options([
+                            'Software' => __('Software'),
+                            'Hardware' => __('Hardware'),
+                            'System'   => __('System (SW & HW)'),
+                            'Other'    => __('Other'),
+                        ])->required()->reactive(),
+                    TextInput::make('solution_type_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('solution_type') !== 'Other'),
+                    Textarea::make('problem')->label('What Problem / Challenge does your solution tackle?')->required(),
+                    Textarea::make('target')->label('Who are your target market and potential customers?')->required(),
+                    Textarea::make('value_proposition')->label('How does your solution solve the problem and what\'s your value proposition?')->required(),
+                    Textarea::make('competitive_advantage')->label('What is your competitive advantage?')->required(),
+                    Select::make('impact')->label('What types of impact does your solution make?')
+                        ->options([
+                            'Academic Impact'      => __('Academic Impact'),
+                            'Social Impact'        => __('Social Impact'),
+                            'Economic Impact'      => __('Economic Impact'),
+                            'Wellbeing Impact'     => __('Wellbeing Impact'),
+                            'Environmental Impact' => __('Environmental Impact (for ex. Green Innovation, Circular Economy, Climate Change, etc)'),
+                            'Other'                => __('Other'),
+                        ])->required()->reactive(),
+                    TextInput::make('impact_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('impact') !== 'Other'),
+                    // End Combined Questions
+
+
+                    // PoC-Prototype-MVP Questions
+                    Select::make('validation_duration')->label('When did you start with the idea validation?')
+                        ->options([
+                            'Less than 1 year'  => __('Less than 1 year'),
+                            '1-3 years'         => __('1-3 years'),
+                            '3-5 years'         => __('3-5 years'),
+                            'more than 5 years' => __('more than 5 years'),
+                        ])->required()->hidden(fn(callable $get) => $get('stage') !== 'PoC-Prototype-MVP'),
+                    Textarea::make('validation_process')->label('Tell us briefly about your proof of concept/idea validation process?')->required()
+                        ->hidden(fn(callable $get) => $get('stage') !== 'PoC-Prototype-MVP'),
+                    // End PoC-Prototype-MVP Questions
+
+                    // Launch Questions
+                    Select::make('startup_registered')->label('Is your Startup registered?')
+                        ->options([
+                            'Yes' => __('Yes'),
+                            'No'  => __('No'),
+                        ])->required()->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    Select::make('solution_launch')->label('When did you launch your solution in the market?')
+                        ->options([
+                            'Less than 1 year'  => __('Less than 1 year'),
+                            '1-3 years'         => __('1-3 years'),
+                            '3-5 years'         => __('3-5 years'),
+                            'more than 5 years' => __('more than 5 years'),
+                        ])->required()->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    Select::make('go_to_market_strategy')->label('What was your go-to-market Strategy?')
+                        ->options([
+                            'Email Announcements'    => __('Email Announcements'),
+                            'Landing Page'           => __('Landing Page'),
+                            'Social Media Promotion' => __('Social Media Promotion'),
+                            'Website and SEO'        => __('Website and SEO'),
+                            'Direct Sales'           => __('Direct Sales'),
+                            'Other'                  => __('Other'),
+                        ])->required()->reactive()->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    TextInput::make('go_to_market_strategy_other')->label('Please Specify')
+                        ->hidden(fn(callable $get
+                        ) => $get('go_to_market_strategy') !== 'Other' || $get('stage') !== 'Launch'),
+                    // End Launch Questions
+
+                    // Combined Questions
+                    Select::make('business_model')->label('What is your business model?')
+                        ->options([
+                            'B2B'   => __('B2B: Business to business'),
+                            'B2C'   => __('B2C: Business to customer'),
+                            'B2G'   => __('B2G: Business to government'),
+                            'B2B2C' => __('B2B2C: Business to business to customer'),
+                            'B2C2B' => __('B2C2B: Business to customer to business'),
+                            'C2C'   => __('C2C: Consumer to Consumer'),
+                            'C2B'   => __('C2B: Consumer to Business'),
+                            'Other' => __('Other'),
+                        ])->required()->reactive(),
+                    TextInput::make('business_model_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('business_model') !== 'Other'),
+                    Select::make('revenue_model')->label('What is your revenue model? How does your business generate revenue?')
+                        ->options([
+                            'Ad-Based Revenue Model'            => __('Ad-Based Revenue Model'),
+                            'Affiliate Revenue Model'           => __('Affiliate Revenue Model'),
+                            'Transactional Revenue Model'       => __('Transactional Revenue Model'),
+                            'Subscription Revenue Model'        => __('Subscription Revenue Model'),
+                            'Web Sales'                         => __('Web Sales'),
+                            'Direct Sales'                      => __('Direct Sales'),
+                            'Channel Sales (or Indirect Sales)' => __('Channel Sales (or Indirect Sales)'),
+                            'Retail Sales'                      => __('Retail Sales'),
+                            'Freemium Model'                    => __('Freemium Model'),
+                            'Wholesale'                         => __('Wholesale'),
+                            'SaaS (Software as a service)'      => __('SaaS (Software as a service)'),
+                            'Other'                             => __('Other'),
+                        ])->required()->reactive(),
+                    TextInput::make('revenue_model_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('revenue_model') !== 'Other'),
+                    Textarea::make('competitors')->label('Who are your current competitors? Locally and regionally?')->required(),
+                    // End Combined Questions
+
+
+                    // PoC-Prototype-MVP Questions
+                    Select::make('funding')->label('Did you get any funding so far?')
+                        ->options([
+                            'Bootstrapping'      => __('Bootstrapping'),
+                            'Family and Friends' => __('Family and Friends'),
+                            'Loan'               => __('Loan'),
+                            'Crowdfunding'       => __('Crowdfunding'),
+                            'Grants'             => __('Grants'),
+                            'Investment'         => __('Investment'),
+                            'Other'              => __('Other'),
+                            'No'                 => __('No, I didn\'t get any funding so far'),
+                        ])->required()->reactive()->hidden(fn(callable $get) => $get('stage') !== 'PoC-Prototype-MVP'),
+                    TextInput::make('funding_other')->label('Please Specify')
+                        ->hidden(fn(callable $get
+                        ) => $get('funding') !== 'Other' || $get('stage') !== 'PoC-Prototype-MVP'),
+                    Select::make('challenges')->label('What are the greatest challenges facing the implementation of your idea? If any please choose.')
+                        ->options([
+                            'Small market'                                    => __('Small market'),
+                            'Strict regulations'                              => __('Strict regulations'),
+                            'Lack of financial resources'                     => __('Lack of financial resources'),
+                            'Lack of Experience'                              => __('Lack of Experience'),
+                            'Lack of information (No qualified team members)' => __('Lack of information (No qualified team members)'),
+                            'Other'                                           => __('Other'),
+                        ])->required()->reactive()->hidden(fn(callable $get) => $get('stage') !== 'PoC-Prototype-MVP'),
+                    TextInput::make('challenges_other')->label('Please Specify')
+                        ->hidden(fn(callable $get
+                        ) => $get('challenges') !== 'Other' || $get('stage') !== 'PoC-Prototype-MVP'),
+                    // End PoC-Prototype-MVP Questions
+
+                    // Launch Questions
+                    Textarea::make('traction')->label('What traction and leads were you able to gain? Please clarify.')->required()
+                        ->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    Textarea::make('market_validation')->label('What is your market validation strategy?')->required()
+                        ->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    Select::make('generating_revenue')->label('Is the solution generating revenue already?')
+                        ->options([
+                            'Yes' => __('Yes'),
+                            'No'  => __('No'),
+                        ])->required()->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    Textarea::make('needs')->label('What are the three top needs for your solution that the funding would fulfill?')->required()
+                        ->hidden(fn(callable $get) => $get('stage') !== 'Launch'),
+                    // End Launch Questions
+
+
+                    Select::make('sdg')->label('Does your solution meet one or more of the SDGs (Sustainable Development Goals)?')
+                        ->options([
+                            'It doesn\'t support any'                => __('It doesn\'t support any'),
+                            'No Poverty'                             => __('No Poverty'),
+                            'Zero Hunger'                            => __('Zero Hunger'),
+                            'Good Health and Well-being'             => __('Good Health and Well-being'),
+                            'Quality Education'                      => __('Quality Education'),
+                            'Gender Equality'                        => __('Gender Equality'),
+                            'Clean Water and Sanitation'             => __('Clean Water and Sanitation'),
+                            'Affordable and Clean Energy'            => __('Affordable and Clean Energy'),
+                            'Decent Work and Economic Growth'        => __('Decent Work and Economic Growth'),
+                            'Industry Innovation and Infrastructure' => __('Industry Innovation and Infrastructure'),
+                            'Reduced Inequalities'                   => __('Reduced Inequalities'),
+                            'Sustainable Cities and Communities'     => __('Sustainable Cities and Communities'),
+                            'Responsible Consumption and Production' => __('Responsible Consumption and Production'),
+                            'Climate Action'                         => __('Climate Action'),
+                            'Life below Water'                       => __('Life below Water'),
+                            'Life on Land'                           => __('Life on Land'),
+                            'Peace Justice and Strong Institutions'  => __('Peace Justice and Strong Institutions'),
+                            'Partnerships for the Goals'             => __('Partnerships for the Goals'),
+                        ])->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'sector'                => $get('sector'),
+                                'sector_other'          => $get('sector_other'),
+                                'stage'                 => $get('stage'),
+                                'solution_name'         => $get('solution_name'),
+                                'solution'              => $get('solution'),
+                                'solution_type'         => $get('solution_type'),
+                                'solution_type_other'   => $get('solution_type_other'),
+                                'problem'               => $get('problem'),
+                                'target'                => $get('target'),
+                                'value_proposition'     => $get('value_proposition'),
+                                'competitive_advantage' => $get('competitive_advantage'),
+                                'impact'                => $get('impact'),
+                                'impact_other'          => $get('impact_other'),
+                                'validation_duration'   => $get('validation_duration'),
+                                'validation_process'    => $get('validation_process'),
+                                'startup_registered'    => $get('startup_registered'),
+                                'solution_launch'       => $get('solution_launch'),
+                                'go_to_market_strategy' => $get('go_to_market_strategy'),
+                                'business_model'        => $get('business_model'),
+                                'business_model_other'  => $get('business_model_other'),
+                                'revenue_model'         => $get('revenue_model'),
+                                'revenue_model_other'   => $get('revenue_model_other'),
+                                'competitors'           => $get('competitors'),
+                                'funding'               => $get('funding'),
+                                'funding_other'         => $get('funding_other'),
+                                'challenges'            => $get('challenges'),
+                                'challenges_other'      => $get('challenges_other'),
+                                'traction'              => $get('traction'),
+                                'market_validation'     => $get('market_validation'),
+                                'sdg'                   => $get('sdg'),
+                                'generating_revenue'    => $get('generating_revenue'),
+                                'needs'                 => $get('needs'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Team')->icon('heroicon-s-users')
+                ->schema([
+                    Repeater::make('team_members')->label('Team Members')->addActionLabel(__('Add Team Member'))
+                        ->schema([
+                            TextInput::make('name')->label('Name')->required(),
+                            TextInput::make('role')->label('Role')->required(),
+                            PhoneInput::make('phone')->label('Phone')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            TextInput::make('email')->label('Email')->required()->email(),
+                        ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'team_members' => $get('team_members'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Strategy')->icon('heroicon-s-forward')
+                ->schema([
+                    Textarea::make('strategy')->label('What are the upcoming milestones you aim to achieve throughout the programme. Please provide specific measurable milestones and the expected completion dates.')->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'strategy' => $get('strategy'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('General Information')->icon('heroicon-s-information-circle')
+                ->schema([
+                    Select::make('business_skills')->label('Which of the following business skills do you have?')
+                        ->options([
+                            'Finance'                         => __('Finance'),
+                            'Sales'                           => __('Sales'),
+                            'Marketing'                       => __('Marketing'),
+                            'Project Management'              => __('Project Management'),
+                            'Graphic Design and Copy Writing' => __('Graphic Design and Copy Writing'),
+                            'None'                            => __('None'),
+                            'Other'                           => __('Other'),
+                        ])->required(),
+                    Select::make('entrepreneurship')->label('Do you have any knowledge or experience in entrepreneurship/startups?')
+                        ->options([
+                            'Yes' => __('Yes'),
+                            'No'  => __('No'),
+                        ])->required(),
+                    Textarea::make('entrepreneurship_experience')->label('Please describe you experience with entrepreneurship and startups')->required(),
+                    TextInput::make('new_skill')->label('If you are looking to acquire one new skill, what would it be?')->required(),
+                    Select::make('program_discovery')->label('How did you hear about the Orange Corners Incubation Programme?')
+                        ->options([
+                            'Orange Corners Facebook Page'    => __('Orange Corners Facebook Page'),
+                            'Orange Corners Instagram Page'   => __('Orange Corners Instagram Page'),
+                            'Orange Corners LinkedIn Page'    => __('Orange Corners LinkedIn Page'),
+                            'Orange Corners Website'          => __('Orange Corners Website'),
+                            'Flow Accelerator Facebook Page'  => __('Flow Accelerator Facebook Page'),
+                            'Flow Accelerator Instagram Page' => __('Flow Accelerator Instagram Page'),
+                            'Flow Accelerator LinkedIn Page'  => __('Flow Accelerator LinkedIn Page'),
+                            'Other Social Media Channels'     => __('Other Social Media Channels'),
+                            'Friend/Colleague'                => __('Friend/Colleague'),
+                            'Your Company'                    => __('Your Company'),
+                        ])->required(),
+                    Select::make('participation')->label('If you were selected, can you participate in a 3-day bootcamp?')
+                        ->options([
+                            'Yes' => __('Yes'),
+                            'No'  => __('No'),
+                        ])->required(),
+                    TextInput::make('prototype_link')->label('Please share a link to the prototype of your product so that we can get a better understanding of its features and functionalities.')->url()->required(),
+                    FileUpload::make('attachments')->label('Please attach the following (Pitch Deck, Business Plan, Supporting Document, Business Model Canvas)')
+                        ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update(
+                        [
+                            'data' => array_merge($application->data, [
+                                'business_skills'             => $get('business_skills'),
+                                'entrepreneurship'            => $get('entrepreneurship'),
+                                'entrepreneurship_experience' => $get('entrepreneurship_experience'),
+                                'new_skill'                   => $get('new_skill'),
+                                'program_discovery'           => $get('program_discovery'),
+                                'participation'               => $get('participation'),
+                                'prototype_link'              => $get('prototype_link'),
+                            ])
+                        ]);
+                    Notification::make()
+                        ->title(__('Saved successfully'))
+                        ->success()
+                        ->send();
+                }),
+            Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
+                ->schema([
+                    Placeholder::make('review_section')->hiddenLabel()->content(
+                        new HtmlString('<div style="font-size: 24px;text-align: center">'.__("Please review your application before submitting").'</div>')
+                    ),
+                    Section::make(__('Personal Information'))
+                        ->schema([
+                            Placeholder::make('review_first_name')->label('First Name')
+                                ->content(fn(Application $record): string => $record->data['first_name'] ?? ''),
+                            Placeholder::make('review_last_name')->label('Last Name')
+                                ->content(fn(Application $record): string => $record->data['last_name'] ?? ''),
+                            Placeholder::make('review_email')->label('Email')
+                                ->content(fn(Application $record): string => $record->data['email'] ?? ''),
+                            Placeholder::make('review_dob')->label('Date of Birth')
+                                ->content(fn(Application $record): string => $record->data['dob'] ?? ''),
+                            Placeholder::make('review_phone')->label('Phone')
+                                ->content(fn(Application $record): string => $record->data['phone'] ?? ''),
+                            Placeholder::make('review_whatsapp')->label('Whatsapp')
+                                ->content(fn(Application $record): string => $record->data['whatsapp'] ?? ''),
+                            Placeholder::make('review_gender')->label('Gender')
+                                ->content(fn(Application $record): string => $record->data['gender'] ?? ''),
+                            Placeholder::make('review_residence')->label('Governorate of Residence')
+                                ->content(fn(Application $record): string => $record->data['residence'] ?? ''),
+                            Placeholder::make('review_residence_other')->label('Other Governorate')
+                                ->content(fn(Application $record
+                                ): string => $record->data['residence_other'] ?? ''),
+                            Placeholder::make('review_description')->label('Describe Yourself')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description'] ?? ''),
+                            Placeholder::make('review_description_other')->label('Describe Yourself (Other)')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description_other'] ?? ''),
+                            Placeholder::make('review_occupation')->label('Occupation')
+                                ->content(fn(Application $record): string => $record->data['occupation'] ?? ''),
+                        ])->columns(3),
+                    Section::make(__('Solution'))
+                        ->schema([
+                            Placeholder::make('review_sector')->label(__('In which industry does your solution fit?'))
+                                ->content(fn(Application $record): string => $record->data['sector'] ?? ''),
+                            Placeholder::make('review_sector_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record): string => $record->data['sector_other'] ?? ''),
+                            Placeholder::make('review_stage')->label(__('What stage is your solution currently in?'))
+                                ->content(fn(Application $record): string => $record->data['stage'] ?? ''),
+                            Placeholder::make('review_solution_name')->label(__('What is the name of your solution?'))
+                                ->content(fn(Application $record): string => $record->data['solution_name'] ?? ''),
+                            Placeholder::make('review_solution')->label(__('In a short paragraph, describe your solution briefly?'))
+                                ->content(fn(Application $record): string => $record->data['solution'] ?? ''),
+                            Placeholder::make('review_solution_type')->label(__('Is your solution a software, hardware or System?'))
+                                ->content(fn(Application $record): string => $record->data['solution_type'] ?? ''),
+                            Placeholder::make('review_solution_type_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['solution_type_other'] ?? ''),
+                            Placeholder::make('review_problem')->label(__('What Problem / Challenge does your solution tackle?'))
+                                ->content(fn(Application $record): string => $record->data['problem'] ?? ''),
+                            Placeholder::make('review_target')->label(__('Who are your target market and potential customers?'))
+                                ->content(fn(Application $record): string => $record->data['target'] ?? ''),
+                            Placeholder::make('review_value_proposition')->label(__('How does your solution solve the problem and what\'s your value proposition?'))
+                                ->content(fn(Application $record): string => $record->data['value_proposition'] ?? ''),
+                            Placeholder::make('review_competitive_advantage')->label(__('What is your competitive advantage?'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['competitive_advantage'] ?? ''),
+                            Placeholder::make('review_impact')->label(__('What types of impact does your solution make?'))
+                                ->content(fn(Application $record): string => $record->data['impact'] ?? ''),
+                            Placeholder::make('review_impact_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record): string => $record->data['impact_other'] ?? ''),
+                            Placeholder::make('review_validation_duration')->label(__('When did you start with the idea validation?'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['validation_duration'] ?? ''),
+                            Placeholder::make('review_validation_process')->label(__('Tell us briefly about your proof of concept/idea validation process?'))
+                                ->content(fn(Application $record): string => $record->data['validation_process'] ?? ''),
+                            Placeholder::make('review_startup_registered')->label(__('Is your Startup registered?'))
+                                ->content(fn(Application $record): string => $record->data['startup_registered'] ?? ''),
+                            Placeholder::make('review_solution_launch')->label(__('When did you launch your solution in the market?'))
+                                ->content(fn(Application $record): string => $record->data['solution_launch'] ?? ''),
+                            Placeholder::make('review_go_to_market_strategy')->label(__('What was your go-to-market Strategy?'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['go_to_market_strategy'] ?? ''),
+                            Placeholder::make('review_go_to_market_strategy_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['go_to_market_strategy_other'] ?? ''),
+                            Placeholder::make('review_business_model')->label(__('What is your business model?'))
+                                ->content(fn(Application $record): string => $record->data['business_model'] ?? ''),
+                            Placeholder::make('review_business_model_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['business_model_other'] ?? ''),
+                            Placeholder::make('review_revenue_model')->label(__('What is your revenue model? How does your business generate revenue?'))
+                                ->content(fn(Application $record): string => $record->data['revenue_model'] ?? ''),
+                            Placeholder::make('review_revenue_model_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['revenue_model_other'] ?? ''),
+                            Placeholder::make('review_competitors')->label(__('Who are your current competitors? Locally and regionally?'))
+                                ->content(fn(Application $record): string => $record->data['competitors'] ?? ''),
+                            Placeholder::make('review_funding')->label(__('Did you get any funding so far?'))
+                                ->content(fn(Application $record): string => $record->data['funding'] ?? ''),
+                            Placeholder::make('review_funding_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record): string => $record->data['funding_other'] ?? ''),
+                            Placeholder::make('review_challenges')->label(__('What are the greatest challenges facing the implementation of your idea? If any please choose.'))
+                                ->content(fn(Application $record): string => $record->data['challenges'] ?? ''),
+                            Placeholder::make('review_challenges_other')->label(__('Please Specify'))
+                                ->content(fn(Application $record): string => $record->data['challenges_other'] ?? ''),
+                            Placeholder::make('review_traction')->label(__('What traction and leads were you able to gain? Please clarify.'))
+                                ->content(fn(Application $record): string => $record->data['traction'] ?? ''),
+                            Placeholder::make('review_market_validation')->label(__('What is your market validation strategy?'))
+                                ->content(fn(Application $record): string => $record->data['market_validation'] ?? ''),
+                            Placeholder::make('review_sdg')->label(__('Does your solution meet one or more of the SDGs (Sustainable Development Goals)?'))
+                                ->content(fn(Application $record): string => $record->data['sdg'] ?? ''),
+                            Placeholder::make('review_generating_revenue')->label(__('Is the solution generating revenue already?'))
+                                ->content(fn(Application $record): string => $record->data['generating_revenue'] ?? ''),
+                            Placeholder::make('review_needs')->label(__('What are the three top needs for your solution that the funding would fulfill?'))
+                                ->content(fn(Application $record): string => $record->data['needs'] ?? ''),
+                        ]),
+                    Section::make(__('Strategy'))
+                        ->schema([
+                            Placeholder::make('review_strategy')->label('What are the upcoming milestones you aim to achieve throughout the programme. Please provide specific measurable milestones and the expected completion dates.')
+                                ->content(fn(Application $record): string => $record->data['strategy'] ?? ''),
+                        ]),
+                    Section::make(__('General Information'))
+                        ->schema([
+                            Placeholder::make('review_business_skills')->label(__('Which of the following business skills do you have?'))
+                                ->content(fn(Application $record): string => $record->data['business_skills'] ?? ''),
+                            Placeholder::make('review_entrepreneurship')->label(__('Do you have any knowledge or experience in entrepreneurship/startups?'))
+                                ->content(fn(Application $record): string => $record->data['entrepreneurship'] ?? ''),
+                            Placeholder::make('review_entrepreneurship_experience')->label(__('Please describe you experience with entrepreneurship and startups'))
+                                ->content(fn(Application $record
+                                ): string => $record->data['entrepreneurship_experience'] ?? ''),
+                            Placeholder::make('review_new_skill')->label(__('If you are looking to acquire one new skill, what would it be?'))
+                                ->content(fn(Application $record): string => $record->data['new_skill'] ?? ''),
+                            Placeholder::make('review_program_discovery')->label(__('How did you hear about the Orange Corners Incubation Programme?'))
+                                ->content(fn(Application $record): string => $record->data['program_discovery'] ?? ''),
+                            Placeholder::make('review_participation')->label(__('If you were selected, can you participate in a 3-day bootcamp?'))
+                                ->content(fn(Application $record): string => $record->data['participation'] ?? ''),
+                            Placeholder::make('review_prototype_link')->label(__('Please share a link to the prototype of your product so that we can get a better understanding of its features and functionalities.'))
+                                ->content(fn(Application $record): string => $record->data['prototype_link'] ?? ''),
+                        ]),
+                ])
+        ];
+
         $application = $form->getModelInstance();
         $wizard      = match (optional($application->program)->level) {
             'ideation and innovation' => $ideation_from,
             'pre-incubation' => $pre_incubation_form,
             'incubation' => $incubation_form,
+            'pre-acceleration' => $pre_acceleration_form,
             default => $ideation_from
         };
 
@@ -1275,7 +1764,8 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.issues')->label('Are there any legal issues or intellectual property concerns related to your startup?')->html(),
                     RepeatableEntry::make('data.attachments')->label('Attachments')
                         ->schema([
-                            TextEntry::make('')->formatStateUsing(fn(string $state): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                            TextEntry::make('')->formatStateUsing(fn(string $state
+                            ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
                         ])->columns(1),
                 ])->columns(1),
         ];
