@@ -1159,12 +1159,12 @@ class ApplicationResource extends Resource
                             'None'                            => __('None'),
                             'Other'                           => __('Other'),
                         ])->required(),
-                    Select::make('entrepreneurship')->label('Do you have any knowledge or experience in entrepreneurship/startups?')
-                        ->options([
-                            'Yes' => __('Yes'),
-                            'No'  => __('No'),
-                        ])->required(),
-                    Textarea::make('entrepreneurship_experience')->label('Please describe you experience with entrepreneurship and startups')->required(),
+                    Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
+                        'Yes' => __('Yes'),
+                        'No'  => __('No'),
+                    ])->required()->reactive(),
+                    Textarea::make('experience_specification')->label('Please specify your experience')
+                        ->hidden(fn(callable $get) => $get('startup_experience') !== 'Yes'),
                     TextInput::make('new_skill')->label('If you are looking to acquire one new skill, what would it be?')->required(),
                     Select::make('program_discovery')->label('How did you hear about the Orange Corners Incubation Programme?')
                         ->options([
@@ -1193,8 +1193,8 @@ class ApplicationResource extends Resource
                         [
                             'data' => array_merge($application->data, [
                                 'business_skills'             => $get('business_skills'),
-                                'entrepreneurship'            => $get('entrepreneurship'),
-                                'entrepreneurship_experience' => $get('entrepreneurship_experience'),
+                                'startup_experience'            => $get('startup_experience'),
+                                'experience_specification' => $get('experience_specification'),
                                 'new_skill'                   => $get('new_skill'),
                                 'program_discovery'           => $get('program_discovery'),
                                 'participation'               => $get('participation'),
@@ -1326,11 +1326,11 @@ class ApplicationResource extends Resource
                         ->schema([
                             Placeholder::make('review_business_skills')->label(__('Which of the following business skills do you have?'))
                                 ->content(fn(Application $record): string => $record->data['business_skills'] ?? ''),
-                            Placeholder::make('review_entrepreneurship')->label(__('Do you have any knowledge or experience in entrepreneurship/startups?'))
-                                ->content(fn(Application $record): string => $record->data['entrepreneurship'] ?? ''),
-                            Placeholder::make('review_entrepreneurship_experience')->label(__('Please describe you experience with entrepreneurship and startups'))
+                            Placeholder::make('review_startup_experience')->label(__('Do you have any knowledge or experience in entrepreneurship/startups?'))
+                                ->content(fn(Application $record): string => $record->data['startup_experience'] ?? ''),
+                            Placeholder::make('review_experience_specification')->label(__('Please describe you experience with entrepreneurship and startups'))
                                 ->content(fn(Application $record
-                                ): string => $record->data['entrepreneurship_experience'] ?? ''),
+                                ): string => $record->data['experience_specification'] ?? ''),
                             Placeholder::make('review_new_skill')->label(__('If you are looking to acquire one new skill, what would it be?'))
                                 ->content(fn(Application $record): string => $record->data['new_skill'] ?? ''),
                             Placeholder::make('review_program_discovery')->label(__('How did you hear about the Orange Corners Incubation Programme?'))
@@ -1349,7 +1349,7 @@ class ApplicationResource extends Resource
             'pre-incubation' => $pre_incubation_form,
             'incubation' => $incubation_form,
             'pre-acceleration' => $pre_acceleration_form,
-            default => $ideation_from
+            default => []
         };
 
         return $form
@@ -1770,12 +1770,81 @@ class ApplicationResource extends Resource
                 ])->columns(1),
         ];
 
+        $pre_acceleration_infolist = [
+            \Filament\Infolists\Components\Section::make(__('Solution'))
+                ->schema([
+                    TextEntry::make('data.sector')->label('In which industry does your solution fit?'),
+                    TextEntry::make('data.sector_other')->label('Please Specify'),
+                    TextEntry::make('data.stage')->label('What stage is your solution currently in?'),
+                    TextEntry::make('data.solution_name')->label('What is the name of your solution?'),
+                    TextEntry::make('data.solution')->label('In a short paragraph, describe your solution briefly?'),
+                    TextEntry::make('data.solution_type')->label('Is your solution a software, hardware or System?'),
+                    TextEntry::make('data.solution_type_other')->label('Please Specify'),
+                    TextEntry::make('data.problem')->label('What Problem / Challenge does your solution tackle?'),
+                    TextEntry::make('data.target')->label('Who are your target market and potential customers?'),
+                    TextEntry::make('data.value_proposition')->label('How does your solution solve the problem and what\'s your value proposition?'),
+                    TextEntry::make('data.competitive_advantage')->label('What is your competitive advantage?'),
+                    TextEntry::make('data.impact')->label('What types of impact does your solution make?'),
+                    TextEntry::make('data.impact_other')->label('Please Specify'),
+                    TextEntry::make('data.validation_duration')->label('When did you start with the idea validation?'),
+                    TextEntry::make('data.validation_process')->label('Tell us briefly about your proof of concept/idea validation process?'),
+                    TextEntry::make('data.startup_registered')->label('Is your Startup registered?'),
+                    TextEntry::make('data.solution_launch')->label('When did you launch your solution in the market?'),
+                    TextEntry::make('data.go_to_market_strategy')->label('What was your go-to-market Strategy?'),
+                    TextEntry::make('data.go_to_market_strategy_other')->label('Please Specify'),
+                    TextEntry::make('data.business_model')->label('What is your business model?'),
+                    TextEntry::make('data.business_model_other')->label('Please Specify'),
+                    TextEntry::make('data.revenue_model')->label('What is your revenue model? How does your business generate revenue?'),
+                    TextEntry::make('data.revenue_model_other')->label('Please Specify'),
+                    TextEntry::make('data.competitors')->label('Who are your current competitors? Locally and regionally?'),
+                    TextEntry::make('data.funding')->label('Did you get any funding so far?'),
+                    TextEntry::make('data.funding_other')->label('Please Specify'),
+                    TextEntry::make('data.challenges')->label('What are the greatest challenges facing the implementation of your idea? If any please choose.'),
+                    TextEntry::make('data.challenges_other')->label('Please Specify'),
+                    TextEntry::make('data.traction')->label('What traction and leads were you able to gain? Please clarify.'),
+                    TextEntry::make('data.market_validation')->label('What is your market validation strategy?'),
+                    TextEntry::make('data.generating_revenue')->label('Is the solution generating revenue already?'),
+                    TextEntry::make('data.needs')->label('What are the three top needs for your solution that the funding would fulfill?'),
+                    TextEntry::make('data.sdg')->label('Does your solution meet one or more of the SDGs (Sustainable Development Goals)?'),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Team'))
+                ->schema([
+                    RepeatableEntry::make('data.team_members')->label('Team Members')
+                        ->schema([
+                            TextEntry::make('name')->label('Name'),
+                            TextEntry::make('role')->label('Role'),
+                            TextEntry::make('phone')->label('Phone'),
+                            TextEntry::make('email')->label('Email'),
+                        ])->columns(4),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('Strategy'))
+                ->schema([
+                    TextEntry::make('data.strategy')->label('What are the upcoming milestones you aim to achieve throughout the programme. Please provide specific measurable milestones and the expected completion dates.'),
+                ])->columns(1),
+            \Filament\Infolists\Components\Section::make(__('General Information'))
+                ->schema([
+                    TextEntry::make('data.business_skills')->label('Which of the following business skills do you have?'),
+                    TextEntry::make('data.startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?'),
+                    TextEntry::make('data.experience_specification')->label('Please specify your experience'),
+                    TextEntry::make('data.new_skill')->label('If you are looking to acquire one new skill, what would it be?'),
+                    TextEntry::make('data.program_discovery')->label('How did you hear about the Orange Corners Incubation Programme?'),
+                    TextEntry::make('data.participation')->label('If you were selected, can you participate in a 3-day bootcamp?'),
+                    TextEntry::make('data.prototype_link')->label('Please share a link to the prototype of your product so that we can get a better understanding of its features and functionalities.'),
+                    RepeatableEntry::make('data.attachments')->label('Attachments')
+                        ->schema([
+                            TextEntry::make('')->formatStateUsing(fn(string $state
+                            ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                        ])->columns(1),
+                ])->columns(1),
+        ];
+
         // Get Application Model
         $application      = $infolist->getRecord();
         $program_infolist = match (optional($application->program)->level) {
             'ideation and innovation' => $ideation_infolist,
             'pre-incubation' => $pre_incubation_infolist,
             'incubation' => $incubation_infolist,
+            'pre-acceleration' => $pre_acceleration_infolist,
             default => []
         };
 
