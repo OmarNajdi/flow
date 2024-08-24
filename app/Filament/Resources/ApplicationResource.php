@@ -1192,13 +1192,13 @@ class ApplicationResource extends Resource
                     $application->update(
                         [
                             'data' => array_merge($application->data, [
-                                'business_skills'             => $get('business_skills'),
-                                'startup_experience'            => $get('startup_experience'),
+                                'business_skills'          => $get('business_skills'),
+                                'startup_experience'       => $get('startup_experience'),
                                 'experience_specification' => $get('experience_specification'),
-                                'new_skill'                   => $get('new_skill'),
-                                'program_discovery'           => $get('program_discovery'),
-                                'participation'               => $get('participation'),
-                                'prototype_link'              => $get('prototype_link'),
+                                'new_skill'                => $get('new_skill'),
+                                'program_discovery'        => $get('program_discovery'),
+                                'participation'            => $get('participation'),
+                                'prototype_link'           => $get('prototype_link'),
                             ])
                         ]);
                     Notification::make()
@@ -1566,8 +1566,8 @@ class ApplicationResource extends Resource
         $columns = array_merge($columns, [
             TextColumn::make('status')->label('Status')
                 ->getStateUsing(fn($record) => match ($record->status) {
-                    'Draft' => $record->program->status === 'open' ? 'Draft' : 'Incomplete',
-                    'Submitted' => $record->program->status === 'open' ? 'Submitted' : ucwords($record->program->status),
+                    'Draft' => in_array($record->program->status, ['open', 'draft']) ? 'Draft' : 'Incomplete',
+                    'Submitted' => in_array($record->program->status, ['open', 'draft']) ? 'Submitted' : ucwords($record->program->status),
                     default => $record->status
                 })->badge()
                 ->color(fn(string $state): string => match ($state) {
@@ -1908,7 +1908,9 @@ class ApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->status === 'Draft' && $record->program->status == 'open' && ($record->user_id === auth()->id() || auth()->id() <= 5);
+        return $record->status === 'Draft'
+               && in_array($record->program->status, ['open', 'draft'])
+               && ($record->user_id === auth()->id() || auth()->id() <= 5);
     }
 
     public static function canView(Model $record): bool
@@ -1924,8 +1926,9 @@ class ApplicationResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return auth()->id() <= 5
-            ? parent::getEloquentQuery()->whereRelation('program', 'status', 'open')
-            : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
+            ? parent::getEloquentQuery()->whereRelation('program', function ($query) {
+                $query->whereIn('status', ['open', 'draft']);
+            }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
     }
 
 }
