@@ -39,7 +39,7 @@ class Program extends Model
 
     public function getStatusAttribute($value): string
     {
-        return $this->close_date->endOfDay()->isFuture() ? 'open' : ($value === 'decision made' ? 'decision made' : 'in review');
+        return $this->close_date->endOfDay()->isFuture() ? $value : ($value === 'decision made' ? 'decision made' : 'in review');
     }
 
 

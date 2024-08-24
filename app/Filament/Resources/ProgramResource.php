@@ -65,6 +65,7 @@ class ProgramResource extends Resource
                 ])->required(),
                 TextInput::make('activity')->label('Activity'),
                 Select::make('status')->label('Status')->options([
+                    'draft'         => 'Draft',
                     'open'          => 'Open',
                     'in review'     => 'In Review',
                     'decision made' => 'Decision Made'
@@ -90,6 +91,7 @@ class ProgramResource extends Resource
                     ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
+                        'draft' => 'info',
                         'open' => 'success',
                         'in review' => 'warning',
                         'incomplete' => 'danger',
@@ -105,7 +107,7 @@ class ProgramResource extends Resource
             ->actions([
                 Action::make('apply')->label('Apply')->button()->icon('heroicon-s-plus')
                     ->url(fn(Program $record): string => ApplicationResource::getUrl('create', ['program' => $record]))
-                    ->visible(fn(Program $record): bool => $record->status === 'open'),
+                    ->visible(fn(Program $record): bool => in_array($record->status, ['open', 'draft'])),
                 Tables\Actions\ViewAction::make()->button(),
                 Tables\Actions\EditAction::make()->button()->color('gray'),
             ])
@@ -209,7 +211,7 @@ class ProgramResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 5 ? parent::getEloquentQuery()->where('status', 'open')
+        return auth()->id() <= 5 ? parent::getEloquentQuery()->whereIn('status', ['open', 'draft'])
             : parent::getEloquentQuery()->where('status', 'open')->whereDate('open_date', '<=', now());
     }
 }
