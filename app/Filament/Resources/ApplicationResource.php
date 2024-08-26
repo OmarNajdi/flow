@@ -654,7 +654,7 @@ class ApplicationResource extends Resource
                         'Yes' => __('Yes'),
                         'No'  => __('No'),
                     ])->hidden(fn(callable $get) => ! in_array($get('stage'),
-                        ['Prototype', 'Proof-of-Concept']))->reactive(),
+                        ['Idea', 'Prototype', 'Proof-of-Concept']))->reactive(),
                     Textarea::make('milestones')->label('What key milestones have you achieved so far?')->required(),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
@@ -1567,7 +1567,8 @@ class ApplicationResource extends Resource
             TextColumn::make('status')->label('Status')
                 ->getStateUsing(fn($record) => match ($record->status) {
                     'Draft' => in_array($record->program->status, ['open', 'draft']) ? 'Draft' : 'Incomplete',
-                    'Submitted' => in_array($record->program->status, ['open', 'draft']) ? 'Submitted' : ucwords($record->program->status),
+                    'Submitted' => in_array($record->program->status,
+                        ['open', 'draft']) ? 'Submitted' : ucwords($record->program->status),
                     default => $record->status
                 })->badge()
                 ->color(fn(string $state): string => match ($state) {
