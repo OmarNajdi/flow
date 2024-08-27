@@ -676,7 +676,7 @@ class ApplicationResource extends Resource
                 ->schema([
                     TextInput::make('target')->label('Who are your target customers?')->required(),
                     Textarea::make('how_target')->label('How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)'),
-                    Textarea::make('advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market? '),
+                    Textarea::make('advantage')->label('What is your competitive advantage? How do you plan to differentiate your startup in the market?'),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
