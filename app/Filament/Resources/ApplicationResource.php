@@ -474,7 +474,7 @@ class ApplicationResource extends Resource
                         ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
                     FileUpload::make('attachments')->label('Anything you\'d like to share with us? Share your pitch deck or any additional supporting documents if available.')
                         ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments')
-                        ->hint('Maximum size: 10MB, Maximum files: 5')
+                        ->hint(__("Maximum size: 10MB, Maximum files: 5"))
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
@@ -751,7 +751,7 @@ class ApplicationResource extends Resource
                     TextInput::make('issues')->label('Are there any legal issues or intellectual property concerns related to your startup?'),
                     FileUpload::make('attachments')->label('Please upload your pitch deck or any relevant documents you would like to share with us.')
                         ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments')
-                        ->hint('Maximum size: 10MB, Maximum files: 5'),
+                        ->hint(__("Maximum size: 10MB, Maximum files: 5")),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
@@ -1189,7 +1189,7 @@ class ApplicationResource extends Resource
                     TextInput::make('prototype_link')->label('Please share a link to the prototype of your product so that we can get a better understanding of its features and functionalities.')->url()->required(),
                     FileUpload::make('attachments')->label('Please attach the following (Pitch Deck, Business Plan, Supporting Document, Business Model Canvas)')
                         ->multiple()->appendFiles()->maxFiles(5)->maxSize(10240)->directory('application-attachments')
-                        ->hint('Maximum size: 10MB, Maximum files: 5'),
+                        ->hint(__("Maximum size: 10MB, Maximum files: 5")),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
@@ -1331,7 +1331,7 @@ class ApplicationResource extends Resource
                                 ->content(fn(Application $record): string => $record->data['business_skills'] ?? ''),
                             Placeholder::make('review_startup_experience')->label(__('Do you have any knowledge or experience in entrepreneurship/startups?'))
                                 ->content(fn(Application $record): string => $record->data['startup_experience'] ?? ''),
-                            Placeholder::make('review_experience_specification')->label(__('Please describe you experience with entrepreneurship and startups'))
+                            Placeholder::make('review_experience_specification')->label(__('Please specify your experience'))
                                 ->content(fn(Application $record
                                 ): string => $record->data['experience_specification'] ?? ''),
                             Placeholder::make('review_new_skill')->label(__('If you are looking to acquire one new skill, what would it be?'))
