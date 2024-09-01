@@ -19,6 +19,11 @@ class Job extends Model
         'close_date',
     ];
 
+    protected $casts = [
+        'open_date'  => 'date',
+        'close_date' => 'date',
+    ];
+
     public function applications()
     {
         return $this->hasMany(Application::class);

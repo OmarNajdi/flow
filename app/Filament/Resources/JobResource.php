@@ -73,7 +73,8 @@ class JobResource extends Resource
             ])
             ->actions([
                 Action::make('apply')->label('Apply')->button()->icon('heroicon-s-plus')
-                    ->url(fn(Job $record): string => JobApplicationResource::getUrl('create', ['job' => $record])),
+                    ->url(fn(Job $record): string => JobApplicationResource::getUrl('create', ['job' => $record]))
+                    ->visible(fn(Job $record): bool => $record->open_date->isPast() && $record->close_date->isFuture()),
                 Tables\Actions\ViewAction::make()->button(),
                 Tables\Actions\EditAction::make()->button()->color('gray'),
             ])
@@ -101,7 +102,9 @@ class JobResource extends Resource
                                 ->size('xl')
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Job $record): string => JobApplicationResource::getUrl('create',
-                                    ['job' => $record])),
+                                    ['job' => $record]))
+                                ->visible(fn(Job $record
+                                ): bool => $record->open_date->isPast() && $record->close_date->isFuture()),
                         ])->fullWidth(),
                     ]),
                     Section::make([
@@ -115,7 +118,9 @@ class JobResource extends Resource
                                 ->size('xl')
                                 ->icon('heroicon-s-plus')
                                 ->url(fn(Job $record): string => JobApplicationResource::getUrl('create',
-                                    ['job' => $record])),
+                                    ['job' => $record]))
+                                ->visible(fn(Job $record
+                                ): bool => $record->open_date->isPast() && $record->close_date->isFuture()),
                         ])->alignment(Alignment::Center)->fullWidth()->grow(false),
                     ])->grow(false),
                 ])->from('md')->columnSpan(2)

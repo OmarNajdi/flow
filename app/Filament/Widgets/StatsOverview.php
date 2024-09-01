@@ -29,7 +29,8 @@ class StatsOverview extends BaseWidget
                 ->label(__('My Applications'))
                 ->url(ApplicationResource::getUrl('index'))
                 ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100 dark:hover:to-[#018578] transition-all hover:scale-105']),
-            Stat::make('Open Jobs', Job::all()->count())
+            Stat::make('Open Jobs', Job::query()->whereDate('open_date', '<=', now())
+                ->whereDate('close_date', '>=', now())->count())
                 ->label(__('Open Jobs'))
                 ->url(JobResource::getUrl('index'))
                 ->extraAttributes(['class' => 'hover:bg-gradient-to-r hover:from-transparent hover:to-green-100 dark:hover:to-[#018578] transition-all hover:scale-105']),

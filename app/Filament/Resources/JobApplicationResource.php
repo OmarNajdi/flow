@@ -272,7 +272,13 @@ class JobApplicationResource extends Resource
             TextColumn::make('data.first_name')->label('First Name'),
             TextColumn::make('data.last_name')->label('Last Name'),
             TextColumn::make('data.email')->label('Email')->translateLabel(),
-            TextColumn::make('status')->label('Status')->badge()
+            TextColumn::make('status')->label('Status')
+                ->getStateUsing(fn($record) => match ($record->status) {
+                    // ToDo: Fix isFuture to include current day
+                    'Draft' => $record->job->close_date->isFuture() ? 'Draft' : 'Incomplete',
+                    default => $record->status
+                })
+                ->badge()
                 ->color(fn(string $state): string => match ($state) {
                     'Submitted' => 'success',
                     'Incomplete' => 'danger',
@@ -294,7 +300,8 @@ class JobApplicationResource extends Resource
                     return null;
                 }
 
-                return $record->status === 'Draft' ? JobApplicationResource::getUrl('edit',
+                // ToDo: Fix isFuture to include current day
+                return $record->status === 'Draft' && $record->job->close_date->isFuture() ? JobApplicationResource::getUrl('edit',
                     [$record]) : JobApplicationResource::getUrl('view', [$record]);
             });
     }
