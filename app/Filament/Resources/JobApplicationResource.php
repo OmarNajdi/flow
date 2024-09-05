@@ -290,6 +290,13 @@ class JobApplicationResource extends Resource
                 ->sortable(),
         ];
 
+        $header_actions = auth()->id() <= 5 ? [
+            Tables\Actions\Action::make('Export')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->url(route('job-applications.export'))
+                ->translateLabel()
+        ] : [];
+
         return $table
             ->columns($columns)
             ->filters([])
@@ -303,7 +310,8 @@ class JobApplicationResource extends Resource
                 // ToDo: Fix isFuture to include current day
                 return $record->status === 'Draft' && $record->job->close_date->isFuture() ? JobApplicationResource::getUrl('edit',
                     [$record]) : JobApplicationResource::getUrl('view', [$record]);
-            });
+            })
+            ->headerActions($header_actions);
     }
 
     public static function getRelations(): array
