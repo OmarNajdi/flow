@@ -147,7 +147,15 @@ class ApplicationResource extends Resource
                     RichEditor::make('skills_expertise')
                         ->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments. (Please limit your response to 150-200 words)')
                         ->required(),
-                    TextInput::make('team_count')->label('How many team members will participate in the problem-solving workshop?')->numeric()->minValue(1)->required(),
+                    Select::make('individual_or_team')->label('Are you applying as an individual or as part of a team?')->options([
+                        'Individual' => __('Individual'),
+                        'Team'       => __('Team'),
+                    ])->required()->reactive(),
+                    TextInput::make('team_count')->label('How many team members will participate in the problem-solving workshop?')
+                        ->numeric()
+                        ->minValue(1)
+                        ->required()
+                        ->hidden(fn(callable $get) => $get('individual_or_team') !== 'Team'),
                     Repeater::make('team_members')->label('Team Members')->addActionLabel(__('Add Team Member'))
                         ->schema([
                             TextInput::make('name')->label('Name')->required(),
@@ -161,7 +169,8 @@ class ApplicationResource extends Resource
                                     'il' => 'Palestine'
                                 ]),
                             TextInput::make('email')->label('Email')->required()->email(),
-                        ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required(),
+                        ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required()
+                        ->hidden(fn(callable $get) => $get('individual_or_team') !== 'Team'),
                     Select::make('startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')->options([
                         'Yes' => __('Yes'),
                         'No'  => __('No'),
@@ -197,6 +206,7 @@ class ApplicationResource extends Resource
                         [
                             'data' => array_merge($application->data, [
                                 'skills_expertise'         => $get('skills_expertise'),
+                                'individual_or_team'       => $get('individual_or_team'),
                                 'team_count'               => $get('team_count'),
                                 'team_members'             => $get('team_members'),
                                 'startup_experience'       => $get('startup_experience'),
@@ -292,6 +302,8 @@ class ApplicationResource extends Resource
                             Placeholder::make('review_skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments.')
                                 ->content(fn(Application $record
                                 ): HtmlString => new HtmlString($record->data['skills_expertise'] ?? '')),
+                            Placeholder::make('review_individual_or_team')->label('Are you applying as an individual or as part of a team?')
+                                ->content(fn(Application $record): string => $record->data['individual_or_team'] ?? ''),
                             Placeholder::make('review_team_count')->label('How many team members will participate in the problem-solving workshop?')
                                 ->content(fn(Application $record): string => $record->data['team_count'] ?? ''),
                             Placeholder::make('review_startup_experience')->label('Do you have any knowledge or experience in entrepreneurship/startups?')
@@ -1655,6 +1667,7 @@ class ApplicationResource extends Resource
             \Filament\Infolists\Components\Section::make(__('Generic Questions'))
                 ->schema([
                     TextEntry::make('data.skills_expertise')->label('Please tell us about your skills and areas of expertise. This could include technical skills such as programming languages, or data analysis techniques, as well as non-technical skills such as communication, problem-solving, project management, or leadership abilities. Feel free to highlight any relevant experiences or accomplishments.')->html(),
+                    TextEntry::make('individual_or_team')->label('Are you applying as an individual or as part of a team?')->html(),
                     TextEntry::make('data.team_count')->label('How many team members will participate in the problem-solving workshop?')->html(),
                     RepeatableEntry::make('data.team_members')->label('Team Members')
                         ->schema([
