@@ -37,6 +37,11 @@ class EditApplication extends EditRecord
             ->keyBindings(['mod+s']);
     }
 
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return __('Application Submitted');
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $data['status'] = 'Submitted';

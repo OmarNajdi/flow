@@ -1458,103 +1458,103 @@ class ApplicationResource extends Resource
                                 ->success()
                                 ->send();
                         }),
-                    Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
-                        ->schema([
-                            Section::make(__('Education'))
-                                ->schema([
-                                    Repeater::make('education')
-                                        ->schema([
-                                            Select::make('degree')
-                                                ->options([
-                                                    'High School'                 => __('High School'),
-                                                    'Vocational/Technical School' => __('Vocational/Technical School'),
-                                                    'Bachelor'                    => __('Bachelor\'s Degree'),
-                                                    'Master'                      => __('Master\'s Degree'),
-                                                    'PhD'                         => __('Doctorate/Ph.D.'),
-                                                    'Certification'               => __('Certification'),
-                                                ])
-                                                ->required(),
-                                            TextInput::make('school')->label('School/University')->required(),
-                                            TextInput::make('major')->label('Major/Field of study')->required(),
-                                            DatePicker::make('start_date')->label('Start Date')->required(),
-                                            Group::make([
-                                                Toggle::make('current')->label('Currently Studying There')->reactive(),
-                                            ])->extraAttributes(['class' => 'h-full content-center']),
-                                            DatePicker::make('end_date')->label('End Date')
-                                                ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
-                                        ->addActionLabel(__('Add'))
-                                ])
-                        ])->afterValidation(function (Get $get) use ($form) {
-                            $application = $form->getModelInstance();
-                            $application->update(
-                                [
-                                    'data' => array_merge($application->data, [
-                                        'education' => $get('education'),
-                                    ])
-                                ]);
-
-                            Notification::make()
-                                ->title(__('Saved successfully'))
-                                ->success()
-                                ->send();
-                        }),
-                    Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
-                        ->schema([
-                            Section::make(__('Experience'))
-                                ->schema([
-                                    Repeater::make('experience')->addActionLabel(__('Add Position'))
-                                        ->schema([
-                                            Select::make('type')
-                                                ->options([
-                                                    'full-time'     => __('Full-time'),
-                                                    'part-time'     => __('Part-time'),
-                                                    'internship'    => __('Internship'),
-                                                    'volunteer'     => __('Volunteer'),
-                                                    'self-employed' => __('Self-employed'),
-                                                    'freelance'     => __('Freelance'),
-                                                ])
-                                                ->required(),
-                                            TextInput::make('company')->label('Company Name')->required(),
-                                            TextInput::make('title')->label('Title')->required(),
-                                            DatePicker::make('start_date')->label('Start Date')->required(),
-                                            Group::make([
-                                                Toggle::make('current')->label('Currently Working There')->reactive(),
-                                            ])->extraAttributes(['class' => 'h-full content-center']),
-                                            DatePicker::make('end_date')->label('End Date')
-                                                ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
-                                            callable $get
-                                        ) => $get('description') !== 'Other')
-                                ]),
-                            Section::make(__('Skills'))
-                                ->schema([
-                                    TagsInput::make('soft_skills')->label('Please list your Soft Skills')
-                                        ->placeholder('Type and press Enter')->splitKeys([
-                                            'Tab', ','
-                                        ]),
-                                    TagsInput::make('technical_skills')->label('Please list your Technical Skills')
-                                        ->placeholder('Type and press Enter')->splitKeys([
-                                            'Tab', ','
-                                        ])
-                                ])
-                        ])->afterValidation(function (Get $get) use ($form) {
-                            $application = $form->getModelInstance();
-                            $application->update(
-                                [
-                                    'data' => array_merge($application->data, [
-                                        'experience'       => $get('experience'),
-                                        'soft_skills'      => $get('soft_skills'),
-                                        'technical_skills' => $get('technical_skills'),
-                                    ])
-                                ]);
-
-                            Notification::make()
-                                ->title(__('Saved successfully'))
-                                ->success()
-                                ->send();
-                        }),
-                    ...$wizard
+//                    Wizard\Step::make('Educational Background')->icon('heroicon-o-academic-cap')
+//                        ->schema([
+//                            Section::make(__('Education'))
+//                                ->schema([
+//                                    Repeater::make('education')
+//                                        ->schema([
+//                                            Select::make('degree')
+//                                                ->options([
+//                                                    'High School'                 => __('High School'),
+//                                                    'Vocational/Technical School' => __('Vocational/Technical School'),
+//                                                    'Bachelor'                    => __('Bachelor\'s Degree'),
+//                                                    'Master'                      => __('Master\'s Degree'),
+//                                                    'PhD'                         => __('Doctorate/Ph.D.'),
+//                                                    'Certification'               => __('Certification'),
+//                                                ])
+//                                                ->required(),
+//                                            TextInput::make('school')->label('School/University')->required(),
+//                                            TextInput::make('major')->label('Major/Field of study')->required(),
+//                                            DatePicker::make('start_date')->label('Start Date')->required(),
+//                                            Group::make([
+//                                                Toggle::make('current')->label('Currently Studying There')->reactive(),
+//                                            ])->extraAttributes(['class' => 'h-full content-center']),
+//                                            DatePicker::make('end_date')->label('End Date')
+//                                                ->hidden(fn(callable $get) => $get('current')),
+//                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(1)->required()
+//                                        ->addActionLabel(__('Add'))
+//                                ])
+//                        ])->afterValidation(function (Get $get) use ($form) {
+//                            $application = $form->getModelInstance();
+//                            $application->update(
+//                                [
+//                                    'data' => array_merge($application->data, [
+//                                        'education' => $get('education'),
+//                                    ])
+//                                ]);
+//
+//                            Notification::make()
+//                                ->title(__('Saved successfully'))
+//                                ->success()
+//                                ->send();
+//                        }),
+//                    Wizard\Step::make('Professional Experience')->icon('heroicon-o-briefcase')
+//                        ->schema([
+//                            Section::make(__('Experience'))
+//                                ->schema([
+//                                    Repeater::make('experience')->addActionLabel(__('Add Position'))
+//                                        ->schema([
+//                                            Select::make('type')
+//                                                ->options([
+//                                                    'full-time'     => __('Full-time'),
+//                                                    'part-time'     => __('Part-time'),
+//                                                    'internship'    => __('Internship'),
+//                                                    'volunteer'     => __('Volunteer'),
+//                                                    'self-employed' => __('Self-employed'),
+//                                                    'freelance'     => __('Freelance'),
+//                                                ])
+//                                                ->required(),
+//                                            TextInput::make('company')->label('Company Name')->required(),
+//                                            TextInput::make('title')->label('Title')->required(),
+//                                            DatePicker::make('start_date')->label('Start Date')->required(),
+//                                            Group::make([
+//                                                Toggle::make('current')->label('Currently Working There')->reactive(),
+//                                            ])->extraAttributes(['class' => 'h-full content-center']),
+//                                            DatePicker::make('end_date')->label('End Date')
+//                                                ->hidden(fn(callable $get) => $get('current')),
+//                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
+//                                            callable $get
+//                                        ) => $get('description') !== 'Other')
+//                                ]),
+//                            Section::make(__('Skills'))
+//                                ->schema([
+//                                    TagsInput::make('soft_skills')->label('Please list your Soft Skills')
+//                                        ->placeholder('Type and press Enter')->splitKeys([
+//                                            'Tab', ','
+//                                        ]),
+//                                    TagsInput::make('technical_skills')->label('Please list your Technical Skills')
+//                                        ->placeholder('Type and press Enter')->splitKeys([
+//                                            'Tab', ','
+//                                        ])
+//                                ])
+//                        ])->afterValidation(function (Get $get) use ($form) {
+//                            $application = $form->getModelInstance();
+//                            $application->update(
+//                                [
+//                                    'data' => array_merge($application->data, [
+//                                        'experience'       => $get('experience'),
+//                                        'soft_skills'      => $get('soft_skills'),
+//                                        'technical_skills' => $get('technical_skills'),
+//                                    ])
+//                                ]);
+//
+//                            Notification::make()
+//                                ->title(__('Saved successfully'))
+//                                ->success()
+//                                ->send();
+//                        }),
+//                    ...$wizard
                 ])->columnSpan(2)->statePath('data')->nextAction(
                     fn(Action $action) => $action->label('Save and Continue')->translateLabel(),
                 ),
