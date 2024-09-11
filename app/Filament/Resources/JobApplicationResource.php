@@ -411,8 +411,9 @@ class JobApplicationResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return auth()->id() <= 5
-            ? parent::getEloquentQuery()->whereNotNull('career_id')
-            : parent::getEloquentQuery()->whereNotNull('career_id')->where('user_id', auth()->id());
+            ? parent::getEloquentQuery()->whereRelation('job', function ($query) {
+                $query->whereIn('status', ['open', 'draft']);
+            }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('job', 'status', 'open');
     }
 
 }

@@ -7,6 +7,7 @@ use App\Filament\Resources\JobResource\RelationManagers;
 use App\Models\Job;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section;
@@ -57,6 +58,12 @@ class JobResource extends Resource
                 TextInput::make('title')->label('Title')->required()->columnSpan(2),
                 DatePicker::make('open_date')->native(false)->label('Open Date')->required(),
                 DatePicker::make('close_date')->native(false)->label('Close Date')->required(),
+                Select::make('status')->label('Status')->options([
+                    'draft'         => 'Draft',
+                    'open'          => 'Open',
+                    'in review'     => 'In Review',
+                    'decision made' => 'Decision Made'
+                ])->default('open')->required()->columnSpanFull(),
                 RichEditor::make('description')->label('Description')->required()->columnSpan(2),
             ]);
     }
@@ -68,6 +75,19 @@ class JobResource extends Resource
                 TextColumn::make('title')->translateLabel(),
                 TextColumn::make('open_date')->date()->sortable()->translateLabel(),
                 TextColumn::make('close_date')->date()->sortable()->translateLabel(),
+                TextColumn::make('status')
+                    ->formatStateUsing(fn(string $state): string => ucwords($state, '- '))
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'draft' => 'info',
+                        'open' => 'success',
+                        'in review' => 'warning',
+                        'incomplete' => 'danger',
+                        'decision made' => 'gray',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->translateLabel(),
             ])
             ->filters([
             ])
@@ -112,6 +132,7 @@ class JobResource extends Resource
                             ->weight(FontWeight::Bold),
                         TextEntry::make('open_date')->date('l, M j, Y'),
                         TextEntry::make('close_date')->date('l, M j, Y'),
+                        TextEntry::make('status')->formatStateUsing(fn(string $state): string => ucwords($state, '- ')),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('apply')
                                 ->label('Apply')
@@ -147,10 +168,8 @@ class JobResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return auth()->id() <= 5 ? parent::getEloquentQuery()->whereIn('status', ['open', 'draft'])
+            : parent::getEloquentQuery()->where('status', 'open')->whereDate('open_date', '<=', now());
     }
 
     public static function canCreate(): bool
