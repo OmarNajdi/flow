@@ -13,7 +13,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, WithStyles
 {
 
-    private string $level = 'pre-incubation';
+    private string $level = 'incubation';
 
     /**
      * @return \Illuminate\Support\Collection
