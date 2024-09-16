@@ -20,7 +20,7 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
      */
     public function collection()
     {
-        return Application::where('program_id', 3)->get();
+        return Application::where('program_id', 4)->get();
     }
 
     public function map($application): array
@@ -84,9 +84,35 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             $application->data['program_discovery_other'] ?? '',
         ];
 
+        $incubation = [
+            $application->data['idea'] ?? '',
+            $application->data['problem'] ?? '',
+            $application->data['fit'] ?? '',
+            $application->data['solution'] ?? '',
+            $application->data['sector'] ?? '',
+            $application->data['sector_other'] ?? '',
+            $application->data['stage'] ?? '',
+            $application->data['features'] ?? '',
+            $application->data['milestones'] ?? '',
+            $application->data['target'] ?? '',
+            $application->data['how_target'] ?? '',
+            $application->data['advantage'] ?? '',
+            $application->data['team_members'][0]['name'] ?? '',
+            $application->data['team_members'][0]['role'] ?? '',
+            $application->data['team_members'][0]['phone'] ?? '',
+            $application->data['team_members'][0]['email'] ?? '',
+            $application->data['vision'] ?? '',
+            $application->data['achieve'] ?? '',
+            $application->data['support'] ?? '',
+            $application->data['other'] ?? '',
+            $application->data['committed'] ?? '',
+            $application->data['issues'] ?? '',
+        ];
+
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
+            'incubation' => $incubation,
             default => $ideation
         };
 
@@ -183,10 +209,36 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             'Please Specify',
         ];
 
+        $incubation = [
+            'Please provide a brief description of your business or idea.',
+            'What problem are you solving?',
+            'How did you validate the problem-solution fit?',
+            'Describe your solution and how it addresses the problem. Please make sure to clarify your value proposition',
+            'What industry sector does your product/service target?',
+            'Please Specify',
+            'What stage is your solution currently in?',
+            'Have you identified the must-have features that your MVP should include?',
+            'What key milestones have you achieved so far?',
+            'Who are your target customers?',
+            'How did you identify your target market? Why do you believe this target market presents a good opportunity to start your business? Describe any research methods used (surveys, interviews, focus groups, etc.)',
+            'What is your competitive advantage? How do you plan to differentiate your startup in the market?',
+            'Name',
+            'Role',
+            'Phone',
+            'Email',
+            'What is your vision for the startup in the next 1-3 years?',
+            'What are the key milestones you aim to achieve during the incubation program?',
+            'How can Flow Accelerator support you in developing your MVP?',
+            'Have you participated in any other incubation or acceleration programs? If yes, provide details.',
+            'Are you committed to attending the training sessions, mentoring sessions, and completing deliverables?',
+            'Are there any legal issues or intellectual property concerns related to your startup?',
+        ];
+
 
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
+            'incubation' => $incubation,
             default => $ideation
         };
 
