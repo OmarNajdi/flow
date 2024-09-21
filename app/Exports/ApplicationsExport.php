@@ -13,14 +13,14 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, WithStyles
 {
 
-    private string $level = 'incubation';
+    private string $level = 'pre-acceleration';
 
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return Application::where('program_id', 4)->get();
+        return Application::where('program_id', 5)->get();
     }
 
     public function map($application): array
@@ -109,10 +109,59 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             $application->data['issues'] ?? '',
         ];
 
+        $pre_acceleration = [
+            $application->data['sector'] ?? '',
+            $application->data['sector_other'] ?? '',
+            $application->data['stage'] ?? '',
+            $application->data['solution_name'] ?? '',
+            strip_tags($application->data['solution'] ?? ''),
+            $application->data['solution_type'] ?? '',
+            $application->data['solution_type_other'] ?? '',
+            strip_tags($application->data['problem'] ?? ''),
+            strip_tags($application->data['target'] ?? ''),
+            strip_tags($application->data['value_proposition'] ?? ''),
+            strip_tags($application->data['competitive_advantage'] ?? ''),
+            $application->data['impact'] ?? '',
+            $application->data['impact_other'] ?? '',
+            $application->data['validation_duration'] ?? '',
+            strip_tags($application->data['validation_process'] ?? ''),
+            $application->data['startup_registered'] ?? '',
+            $application->data['solution_launch'] ?? '',
+            $application->data['go_to_market_strategy'] ?? '',
+            $application->data['go_to_market_strategy_other'] ?? '',
+            $application->data['business_model'] ?? '',
+            $application->data['business_model_other'] ?? '',
+            $application->data['revenue_model'] ?? '',
+            $application->data['revenue_model_other'] ?? '',
+            strip_tags($application->data['competitors'] ?? ''),
+            $application->data['funding'] ?? '',
+            $application->data['funding_other'] ?? '',
+            $application->data['challenges'] ?? '',
+            $application->data['challenges_other'] ?? '',
+            strip_tags($application->data['traction'] ?? ''),
+            strip_tags($application->data['market_validation'] ?? ''),
+            $application->data['generating_revenue'] ?? '',
+            strip_tags($application->data['needs'] ?? ''),
+            $application->data['sdg'] ?? '',
+            $application->data['team_members'][0]['name'] ?? '',
+            $application->data['team_members'][0]['role'] ?? '',
+            $application->data['team_members'][0]['phone'] ?? '',
+            $application->data['team_members'][0]['email'] ?? '',
+            $application->data['strategy'] ?? '',
+            $application->data['business_skills'] ?? '',
+            $application->data['startup_experience'] ?? '',
+            $application->data['experience_specification'] ?? '',
+            $application->data['new_skill'] ?? '',
+            $application->data['program_discovery'] ?? '',
+            $application->data['participation'] ?? '',
+            $application->data['prototype_link'] ?? '',
+        ];
+
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
             'incubation' => $incubation,
+            'pre-acceleration' => $pre_acceleration,
             default => $ideation
         };
 
@@ -234,11 +283,59 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             'Are there any legal issues or intellectual property concerns related to your startup?',
         ];
 
+        $pre_acceleration = [
+            'In which industry does your solution fit?',
+            'Please Specify',
+            'What stage is your solution currently in?',
+            'What is the name of your solution?',
+            'In a short paragraph, describe your solution briefly?',
+            'Is your solution a software, hardware or System?',
+            'Please Specify',
+            'What Problem / Challenge does your solution tackle?',
+            'Who are your target market and potential customers?',
+            'How does your solution solve the problem and what\'s your value proposition?',
+            'What is your competitive advantage?',
+            'What types of impact does your solution make?',
+            'Please Specify',
+            'When did you start with the idea validation?',
+            'Tell us briefly about your proof of concept/idea validation process?',
+            'Is your Startup registered?',
+            'When did you launch your solution in the market?',
+            'What was your go-to-market Strategy?',
+            'Please Specify',
+            'What is your business model?',
+            'Please Specify',
+            'What is your revenue model? How does your business generate revenue?',
+            'Please Specify',
+            'Who are your current competitors? Locally and regionally?',
+            'Did you get any funding so far?',
+            'Please Specify',
+            'What are the greatest challenges facing the implementation of your idea? If any please choose.',
+            'Please Specify',
+            'What traction and leads were you able to gain? Please clarify.',
+            'What is your market validation strategy?',
+            'Is the solution generating revenue already?',
+            'What are the three top needs for your solution that the funding would fulfill?',
+            'Does your solution meet one or more of the SDGs (Sustainable Development Goals)?',
+            'Team Member Name',
+            'Team Member Role',
+            'Team Member Phone',
+            'Team Member Email',
+            'What are the upcoming milestones you aim to achieve throughout the programme. Please provide specific measurable milestones and the expected completion dates.',
+            'Which of the following business skills do you have?',
+            'Do you have any knowledge or experience in entrepreneurship/startups?',
+            'Please specify your experience',
+            'If you are looking to acquire one new skill, what would it be?',
+            'How did you hear about the Orange Corners Incubation Programme?',
+            'If you were selected, can you participate in a 3-day bootcamp?',
+            'Please share a link to the prototype of your product so that we can get a better understanding of its features and functionalities.',
+        ];
 
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
             'incubation' => $incubation,
+            'pre-acceleration' => $pre_acceleration,
             default => $ideation
         };
 
