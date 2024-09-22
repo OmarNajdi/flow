@@ -1598,13 +1598,6 @@ class ApplicationResource extends Resource
             TextColumn::make('created_at')->label('Created at')->dateTime('Y-m-d H:i'),
         ]);
 
-        $header_actions = auth()->id() <= 5 ? [
-            Tables\Actions\Action::make('Export')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->url(route('applications.export'))
-                ->translateLabel()
-        ] : [];
-
         return $table
             ->columns($columns)
             ->filters([
@@ -1631,8 +1624,7 @@ class ApplicationResource extends Resource
 
                 return $record->status === 'Draft' ? ApplicationResource::getUrl('edit',
                     [$record]) : ApplicationResource::getUrl('view', [$record]);
-            })
-            ->headerActions($header_actions);
+            });
     }
 
     public static function getRelations(): array

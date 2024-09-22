@@ -110,6 +110,10 @@ class ProgramResource extends Resource
                     ->visible(fn(Program $record): bool => in_array($record->status, ['open', 'draft'])),
                 Tables\Actions\ViewAction::make()->button(),
                 Tables\Actions\EditAction::make()->button()->color('gray'),
+                Action::make('export')->label('Export')->button()->color('gray')->icon('heroicon-o-arrow-down-tray')
+                    ->url(fn(Program $record): string => route('applications.export',
+                        ['program_id' => $record->id, 'program_level' => $record->level]))
+                    ->visible(fn(): bool => auth()->id() <= 5),
             ])
             ->recordUrl(function ($record) {
                 if ($record->trashed()) {

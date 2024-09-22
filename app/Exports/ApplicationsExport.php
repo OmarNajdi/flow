@@ -12,15 +12,17 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, WithColumnFormatting, WithStyles
 {
+    public function __construct(private readonly int $id, private readonly string $level)
+    {
+    }
 
-    private string $level = 'pre-acceleration';
 
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return Application::where('program_id', 5)->get();
+        return Application::where('program_id', $this->id)->get();
     }
 
     public function map($application): array
@@ -338,7 +340,6 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             'pre-acceleration' => $pre_acceleration,
             default => $ideation
         };
-
 
         return [
             'Created At',
