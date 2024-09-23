@@ -1603,7 +1603,13 @@ class ApplicationResource extends Resource
             ->filters([
                 SelectFilter::make('program')->relationship('program', 'name',
                     fn(Builder $query) => $query->where('status', 'open'))->label('Program')
-                    ->getOptionLabelFromRecordUsing(fn(Program $record) => "$record->name - $record->level"),
+                    ->getOptionLabelFromRecordUsing(function (Program $record) {
+                        $label = $record->name;
+                        $label .= $record->level ? " - ".ucwords($record->level, '- ') : "";
+                        $label .= $record->activity ? " - ".$record->activity : "";
+
+                        return $label;
+                    }),
                 SelectFilter::make('status')->options([
                     'Draft'         => __('Draft'),
                     'Submitted'     => __('Submitted'),
