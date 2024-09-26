@@ -1523,9 +1523,9 @@ class ApplicationResource extends Resource
                                             ])->extraAttributes(['class' => 'h-full content-center']),
                                             DatePicker::make('end_date')->label('End Date')
                                                 ->hidden(fn(callable $get) => $get('current')),
-                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)->required(fn(
-                                            callable $get
-                                        ) => $get('description') !== 'Other')
+                                        ])->columns(3)->reorderableWithButtons()->inlineLabel(false)->hiddenLabel()->defaultItems(0)
+                                        ->required(fn(callable $get) => ! in_array($get('description'),
+                                            ['Student', 'Other']))
                                 ]),
                             Section::make(__('Skills'))
                                 ->schema([
