@@ -1942,7 +1942,7 @@ class ApplicationResource extends Resource
     {
         return auth()->id() <= 5
             ? parent::getEloquentQuery()->whereRelation('program', function ($query) {
-                $query->whereIn('status', ['open', 'draft']);
+                $query->whereIn('status', ['open', 'draft', 'in review']);
             }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
     }
 
