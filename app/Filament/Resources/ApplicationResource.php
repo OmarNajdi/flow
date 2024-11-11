@@ -188,7 +188,7 @@ class ApplicationResource extends Resource
                     ])->required()->reactive(),
                     TextInput::make('program_discovery_other')->label('Please Specify')
                         ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
-                    Select::make('commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')->options([
+                    Select::make('commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over three days?')->options([
                         'Yes'   => __('Yes'),
                         'No'    => __('No'),
                         'Other' => __('Other'),
@@ -320,7 +320,7 @@ class ApplicationResource extends Resource
                             Placeholder::make('review_program_discovery_other')->label('Please Specify')
                                 ->content(fn(Application $record
                                 ): string => $record->data['program_discovery_other'] ?? ''),
-                            Placeholder::make('review_commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')
+                            Placeholder::make('review_commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over three days?')
                                 ->content(fn(Application $record): string => $record->data['commitment'] ?? ''),
                             Placeholder::make('review_commitment_other')->label('Please Specify')
                                 ->content(fn(Application $record
@@ -1679,7 +1679,7 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.new_skill')->label('If you are looking to acquire one new skill, what would it be?')->html(),
                     TextEntry::make('data.program_discovery')->label('How did you hear about the PIEC Programme?')->html(),
                     TextEntry::make('data.program_discovery_other')->label('Please Specify')->html(),
-                    TextEntry::make('data.commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over four days?')->html(),
+                    TextEntry::make('data.commitment')->label('Are you able to commit to attending all scheduled related workshops and sessions throughout the problem solving workshop over three days?')->html(),
                     TextEntry::make('data.commitment_other')->label('Please Specify')->html(),
                     TextEntry::make('data.continuation_plan')->label('Do you plan to continue working on the idea you develop, by participating in incubation and acceleration programs after the innovation challenge concludes?')->html(),
                     TextEntry::make('data.additional_info')->label('Anything you\'d like to share with us? Please share links to any online portfolios, websites, or repositories showcasing your creative work. Briefly describe your role and contributions to each project')->html(),
