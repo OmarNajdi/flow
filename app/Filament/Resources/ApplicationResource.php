@@ -1396,7 +1396,7 @@ class ApplicationResource extends Resource
                         'data' => array_merge($application->data, [
                             'value_proposition' => $get('value_proposition'),
                             'problem'           => $get('problem'),
-                            'solution'          => $get('market_fit'),
+                            'solution'          => $get('solution'),
                             'sector'            => $get('sector'),
                             'sector_other'      => $get('sector_other'),
                         ])
