@@ -1418,7 +1418,7 @@ class ApplicationResource extends Resource
                     Textarea::make('launch_details')->label('Can you provide details?')
                         ->hidden(fn(callable $get) => $get('product_launched') !== 'Yes'),
 
-                    Textarea::make('current_traction')->label('What is your current traction (users, customers, revenue, partnerships, etc.)?'),
+                    Textarea::make('current_traction')->label('What is your current traction (users, customers, revenue, partnerships, etc.)?')->required(),
                     Select::make('funding_status')->label('What is your current funding status?')
                         ->options([
                             'Bootstrapped' => __('Bootstrapped'),
@@ -1426,7 +1426,7 @@ class ApplicationResource extends Resource
                             'Seed'         => __('Seed'),
                             'Series A'     => __('Series A'),
                             'Other'        => __('Other'),
-                        ])->reactive(),
+                        ])->required()->reactive(),
                     TextInput::make('funding_status_other')->label('Please Specify')
                         ->hidden(fn(callable $get) => $get('funding_status') !== 'Other'),
                     Textarea::make('achieved_milestones')->label('What key milestones have you achieved so far?')->required(),
@@ -1487,7 +1487,7 @@ class ApplicationResource extends Resource
                     TextInput::make('revenue_model_other')->label('Please Specify')
                         ->hidden(fn(callable $get) => $get('revenue_model') !== 'Other'),
                     Textarea::make('go_to_market_strategy')->label('What is your go-to-market strategy?')->required(),
-                    Textarea::make('customer_acquisition')->label('What channels and tactics are you using for customer acquisition and growth?'),
+                    Textarea::make('customer_acquisition')->label('What channels and tactics are you using for customer acquisition and growth?')->required(),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
@@ -1544,7 +1544,7 @@ class ApplicationResource extends Resource
                 }),
             Wizard\Step::make('Financials')->icon('heroicon-s-currency-dollar')
                 ->schema([
-                    TextInput::make('investment_to_date')->label('How much have you invested in the company to date?'),
+                    TextInput::make('investment_to_date')->label('How much have you invested in the company to date?')->required(),
                     Select::make('funding_raised')->label('Have you raised any funding for your company (incl. award/grant money)?')
                         ->options([
                             'Yes' => __('Yes'),
@@ -1603,9 +1603,9 @@ class ApplicationResource extends Resource
                 }),
             Wizard\Step::make('Vision and Goals')->icon('heroicon-s-light-bulb')
                 ->schema([
-                    Textarea::make('vision')->label('What is your vision for the startup in the next 1-3 years?'),
+                    Textarea::make('vision')->label('What is your vision for the startup in the next 1-3 years?')->required(),
                     Textarea::make('aimed_milestones')->label('What are the key milestones you aim to achieve during the acceleration program?')->required(),
-                    Textarea::make('support_from_accelerator')->label('How can Flow Accelerator support you in scaling your business?'),
+                    Textarea::make('support_from_accelerator')->label('How can Flow Accelerator support you in scaling your business?')->required(),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update(
