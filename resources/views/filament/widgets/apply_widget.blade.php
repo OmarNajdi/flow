@@ -6,9 +6,9 @@
                     {{ __('Open Programs')}}
                 </h2>
                 <div class="grid grid-cols-3 gap-10">
-                    <a href="{{ url('/programs/11') }}">
+                    <a href="{{ url('/programs/12') }}">
                         <div class="bg-gray-100 dark:bg-gray-800 rounded-2xl hover:scale-105 transition-all border">
-                            <img src="{{ asset('images/PIEC-7.webp') }}" alt="Apply Now"
+                            <img src="{{ asset('images/Program12.webp') }}" alt="Apply Now"
                                  class="rounded-2xl"/>
                             <h2 class="text-center pt-2 pb-4 color-primary">{{__('Level: Pre-Acceleration')}}</h2>
                             <h3 class="font-bold text-2xl text-center pb-6 color-primary">{{__('Program: Orange Corners')}}</h3>
