@@ -290,7 +290,7 @@ class JobApplicationResource extends Resource
                 ->sortable(),
         ];
 
-        $header_actions = auth()->id() <= 5 ? [
+        $header_actions = auth()->id() <= 6 ? [
             Tables\Actions\Action::make('Export')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(route('job-applications.export'))
@@ -395,22 +395,22 @@ class JobApplicationResource extends Resource
 
     public static function canEdit(Model $record): bool
     {
-        return $record->status === 'Draft' && ($record->user_id === auth()->id() || auth()->id() <= 5);
+        return $record->status === 'Draft' && ($record->user_id === auth()->id() || auth()->id() <= 6);
     }
 
     public static function canView(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() <= 5;
+        return $record->user_id === auth()->id() || auth()->id() <= 6;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 5
+        return auth()->id() <= 6
             ? parent::getEloquentQuery()->whereRelation('job', function ($query) {
                 $query->whereIn('status', ['open', 'draft']);
             }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('job', 'status', 'open');

@@ -113,7 +113,7 @@ class ProgramResource extends Resource
                 Action::make('export')->label('Export')->button()->color('gray')->icon('heroicon-o-arrow-down-tray')
                     ->url(fn(Program $record): string => route('applications.export',
                         ['program_id' => $record->id, 'program_level' => $record->level]))
-                    ->visible(fn(): bool => auth()->id() <= 5),
+                    ->visible(fn(): bool => auth()->id() <= 6),
             ])
             ->recordUrl(function ($record) {
                 if ($record->trashed()) {
@@ -200,12 +200,12 @@ class ProgramResource extends Resource
 
     public static function canCreate(): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
     public static function canDelete(Model $record): bool
@@ -215,7 +215,7 @@ class ProgramResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 5 ? parent::getEloquentQuery()->whereIn('status', ['open', 'draft', 'in review'])
+        return auth()->id() <= 6 ? parent::getEloquentQuery()->whereIn('status', ['open', 'draft', 'in review'])
             : parent::getEloquentQuery()->where('status', 'open')->whereDate('open_date', '<=', now());
     }
 }

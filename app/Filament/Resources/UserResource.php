@@ -46,7 +46,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
 
-        $header_actions = auth()->id() <= 5 ? [
+        $header_actions = auth()->id() <= 6 ? [
             Tables\Actions\Action::make('Export')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->url(route('users.export'))
@@ -116,7 +116,7 @@ class UserResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
     public static function canCreate(): bool
@@ -136,7 +136,7 @@ class UserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
 }

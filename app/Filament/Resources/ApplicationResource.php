@@ -2017,7 +2017,7 @@ class ApplicationResource extends Resource
                 ->formatStateUsing(fn(string $state): string => ucwords(__($state), '- '))
         ];
 
-        if (auth()->id() <= 5) {
+        if (auth()->id() <= 6) {
             $columns = array_merge($columns, [
                 TextColumn::make('data.first_name')->label('First Name'),
                 TextColumn::make('data.last_name')->label('Last Name'),
@@ -2453,22 +2453,22 @@ class ApplicationResource extends Resource
     {
         return $record->status === 'Draft'
                && in_array($record->program->status, ['open', 'draft'])
-               && ($record->user_id === auth()->id() || auth()->id() <= 5);
+               && ($record->user_id === auth()->id() || auth()->id() <= 6);
     }
 
     public static function canView(Model $record): bool
     {
-        return $record->user_id === auth()->id() || auth()->id() <= 5;
+        return $record->user_id === auth()->id() || auth()->id() <= 6;
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->id() <= 5;
+        return auth()->id() <= 6;
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return auth()->id() <= 5
+        return auth()->id() <= 6
             ? parent::getEloquentQuery()->whereRelation('program', function ($query) {
                 $query->whereIn('status', ['open', 'draft', 'in review']);
             }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
