@@ -14,9 +14,9 @@ class ApplyWidget extends Widget
 
     protected static string $view = 'filament.widgets.apply_widget';
 
-//    public static function canView(): bool
-//    {
-//        return false;
-//    }
+    public static function canView(): bool
+    {
+        return false;
+    }
 
 }
