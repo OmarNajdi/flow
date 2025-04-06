@@ -2469,9 +2469,8 @@ class ApplicationResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return auth()->id() <= 6
-            ? parent::getEloquentQuery()->whereRelation('program', function ($query) {
-                $query->whereIn('status', ['open', 'draft', 'in review']);
-            }) : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
+            ? parent::getEloquentQuery()
+            : parent::getEloquentQuery()->where('user_id', auth()->id())->whereRelation('program', 'status', 'open');
     }
 
 }
