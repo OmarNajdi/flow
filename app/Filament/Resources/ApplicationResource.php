@@ -1815,7 +1815,7 @@ class ApplicationResource extends Resource
                     Textarea::make('problem')->label('What specific problem or need does your startup address?')->required(),
                     Textarea::make('target_segment')->label('Who is affected by this problem, and who is your target segment?')->required(),
                     Textarea::make('problem_identification')->label('How did you identify this problem? Please explain the process.'),
-                    Select::make('industry_sector')->label('What industry sector does your product/service target?')
+                    Select::make('sector')->label('What industry sector does your product/service target?')
                         ->options([
                             'EdTech'             => 'EdTech',
                             'HealthTech'         => 'HealthTech',
@@ -1823,7 +1823,9 @@ class ApplicationResource extends Resource
                             'Agriculture'        => 'Agriculture',
                             'Fintech'            => 'Fintech',
                             'Other'              => 'Other',
-                        ])->required(),
+                        ])->required()->reactive(),
+                    TextInput::make('sector_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('sector') !== 'Other'),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update([
@@ -1833,7 +1835,8 @@ class ApplicationResource extends Resource
                             'problem'                => $get('problem'),
                             'target_segment'         => $get('target_segment'),
                             'problem_identification' => $get('problem_identification'),
-                            'industry_sector'        => $get('industry_sector'),
+                            'sector'                 => $get('sector'),
+                            'sector_other'           => $get('sector_other'),
                         ]),
                     ]);
                 }),
@@ -1920,7 +1923,6 @@ class ApplicationResource extends Resource
                     Textarea::make('mvp_support')->label('What kind of support do you need to define or build your MVP plan?')
                         ->hidden(fn(callable $get) => $get('has_mvp') !== 'No'),
                     Textarea::make('flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP? (e.g., technical help, prototyping tools, mentorship)'),
-                    Textarea::make('mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?'),
                 ])->afterValidation(function (Get $get) use ($form) {
                     $application = $form->getModelInstance();
                     $application->update([
@@ -1930,7 +1932,6 @@ class ApplicationResource extends Resource
                             'mvp_features'    => $get('mvp_features'),
                             'mvp_support'     => $get('mvp_support'),
                             'flow_assistance' => $get('flow_assistance'),
-                            'mvp_milestones'  => $get('mvp_milestones'),
                         ]),
                     ]);
                 }),
@@ -2074,8 +2075,10 @@ class ApplicationResource extends Resource
                                 ->content(fn(callable $get) => $get('target_segment')),
                             Placeholder::make('review_problem_identification')->label('How did you identify this problem? Please explain the process.')
                                 ->content(fn(callable $get) => $get('problem_identification')),
-                            Placeholder::make('review_industry_sector')->label('What industry sector does your product/service target?')
-                                ->content(fn(callable $get) => $get('industry_sector')),
+                            Placeholder::make('review_sector')->label('What industry sector does your product/service target?')
+                                ->content(fn(callable $get) => $get('sector')),
+                            Placeholder::make('review_sector_other')->label('Please Specify')
+                                ->content(fn(callable $get) => $get('sector_other')),
                         ]),
                     Section::make(__('Solution & Uniqueness'))
                         ->schema([
@@ -2123,8 +2126,6 @@ class ApplicationResource extends Resource
                                 ->content(fn(callable $get) => $get('mvp_support')),
                             Placeholder::make('review_flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP? (e.g., technical help, prototyping tools, mentorship)')
                                 ->content(fn(callable $get) => $get('flow_assistance')),
-                            Placeholder::make('review_mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?')
-                                ->content(fn(callable $get) => $get('mvp_milestones')),
                         ]),
                     Section::make(__('Commitment & Expectations'))
                         ->schema([
@@ -2744,7 +2745,8 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.problem')->label('What specific problem or need does your startup address?'),
                     TextEntry::make('data.target_segment')->label('Who is affected by this problem, and who is your target segment?'),
                     TextEntry::make('data.problem_identification')->label('How did you identify this problem? Please explain the process.'),
-                    TextEntry::make('data.industry_sector')->label('What industry sector does your product/service target?'),
+                    TextEntry::make('data.sector')->label('What industry sector does your product/service target?'),
+                    TextEntry::make('data.sector_other')->label('Please Specify'),
                 ])->columns(1),
 
             \Filament\Infolists\Components\Section::make(__('Solution & Uniqueness'))
@@ -2776,7 +2778,6 @@ class ApplicationResource extends Resource
                     TextEntry::make('data.mvp_features')->label('What are the core features included in your MVP? What problem do they solve?'),
                     TextEntry::make('data.mvp_support')->label('What kind of support do you need to define or build your MVP plan?'),
                     TextEntry::make('data.flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP?'),
-                    TextEntry::make('data.mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?'),
                 ])->columns(1),
 
             \Filament\Infolists\Components\Section::make(__('Commitment & Expectations'))
