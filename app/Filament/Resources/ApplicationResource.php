@@ -1637,7 +1637,6 @@ class ApplicationResource extends Resource
                             'data' => array_merge($application->data, [
                                 'participated_in_programs' => $get('participated_in_programs'),
                                 'program_details'          => $get('program_details'),
-                                'attachments'              => $get('pitch_deck'),
                             ])
                         ]);
                     Notification::make()->title(__('Saved successfully'))->success()->send();
@@ -1740,9 +1739,6 @@ class ApplicationResource extends Resource
                         ->schema([
                             Placeholder::make('review_team_count')->label('Team Count')
                                 ->content(fn(Application $record): string => $record->data['team_count'] ?? ''),
-                            Placeholder::make('review_team_members')->label('Team Members')
-                                ->content(fn(Application $record
-                                ): string => json_encode($record->data['team_members'] ?? [])),
                             Placeholder::make('review_full_time_team_members')->label('Full-Time Team Members')
                                 ->content(fn(Application $record
                                 ): string => $record->data['full_time_team_members'] ?? ''),
@@ -1804,6 +1800,365 @@ class ApplicationResource extends Resource
                 ])
         ];
 
+        $formation_form = [
+            Wizard\Step::make('Startup Overview')->icon('heroicon-s-light-bulb')
+                ->schema([
+                    TextInput::make('startup_name')->label('Startup / Project Name'),
+                    Select::make('solution_stage')->label('What stage is your solution currently in?')
+                        ->options([
+                            'Idea'      => 'Idea',
+                            'Prototype' => 'Prototype',
+                            'MVP'       => 'MVP',
+                            'Launching' => 'Launching',
+                            'Scaling'   => 'Scaling',
+                        ])->required(),
+                    Textarea::make('problem')->label('What specific problem or need does your startup address?')->required(),
+                    Textarea::make('target_segment')->label('Who is affected by this problem, and who is your target segment?')->required(),
+                    Textarea::make('problem_identification')->label('How did you identify this problem? Please explain the process.'),
+                    Select::make('industry_sector')->label('What industry sector does your product/service target?')
+                        ->options([
+                            'EdTech'             => 'EdTech',
+                            'HealthTech'         => 'HealthTech',
+                            'Environmental Tech' => 'Environmental Tech',
+                            'Agriculture'        => 'Agriculture',
+                            'Fintech'            => 'Fintech',
+                            'Other'              => 'Other',
+                        ])->required(),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'startup_name'           => $get('startup_name'),
+                            'solution_stage'         => $get('solution_stage'),
+                            'problem'                => $get('problem'),
+                            'target_segment'         => $get('target_segment'),
+                            'problem_identification' => $get('problem_identification'),
+                            'industry_sector'        => $get('industry_sector'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('Solution & Uniqueness')->icon('heroicon-s-briefcase')
+                ->schema([
+                    Textarea::make('solution_description')->label('Describe your solution. What product or service are you offering?'),
+                    Textarea::make('solution_uniqueness')->label('What makes your solution unique, creative, or better than current alternatives?'),
+                    Textarea::make('solution_better_alternatives')->label('How does your solution address the problem better than existing alternatives?'),
+                    Select::make('problem_solution_validation')->label('Have you validated the problem-solution fit?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required()->reactive(),
+                    Textarea::make('validation_details')->label('How did you validate it? (e.g., surveys, interviews, pilots). What feedback did you receive?')
+                        ->hidden(fn(callable $get) => $get('problem_solution_validation') !== 'Yes'),
+                    Textarea::make('validation_next_steps')->label('Why not? What are your next steps for validation?')
+                        ->hidden(fn(callable $get) => $get('problem_solution_validation') !== 'No'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'solution_description'         => $get('solution_description'),
+                            'solution_uniqueness'          => $get('solution_uniqueness'),
+                            'solution_better_alternatives' => $get('solution_better_alternatives'),
+                            'problem_solution_validation'  => $get('problem_solution_validation'),
+                            'validation_details'           => $get('validation_details'),
+                            'validation_next_steps'        => $get('validation_next_steps'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('Market Analysis')->icon('heroicon-s-chart-bar')
+                ->schema([
+                    Select::make('target_market_identified')->label('Have you identified your target market?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required()->reactive(),
+                    Textarea::make('target_market_how')->label('How did you identify your target market?')
+                        ->hidden(fn(callable $get) => $get('target_market_identified') !== 'Yes'),
+                    Textarea::make('target_market_opportunity')->label('What makes this market a good opportunity?')
+                        ->hidden(fn(callable $get) => $get('target_market_identified') !== 'Yes'),
+                    Textarea::make('target_market_research')->label('What research methods have you used? (e.g., surveys, interviews, focus groups)')
+                        ->hidden(fn(callable $get) => $get('target_market_identified') !== 'Yes'),
+                    Textarea::make('target_market_challenges')->label('What challenges are you facing in identifying your market?')
+                        ->hidden(fn(callable $get) => $get('target_market_identified') !== 'No'),
+                    Select::make('competitor_analysis')->label('Have you conducted a competitor analysis?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required()->reactive(),
+                    Textarea::make('competitor_details')->label('Who are your competitors?')
+                        ->hidden(fn(callable $get) => $get('competitor_analysis') !== 'Yes'),
+                    Textarea::make('competitive_advantage')->label('What is your competitive advantage, and how do you plan to differentiate in the market?')
+                        ->hidden(fn(callable $get) => $get('competitor_analysis') !== 'Yes'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'target_market_identified' => $get('target_market_identified'),
+                            'target_market_details'    => $get('target_market_details'),
+                            'target_market_challenges' => $get('target_market_challenges'),
+                            'competitor_analysis'      => $get('competitor_analysis'),
+                            'competitor_details'       => $get('competitor_details'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('MVP (Minimum Viable Product)')->icon('heroicon-s-cube')
+                ->schema([
+                    Select::make('has_mvp')->label('Do you currently have an MVP?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required(),
+                    Select::make('mvp_roadmap')->label('Have you developed a roadmap for your MVP?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required()->reactive(),
+                    Textarea::make('mvp_features')->label('What are the core features included in your MVP? What problem do they solve?')
+                        ->hidden(fn(callable $get) => $get('mvp_roadmap') !== 'Yes'),
+                    Textarea::make('mvp_support')->label('What kind of support do you need to define or build your MVP plan?')
+                        ->hidden(fn(callable $get) => $get('has_mvp') !== 'No'),
+                    Textarea::make('flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP? (e.g., technical help, prototyping tools, mentorship)'),
+                    Textarea::make('mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'has_mvp'         => $get('has_mvp'),
+                            'mvp_roadmap'     => $get('mvp_roadmap'),
+                            'mvp_features'    => $get('mvp_features'),
+                            'mvp_support'     => $get('mvp_support'),
+                            'flow_assistance' => $get('flow_assistance'),
+                            'mvp_milestones'  => $get('mvp_milestones'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('Commitment & Expectations')->icon('heroicon-s-bolt')
+                ->schema([
+                    Textarea::make('program_reason')->label('Why do you want to join the PIEC Formation and Development Program?')->required(),
+                    Textarea::make('program_goals')->label('What do you hope to achieve by the end of the program?'),
+                    Select::make('commitment')->label('Are you committed to attending extensive in-person and virtual training sessions, mentoring, and completing deliverables?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required(),
+                    Select::make('legal_issues')->label('Are there any legal or intellectual property issues related to your startup?')
+                        ->options([
+                            'Yes' => 'Yes',
+                            'No'  => 'No',
+                        ])->required()->reactive(),
+                    Textarea::make('legal_issues_details')->label('Please explain.')
+                        ->hidden(fn(callable $get) => $get('legal_issues') !== 'Yes'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'program_reason'       => $get('program_reason'),
+                            'program_goals'        => $get('program_goals'),
+                            'commitment'           => $get('commitment'),
+                            'legal_issues'         => $get('legal_issues'),
+                            'legal_issues_details' => $get('legal_issues_details'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('Progress & Team Info')->icon('heroicon-s-users')
+                ->schema([
+                    TextInput::make('idea_duration')->label('How long have you been working on your idea?'),
+                    Select::make('individual_or_team')->label('Are you applying as an individual or as part of a team?')
+                        ->options([
+                            'Individual' => 'Individual',
+                            'Team'       => 'Team',
+                        ])->required()->reactive(),
+
+
+                    Repeater::make('team_members')->label('Team Members')->addActionLabel(__('Add Team Member'))
+                        ->schema([
+                            TextInput::make('name')->label('Name')->required(),
+                            TextInput::make('role')->label('Role')->required(),
+                            PhoneInput::make('phone')->label('Phone')->required()->default(auth()->user()->phone)
+                                ->defaultCountry('PS')
+                                ->preferredCountries(['ps', 'il'])
+                                ->showSelectedDialCode()
+                                ->validateFor()
+                                ->i18n([
+                                    'il' => 'Palestine'
+                                ]),
+                            TextInput::make('email')->label('Email')->required()->email(),
+                        ])->columns(4)->reorderableWithButtons()->inlineLabel(false)->required()
+                        ->hidden(fn(callable $get) => $get('individual_or_team') !== 'Team'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'idea_duration'      => $get('idea_duration'),
+                            'individual_or_team' => $get('individual_or_team'),
+                            'team_members'       => $get('team_members'),
+                        ]),
+                    ]);
+                }),
+
+            Wizard\Step::make('Final Notes')->icon('heroicon-s-information-circle')
+                ->schema([
+                    Select::make('program_discovery')->label('How did you hear about the PIEC Program?')->options([
+                        'Facebook'           => __('Facebook'),
+                        'Instagram'          => __('Instagram'),
+                        'LinkedIn'           => __('LinkedIn'),
+                        'Other Social Media' => __('Other Social Media Channels'),
+                        'Friend'             => __('Friend/Colleague'),
+                        'Other'              => __('Other'),
+                    ])->required()->reactive(),
+                    TextInput::make('program_discovery_other')->label('Please Specify')
+                        ->hidden(fn(callable $get) => $get('program_discovery') !== 'Other'),
+                    FileUpload::make('attachments')->label('Do you have a pitch deck or any supporting materials to share?')
+                        ->multiple()->maxFiles(5)->maxSize(10240)->directory('application-attachments'),
+                    Textarea::make('additional_notes')->label('Anything else you\'d like to share with us?'),
+                ])->afterValidation(function (Get $get) use ($form) {
+                    $application = $form->getModelInstance();
+                    $application->update([
+                        'data' => array_merge($application->data, [
+                            'program_discovery' => $get('program_discovery'),
+                            'pitch_deck'        => $get('pitch_deck'),
+                            'additional_notes'  => $get('additional_notes'),
+                        ]),
+                    ]);
+                }),
+
+
+            Wizard\Step::make('Review')->icon('heroicon-s-check-circle')
+                ->schema([
+                    Placeholder::make('review_section')->hiddenLabel()->content(
+                        new HtmlString('<div style="font-size: 24px;text-align: center">'.__("Please review your application before submitting").'</div>')
+                    ),
+                    Section::make(__('Personal Information'))
+                        ->schema([
+                            Placeholder::make('review_first_name')->label('First Name')
+                                ->content(fn(Application $record): string => $record->data['first_name'] ?? ''),
+                            Placeholder::make('review_last_name')->label('Last Name')
+                                ->content(fn(Application $record): string => $record->data['last_name'] ?? ''),
+                            Placeholder::make('review_email')->label('Email')
+                                ->content(fn(Application $record): string => $record->data['email'] ?? ''),
+                            Placeholder::make('review_dob')->label('Date of Birth')
+                                ->content(fn(Application $record): string => $record->data['dob'] ?? ''),
+                            Placeholder::make('review_phone')->label('Phone')
+                                ->content(fn(Application $record): string => $record->data['phone'] ?? ''),
+                            Placeholder::make('review_whatsapp')->label('Whatsapp')
+                                ->content(fn(Application $record): string => $record->data['whatsapp'] ?? ''),
+                            Placeholder::make('review_gender')->label('Gender')
+                                ->content(fn(Application $record): string => $record->data['gender'] ?? ''),
+                            Placeholder::make('review_residence')->label('Governorate of Residence')
+                                ->content(fn(Application $record): string => $record->data['residence'] ?? ''),
+                            Placeholder::make('review_residence_other')->label('Other Governorate')
+                                ->content(fn(Application $record
+                                ): string => $record->data['residence_other'] ?? ''),
+                            Placeholder::make('review_description')->label('Describe Yourself')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description'] ?? ''),
+                            Placeholder::make('review_description_other')->label('Describe Yourself (Other)')
+                                ->content(fn(Application $record
+                                ): string => $record->data['description_other'] ?? ''),
+                            Placeholder::make('review_occupation')->label('Occupation')
+                                ->content(fn(Application $record): string => $record->data['occupation'] ?? ''),
+                        ])->columns(3),
+                    Section::make(__('Startup Overview'))
+                        ->schema([
+                            Placeholder::make('review_startup_name')->label('Startup / Project Name')
+                                ->content(fn(callable $get) => $get('startup_name')),
+                            Placeholder::make('review_solution_stage')->label('What stage is your solution currently in?')
+                                ->content(fn(callable $get) => $get('solution_stage')),
+                            Placeholder::make('review_problem')->label('What specific problem or need does your startup address?')
+                                ->content(fn(callable $get) => $get('problem')),
+                            Placeholder::make('review_target_segment')->label('Who is affected by this problem, and who is your target segment?')
+                                ->content(fn(callable $get) => $get('target_segment')),
+                            Placeholder::make('review_problem_identification')->label('How did you identify this problem? Please explain the process.')
+                                ->content(fn(callable $get) => $get('problem_identification')),
+                            Placeholder::make('review_industry_sector')->label('What industry sector does your product/service target?')
+                                ->content(fn(callable $get) => $get('industry_sector')),
+                        ]),
+                    Section::make(__('Solution & Uniqueness'))
+                        ->schema([
+                            Placeholder::make('review_solution_description')->label('Describe your solution. What product or service are you offering?')
+                                ->content(fn(callable $get) => $get('solution_description')),
+                            Placeholder::make('review_solution_uniqueness')->label('What makes your solution unique, creative, or better than current alternatives?')
+                                ->content(fn(callable $get) => $get('solution_uniqueness')),
+                            Placeholder::make('review_solution_better_alternatives')->label('How does your solution address the problem better than existing alternatives?')
+                                ->content(fn(callable $get) => $get('solution_better_alternatives')),
+                            Placeholder::make('review_problem_solution_validation')->label('Have you validated the problem-solution fit?')
+                                ->content(fn(callable $get) => $get('problem_solution_validation')),
+                            Placeholder::make('review_validation_details')->label('How did you validate it? (e.g., surveys, interviews, pilots). What feedback did you receive?')
+                                ->content(fn(callable $get) => $get('validation_details')),
+                            Placeholder::make('review_validation_next_steps')->label('Why not? What are your next steps for validation?')
+                                ->content(fn(callable $get) => $get('validation_next_steps')),
+                        ]),
+                    Section::make(__('Market Analysis'))
+                        ->schema([
+                            Placeholder::make('review_target_market_identified')->label('Have you identified your target market?')
+                                ->content(fn(callable $get) => $get('target_market_identified')),
+                            Placeholder::make('review_target_market_how')->label('How did you identify your target market?')
+                                ->content(fn(callable $get) => $get('target_market_how')),
+                            Placeholder::make('review_target_market_opportunity')->label('What makes this market a good opportunity?')
+                                ->content(fn(callable $get) => $get('target_market_opportunity')),
+                            Placeholder::make('review_target_market_research')->label('What research methods have you used? (e.g., surveys, interviews, focus groups)')
+                                ->content(fn(callable $get) => $get('target_market_research')),
+                            Placeholder::make('review_target_market_challenges')->label('What challenges are you facing in identifying your market?')
+                                ->content(fn(callable $get) => $get('target_market_challenges')),
+                            Placeholder::make('review_competitor_analysis')->label('Have you conducted a competitor analysis?')
+                                ->content(fn(callable $get) => $get('competitor_analysis')),
+                            Placeholder::make('review_competitor_details')->label('Who are your competitors?')
+                                ->content(fn(callable $get) => $get('competitor_details')),
+                            Placeholder::make('review_competitive_advantage')->label('What is your competitive advantage, and how do you plan to differentiate in the market?')
+                                ->content(fn(callable $get) => $get('competitive_advantage')),
+                        ]),
+                    Section::make(__('MVP (Minimum Viable Product)'))
+                        ->schema([
+                            Placeholder::make('review_has_mvp')->label('Do you currently have an MVP?')
+                                ->content(fn(callable $get) => $get('has_mvp')),
+                            Placeholder::make('review_mvp_roadmap')->label('Have you developed a roadmap for your MVP?')
+                                ->content(fn(callable $get) => $get('mvp_roadmap')),
+                            Placeholder::make('review_mvp_features')->label('What are the core features included in your MVP? What problem do they solve?')
+                                ->content(fn(callable $get) => $get('mvp_features')),
+                            Placeholder::make('review_mvp_support')->label('What kind of support do you need to define or build your MVP plan?')
+                                ->content(fn(callable $get) => $get('mvp_support')),
+                            Placeholder::make('review_flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP? (e.g., technical help, prototyping tools, mentorship)')
+                                ->content(fn(callable $get) => $get('flow_assistance')),
+                            Placeholder::make('review_mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?')
+                                ->content(fn(callable $get) => $get('mvp_milestones')),
+                        ]),
+                    Section::make(__('Commitment & Expectations'))
+                        ->schema([
+                            Placeholder::make('review_program_reason')->label('Why do you want to join the PIEC Formation and Development Program?')
+                                ->content(fn(callable $get) => $get('program_reason')),
+                            Placeholder::make('review_program_goals')->label('What do you hope to achieve by the end of the program?')
+                                ->content(fn(callable $get) => $get('program_goals')),
+                            Placeholder::make('review_commitment')->label('Are you committed to attending extensive in-person and virtual training sessions, mentoring, and completing deliverables?')
+                                ->content(fn(callable $get) => $get('commitment')),
+                            Placeholder::make('review_legal_issues')->label('Are there any legal or intellectual property issues related to your startup?')
+                                ->content(fn(callable $get) => $get('legal_issues')),
+                            Placeholder::make('review_legal_issues_details')->label('Please explain.')
+                                ->content(fn(callable $get) => $get('legal_issues_details')),
+                        ]),
+                    Section::make(__('Progress & Team Info'))
+                        ->schema([
+                            Placeholder::make('review_idea_duration')->label('How long have you been working on your idea?')
+                                ->content(fn(callable $get) => $get('idea_duration')),
+                            Placeholder::make('review_individual_or_team')->label('Are you applying as an individual or as part of a team?')
+                                ->content(fn(callable $get) => $get('individual_or_team')),
+                        ]),
+                    Section::make(__('Final Notes'))
+                        ->schema([
+                            Placeholder::make('review_program_discovery')->label('How did you hear about the PIEC Program?')
+                                ->content(fn(callable $get) => $get('program_discovery')),
+                            Placeholder::make('review_program_discovery_other')->label('Please Specify')
+                                ->content(fn(callable $get) => $get('program_discovery_other')),
+                            Placeholder::make('review_additional_notes')->label('Anything else you\'d like to share with us?')
+                                ->content(fn(callable $get) => $get('additional_notes')),
+                        ]),
+                ]),
+
+        ];
+
         $application = $form->getModelInstance();
         $wizard      = match (optional($application->program)->level) {
             'ideation and innovation' => $ideation_from,
@@ -1811,6 +2166,7 @@ class ApplicationResource extends Resource
             'incubation' => $incubation_form,
             'pre-acceleration' => $pre_acceleration_form,
             'acceleration' => $acceleration_form,
+            'formation' => $formation_form,
             default => []
         };
 
@@ -2380,6 +2736,84 @@ class ApplicationResource extends Resource
                 ])->columns(1),
         ];
 
+        $formation_infolist = [
+            \Filament\Infolists\Components\Section::make(__('Startup Overview'))
+                ->schema([
+                    TextEntry::make('data.startup_name')->label('Startup / Project Name'),
+                    TextEntry::make('data.solution_stage')->label('What stage is your solution currently in?'),
+                    TextEntry::make('data.problem')->label('What specific problem or need does your startup address?'),
+                    TextEntry::make('data.target_segment')->label('Who is affected by this problem, and who is your target segment?'),
+                    TextEntry::make('data.problem_identification')->label('How did you identify this problem? Please explain the process.'),
+                    TextEntry::make('data.industry_sector')->label('What industry sector does your product/service target?'),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('Solution & Uniqueness'))
+                ->schema([
+                    TextEntry::make('data.solution_description')->label('Describe your solution. What product or service are you offering?'),
+                    TextEntry::make('data.solution_uniqueness')->label('What makes your solution unique, creative, or better than current alternatives?'),
+                    TextEntry::make('data.solution_better_alternatives')->label('How does your solution address the problem better than existing alternatives?'),
+                    TextEntry::make('data.problem_solution_validation')->label('Have you validated the problem-solution fit?'),
+                    TextEntry::make('data.validation_details')->label('How did you validate it? (e.g., surveys, interviews, pilots). What feedback did you receive?'),
+                    TextEntry::make('data.validation_next_steps')->label('Why not? What are your next steps for validation?'),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('Market Analysis'))
+                ->schema([
+                    TextEntry::make('data.target_market_identified')->label('Have you identified your target market?'),
+                    TextEntry::make('data.target_market_how')->label('How did you identify your target market?'),
+                    TextEntry::make('data.target_market_opportunity')->label('What makes this market a good opportunity?'),
+                    TextEntry::make('data.target_market_research')->label('What research methods have you used? (e.g., surveys, interviews, focus groups)'),
+                    TextEntry::make('data.target_market_challenges')->label('What challenges are you facing in identifying your market?'),
+                    TextEntry::make('data.competitor_analysis')->label('Have you conducted a competitor analysis?'),
+                    TextEntry::make('data.competitor_details')->label('Who are your competitors?'),
+                    TextEntry::make('data.competitive_advantage')->label('What is your competitive advantage, and how do you plan to differentiate in the market?'),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('MVP (Minimum Viable Product)'))
+                ->schema([
+                    TextEntry::make('data.has_mvp')->label('Do you currently have an MVP?'),
+                    TextEntry::make('data.mvp_roadmap')->label('Have you developed a roadmap for your MVP?'),
+                    TextEntry::make('data.mvp_features')->label('What are the core features included in your MVP? What problem do they solve?'),
+                    TextEntry::make('data.mvp_support')->label('What kind of support do you need to define or build your MVP plan?'),
+                    TextEntry::make('data.flow_assistance')->label('How can Flow Accelerator assist you in developing your MVP?'),
+                    TextEntry::make('data.mvp_milestones')->label('What are the top 2–3 milestones you aim to achieve in the next 3–6 months?'),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('Commitment & Expectations'))
+                ->schema([
+                    TextEntry::make('data.program_reason')->label('Why do you want to join the PIEC Formation and Development Program?'),
+                    TextEntry::make('data.program_goals')->label('What do you hope to achieve by the end of the program?'),
+                    TextEntry::make('data.commitment')->label('Are you committed to attending extensive in-person and virtual training sessions, mentoring, and completing deliverables?'),
+                    TextEntry::make('data.legal_issues')->label('Are there any legal or intellectual property issues related to your startup?'),
+                    TextEntry::make('data.legal_issues_details')->label('Please explain.'),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('Progress & Team Info'))
+                ->schema([
+                    TextEntry::make('data.idea_duration')->label('How long have you been working on your idea?'),
+                    TextEntry::make('data.individual_or_team')->label('Are you applying as an individual or as part of a team?'),
+                    RepeatableEntry::make('data.team_members')->label('Team Members')
+                        ->schema([
+                            TextEntry::make('name')->label('Name'),
+                            TextEntry::make('role')->label('Role'),
+                            TextEntry::make('phone')->label('Phone'),
+                            TextEntry::make('email')->label('Email'),
+                        ])->columns(4),
+                ])->columns(1),
+
+            \Filament\Infolists\Components\Section::make(__('Final Notes'))
+                ->schema([
+                    TextEntry::make('data.program_discovery')->label('How did you hear about the PIEC Program?'),
+                    RepeatableEntry::make('data.attachments')->label('Attachments')
+                        ->schema([
+                            TextEntry::make('')->formatStateUsing(fn(string $state
+                            ): HtmlString => new HtmlString("<a href='".Storage::url($state)."' download>".__('Download Attachment')."</a>"))
+                        ])->columns(1),
+
+                    TextEntry::make('data.additional_notes')->label('Anything else you\'d like to share with us?'),
+                ])->columns(1),
+        ];
+
         // Get Application Model
         $application      = $infolist->getRecord();
         $program_infolist = match (optional($application->program)->level) {
@@ -2388,6 +2822,7 @@ class ApplicationResource extends Resource
             'incubation' => $incubation_infolist,
             'pre-acceleration' => $pre_acceleration_infolist,
             'acceleration' => $acceleration_infolist,
+            'formation' => $formation_infolist,
             default => []
         };
 

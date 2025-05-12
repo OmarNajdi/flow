@@ -62,6 +62,7 @@ class ProgramResource extends Resource
                     'incubation'              => 'Incubation',
                     'pre-acceleration'        => 'Pre-Acceleration',
                     'acceleration'            => 'Acceleration',
+                    'formation'               => 'Formation and Development',
                 ])->required(),
                 TextInput::make('activity')->label('Activity'),
                 Select::make('status')->label('Status')->options([
