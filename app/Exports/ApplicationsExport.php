@@ -204,12 +204,70 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             strip_tags($application->data['program_details'] ?? ''),
         ];
 
+
+        $formation = [
+            // Startup Overview
+            $application->data['startup_name'] ?? '',
+            $application->data['solution_stage'] ?? '',
+            $application->data['problem'] ?? '',
+            $application->data['target_segment'] ?? '',
+            $application->data['problem_identification'] ?? '',
+            $application->data['sector'] ?? '',
+            $application->data['sector_other'] ?? '',
+
+            // Solution & Uniqueness
+            $application->data['solution_description'] ?? '',
+            $application->data['solution_uniqueness'] ?? '',
+            $application->data['solution_better_alternatives'] ?? '',
+            $application->data['problem_solution_validation'] ?? '',
+            $application->data['validation_details'] ?? '',
+            $application->data['validation_next_steps'] ?? '',
+
+            // Market Analysis
+            $application->data['target_market_identified'] ?? '',
+            $application->data['target_market_how'] ?? '',
+            $application->data['target_market_opportunity'] ?? '',
+            $application->data['target_market_research'] ?? '',
+            $application->data['target_market_challenges'] ?? '',
+            $application->data['competitor_analysis'] ?? '',
+            $application->data['competitor_details'] ?? '',
+            $application->data['competitive_advantage'] ?? '',
+
+            // MVP
+            $application->data['has_mvp'] ?? '',
+            $application->data['mvp_roadmap'] ?? '',
+            $application->data['mvp_features'] ?? '',
+            $application->data['mvp_support'] ?? '',
+            $application->data['flow_assistance'] ?? '',
+
+            // Commitment & Expectations
+            $application->data['program_reason'] ?? '',
+            $application->data['program_goals'] ?? '',
+            $application->data['commitment'] ?? '',
+            $application->data['legal_issues'] ?? '',
+            $application->data['legal_issues_details'] ?? '',
+
+            // Progress & Team Info
+            $application->data['idea_duration'] ?? '',
+            $application->data['individual_or_team'] ?? '',
+
+            $team_members[0]['name'] ?? '',
+            $team_members[0]['role'] ?? '',
+            $team_members[0]['phone'] ?? '',
+            $team_members[0]['email'] ?? '',
+
+            $application->data['program_discovery'] ?? '',
+            $application->data['program_discovery_other'] ?? '',
+            $application->data['additional_notes'] ?? '',
+        ];
+
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
             'incubation' => $incubation,
             'pre-acceleration' => $pre_acceleration,
             'acceleration' => $acceleration,
+            'formation' => $formation,
             default => $ideation
         };
 
@@ -424,12 +482,69 @@ class ApplicationsExport implements FromCollection, WithMapping, WithHeadings, W
             'If yes, please provide details.',
         ];
 
+        $formation_labels = [
+            // Startup Overview
+            'Startup / Project Name',
+            'What stage is your solution currently in?',
+            'What specific problem or need does your startup address?',
+            'Who is affected by this problem, and who is your target segment?',
+            'How did you identify this problem? Please explain the process.',
+            'What industry sector does your product/service target?',
+            'Please Specify',
+
+            // Solution & Uniqueness
+            'Describe your solution. What product or service are you offering?',
+            'What makes your solution unique, creative, or better than current alternatives?',
+            'How does your solution address the problem better than existing alternatives?',
+            'Have you validated the problem-solution fit?',
+            'How did you validate it? (e.g., surveys, interviews, pilots). What feedback did you receive?',
+            'Why not? What are your next steps for validation?',
+
+            // Market Analysis
+            'Have you identified your target market?',
+            'How did you identify your target market?',
+            'What makes this market a good opportunity?',
+            'What research methods have you used? (e.g., surveys, interviews, focus groups)',
+            'What challenges are you facing in identifying your market?',
+            'Have you conducted a competitor analysis?',
+            'Who are your competitors?',
+            'What is your competitive advantage, and how do you plan to differentiate in the market?',
+
+            // MVP
+            'Do you currently have an MVP?',
+            'Have you developed a roadmap for your MVP?',
+            'What are the core features included in your MVP? What problem do they solve?',
+            'What kind of support do you need to define or build your MVP plan?',
+            'How can Flow Accelerator assist you in developing your MVP? (e.g., technical help, prototyping tools, mentorship)',
+
+            // Commitment & Expectations
+            'Why do you want to join the PIEC Formation and Development Program?',
+            'What do you hope to achieve by the end of the program?',
+            'Are you committed to attending extensive in-person and virtual training sessions, mentoring, and completing deliverables?',
+            'Are there any legal or intellectual property issues related to your startup?',
+            'Please explain.',
+
+            // Progress & Team Info
+            'How long have you been working on your idea?',
+            'Are you applying as an individual or as part of a team?',
+
+            'Team Member Name',
+            'Team Member Role',
+            'Team Member Phone',
+            'Team Member Email',
+
+            'How did you hear about the PIEC Program?',
+            'Please Specify',
+            'Anything else you\'d like to share with us?',
+        ];
+
         $program = match ($this->level) {
             'ideation and innovation' => $ideation,
             'pre-incubation' => $pre_incubation,
             'incubation' => $incubation,
             'pre-acceleration' => $pre_acceleration,
             'acceleration' => $acceleration,
+            'formation' => $formation_labels,
             default => $ideation
         };
 

@@ -28,7 +28,7 @@ class SendApplicationReminderEmails extends Command
     public function handle()
     {
 
-//        return;
+        return;
 
         $users = User::whereHas('applications', function ($query) {
             $query->where('program_id', 14)->where('status', '!=', 'Submitted');
