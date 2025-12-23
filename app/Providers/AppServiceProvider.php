@@ -41,7 +41,9 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(MessageSending::class, function ($event) {
             $replyTo = config('mail.reply_to');
             if ($replyTo && $replyTo['address']) {
-                $event->message->replyTo($replyTo['address'], $replyTo['name'] ?? null);
+                $event->message->replyTo(
+                    new Address($replyTo['address'], $replyTo['name'] ?? '')
+                );
             }
         });
 
