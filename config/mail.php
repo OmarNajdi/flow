@@ -109,4 +109,9 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'reply_to' => [
+        'address' => 'programs@flow.ps',
+        'name' => 'Flow Accelerator',
+    ],
+
 ];
