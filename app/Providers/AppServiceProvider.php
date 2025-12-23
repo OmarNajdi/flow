@@ -20,6 +20,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\Mime\Address;
 
 
 class AppServiceProvider extends ServiceProvider
