@@ -12,6 +12,8 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Filters\BaseFilter;
+use Illuminate\Mail\Events\MessageSending;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
@@ -35,6 +37,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Event::listen(MessageSending::class, function ($event) {
+            $replyTo = config('mail.reply_to');
+            if ($replyTo && $replyTo['address']) {
+                $event->message->replyTo($replyTo['address'], $replyTo['name'] ?? null);
+            }
+        });
+
         Filament::serving(function () {
             Filament::registerNavigationItems([
                 NavigationItem::make(__('Profile'))
